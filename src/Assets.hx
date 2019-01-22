@@ -14,7 +14,7 @@ class Assets {
 
 		music = new Sfx(hxd.Res.music);
 		Sfx.setGroupVolume(0, 1.0);
-		Sfx.setGroupVolume(1, 1.0);
+		Sfx.setGroupVolume(1, 0.66);
 		// music.setChannel(1);
 		// Sfx.setChannelVolume(0, 1);
 		// Sfx.setChannelVolume(1, 1);
