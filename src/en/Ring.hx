@@ -141,11 +141,8 @@ class Ring extends Entity {
 			if( onGround )
 				dr*=0.8;
 			frict = 0.7;
-			dy += cy<level.waterY ? rnd(0.03,0.04) : rnd(0.02, 0.03);
+			dy += ( cy<level.waterY ? rnd(0.03,0.04) : rnd(0.02, 0.03) ) * tmod;
 		}
-
-		//if( cy<level.waterY )
-			//dy+=0.06;
 
 		for(e in delayedBullets)
 			if( !e.isDead() ) {

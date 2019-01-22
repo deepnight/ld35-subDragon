@@ -161,10 +161,10 @@ class Head extends Ring {
 			}
 		}
 
-		speed += (frozen?0.7:1) * trust * 0.050; // 0.042;
-		dx+=Math.cos(ang)*speed;
-		dy+=Math.sin(ang)*speed;
-		speed*=0.5;
+		speed += (frozen?0.7:1) * trust * 0.050 * tmod; // 0.042;
+		dx+=Math.cos(ang)*speed*tmod;
+		dy+=Math.sin(ang)*speed*tmod;
+		speed*=Math.pow(0.5,tmod);
 		if( trust>=0.9 && !cd.hasSetF("bubTrust",secToFrames(0.2)) )
 			for(i in 0...2)
 				fx.bubble(centerX, centerY);

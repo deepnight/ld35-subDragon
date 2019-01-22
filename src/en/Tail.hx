@@ -117,16 +117,16 @@ class Tail extends Ring {
 				var ty = hero.centerY + Math.sin(frozenAng)*frozenDist;
 				var ta = Math.atan2(ty-centerY, tx-centerX);
 				var d = Math.sqrt( distSqrFree(tx,ty) ) / Const.GRID;
-				dx += Math.cos(ta)*d*0.3;
-				dy += Math.sin(ta)*d*0.3;
+				dx += Math.cos(ta)*d*0.3*tmod;
+				dy += Math.sin(ta)*d*0.3*tmod;
 			}
 			else {
 				// Follow parent
 				var ta = angTo(parent);
 				ang += Lib.angularSubstractionRad(ta, ang)*0.7;
 				var d = (Math.sqrt( distSqr(parent) ) - linkDist*1.2) / Const.GRID;
-				dx += Math.cos(ang)*d*0.3;
-				dy += Math.sin(ang)*d*0.3;
+				dx += Math.cos(ang)*d*0.3*tmod;
+				dy += Math.sin(ang)*d*0.3*tmod;
 			}
 
 		if( shootSpr.visible ) {

@@ -19,6 +19,7 @@ class Boot extends hxd.App {
 
 		engine.backgroundColor = 0xff<<24|0x0;
 
+		hxd.Timer.wantedFPS = Const.FPS;
 		controller = new mt.heaps.Controller(s2d);
 		ca = controller.createAccess("main");
 
@@ -35,6 +36,10 @@ class Boot extends hxd.App {
 			new Game();
 			#else
 			new Intro();
+			#end
+			#if hl
+			var c = new h2d.Console(Assets.font, s2d);
+			mt.deepnight.Lib.redirectTracesToH2dConsole(c);
 			#end
 		// }
 		// else {

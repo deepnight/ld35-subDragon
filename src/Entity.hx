@@ -11,6 +11,8 @@ class Entity {
 	var cd : mt.Cooldown;
 	public var uid : Int;
 
+	public var tmod(get,never) : Float; inline function get_tmod() return Game.ME.tmod;
+
 	public var cx : Int;
 	public var cy : Int;
 	public var xr : Float;
@@ -147,15 +149,15 @@ class Entity {
 
 
 	function physX() {
-		xr+=dx;
+		xr+=dx*tmod;
 
 		if( lCollisions ) {
 			if( xr<0.25 && level.hasCollision(cx-1,cy) ) {
-				dx *= 0.6;
+				dx *= Math.pow(0.6,tmod);
 				xr = 0.25;
 			}
 			if( xr>0.75 && level.hasCollision(cx+1,cy) ) {
-				dx *= 0.6;
+				dx *= Math.pow(0.6,tmod);
 				xr = 0.75;
 			}
 		}
@@ -163,11 +165,11 @@ class Entity {
 
 
 	function physY() {
-		yr+=dy;
+		yr+=dy*tmod;
 
 		if( lCollisions ) {
 			if( yr<0.5 && level.hasCollision(cx,cy-1) ) {
-				dy *= 0.8;
+				dy *= Math.pow(0.8,tmod);
 				yr = 0.5;
 			}
 			if( yr>1 && level.hasCollision(cx,cy+1) ) {
@@ -195,7 +197,7 @@ class Entity {
 
 	public function update() {
 		var oldY = centerY;
-		cd.update(Game.ME.tmod);
+		cd.update(tmod);
 
 		// Circular collisions
 		if( weight>0 )
@@ -212,14 +214,14 @@ class Entity {
 				var wr = e.weight / (e.weight+weight);
 				if( wr>0.9 ) wr = 1;
 				if( wr<0.1 ) wr = 0;
-				dx-=Math.cos(a)*pow*wr;
-				dy-=Math.sin(a)*pow*wr;
+				dx-=Math.cos(a)*pow*wr*tmod;
+				dy-=Math.sin(a)*pow*wr*tmod;
 
 				var wr = weight / (e.weight+weight);
 				if( wr>0.9 ) wr = 1;
 				if( wr<0.1 ) wr = 0;
-				e.dx+=Math.cos(a)*pow*wr;
-				e.dy+=Math.sin(a)*pow*wr;
+				e.dx+=Math.cos(a)*pow*wr*tmod;
+				e.dy+=Math.sin(a)*pow*wr*tmod;
 			}
 
 		// Touch detection
@@ -232,8 +234,8 @@ class Entity {
 		// X
 		physX();
 
-		dx*=frict;
-		if( MLib.fabs(dx)<=0.0001 ) dx = 0;
+		dx*=Math.pow(frict,tmod);
+		if( MLib.fabs(dx)<=0.0001*tmod ) dx = 0;
 
 		while(xr>1) { xr--; cx++; }
 		while(xr<0) { xr++; cx--; }
@@ -241,8 +243,8 @@ class Entity {
 		// Y
 		physY();
 
-		dy*=frict;
-		if( MLib.fabs(dy)<=0.0001 ) dy = 0;
+		dy*=Math.pow(frict,tmod);
+		if( MLib.fabs(dy)<=0.0001*tmod ) dy = 0;
 
 		while(yr>1) { yr--; cy++; }
 		while(yr<0) { yr++; cy--; }
