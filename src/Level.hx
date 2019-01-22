@@ -49,7 +49,7 @@ class Level extends mt.Process {
 					case 0x825d3c : addSpot("door",cx,cy);
 					case 0xffc000 : addSpot("liner",cx,cy);
 					case 0x806000 : addSpot("linerDir",cx,cy);
-					case 0x51b2ff : waterY = cy;
+					case 0x51b2ff : addSpot("waterLevel",cx,cy);
 				}
 			}
 			bd.dispose();
@@ -59,6 +59,7 @@ class Level extends mt.Process {
 			hei = HEI;
 		}
 		initDoorColls();
+		waterY = getSpot("waterLevel").cy;
 
 
 		// Waves
