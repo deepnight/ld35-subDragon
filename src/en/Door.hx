@@ -24,7 +24,7 @@ class Door extends Entity {
 		Game.ME.scroller.add(bot, Const.DP_BG);
 
 		for(d in 0...hei) {
-			level.addSpot("coll", cx,cy+d);
+			level.addDoorColl(cx,cy+d);
 			var e = Assets.tiles.h_get("door");
 			parts.push(e);
 			Game.ME.scroller.add(e, Const.DP_BG);
@@ -68,7 +68,7 @@ class Door extends Entity {
 
 		if( !level.destroyed )
 			for(d in 0...hei)
-				level.removeCollision(cx,cy+d);
+				level.removeDoorColl(cx,cy+d);
 	}
 
 	override public function update() {

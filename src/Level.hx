@@ -5,8 +5,8 @@ import mt.heaps.slib.*;
 class Level extends mt.Process {
 	public var wid : Int;
 	public var hei : Int;
-	var spots : Map<String,Array<Point>>;
-	var fastSpots : Map<String,Bool>;
+	// var spots : Map<String,Array<Point>>;
+	// var fastSpots : Map<String,Bool>;
 
 	var lights : h2d.SpriteBatch;
 	var far : h2d.SpriteBatch;
@@ -18,32 +18,48 @@ class Level extends mt.Process {
 	var sun : HSprite;
 	var sun2 : HSprite;
 
+	static var WID : Int;
+	static var HEI : Int;
+	static var SPOTS : Map<String,Array<Point>>;
+	static var FAST_SPOTS : Map<String,Bool>;
+
 	public function new() {
 		super(Game.ME);
 
-		createRootInLayers(Game.ME.scroller, 0);
-		spots = new Map();
-		fastSpots = new Map();
+		var time = haxe.Timer.stamp();
 
-		var bd = hxd.Res.level.toBitmap();
-		wid = bd.width;
-		hei = bd.height;
-		for(cx in 0...wid)
-		for(cy in 0...hei) {
-			var c = bd.getPixel(cx,cy) & 0x00FFFFFF;
-			switch( c ) {
-				case 0xFFFFFF : addSpot("wall",cx,cy); addSpot("coll",cx,cy);
-				case 0xff0000 : addSpot("turret",cx,cy);
-				case 0x42d188 : addSpot("splasher",cx,cy);
-				case 0x00FF00 : addSpot("hero",cx,cy);
-				case 0x5d5d5d : addSpot("check",cx,cy);
-				case 0x825d3c : addSpot("door",cx,cy);
-				case 0xffc000 : addSpot("liner",cx,cy);
-				case 0x806000 : addSpot("linerDir",cx,cy);
-				case 0x51b2ff : waterY = cy;
+		createRootInLayers(Game.ME.scroller, 0);
+
+		if( SPOTS==null ) {
+			SPOTS = new Map();
+			FAST_SPOTS = new Map();
+			var bd = hxd.Res.level.toBitmap();
+			wid = WID = bd.width;
+			hei = HEI = bd.height;
+
+			for(cx in 0...wid)
+			for(cy in 0...hei) {
+				var c = bd.getPixel(cx,cy) & 0x00FFFFFF;
+				switch( c ) {
+					case 0xFFFFFF : addSpot("wall",cx,cy); addSpot("coll",cx,cy);
+					case 0xff0000 : addSpot("turret",cx,cy);
+					case 0x42d188 : addSpot("splasher",cx,cy);
+					case 0x00FF00 : addSpot("hero",cx,cy);
+					case 0x5d5d5d : addSpot("check",cx,cy);
+					case 0x825d3c : addSpot("door",cx,cy);
+					case 0xffc000 : addSpot("liner",cx,cy);
+					case 0x806000 : addSpot("linerDir",cx,cy);
+					case 0x51b2ff : waterY = cy;
+				}
 			}
+			bd.dispose();
 		}
-		bd.dispose();
+		else {
+			wid = WID;
+			hei = HEI;
+		}
+		initDoorColls();
+
 
 		// Waves
 		waves = [];
@@ -75,16 +91,6 @@ class Level extends mt.Process {
 			e.alpha = 0.04;
 		}
 
-
-		// Circles
-		//var t = hxd.Res.waterCircles.toTile();
-		//t.setSize(wid*Const.GRID, t.height);
-		//var e = new h2d.Bitmap( t.clone() );
-		//Game.ME.scroller.add(e, Const.DP_BG);
-		//e.tileWrap = true;
-		//e.y = Const.GRID*waterY;
-		//e.alpha = 0.1;
-
 		render();
 	}
 
@@ -104,32 +110,42 @@ class Level extends mt.Process {
 
 	public inline function coordId(x,y) return x+y*wid;
 
-	public inline function hasSpot(k:String,x,y) return fastSpots.exists(k+coordId(x,y));
-	public inline function getSpots(k) return spots.exists(k) ? spots.get(k) : [];
-	public inline function getSpot(k) return spots.exists(k) ? spots.get(k)[0] : null;
-	public inline function addSpot(k,x,y) {
-		if( !spots.exists(k) )
-			spots.set(k, [new Point(x,y)]);
+	public inline function hasSpot(k:String,x,y) return FAST_SPOTS.exists(k+coordId(x,y));
+	public inline function getSpots(k) return SPOTS.exists(k) ? SPOTS.get(k) : [];
+	public inline function getSpot(k) return SPOTS.exists(k) ? SPOTS.get(k)[0] : null;
+	inline function addSpot(k,x,y) {
+		if( !SPOTS.exists(k) )
+			SPOTS.set(k, [new Point(x,y)]);
 		else
-			spots.get(k).push( new Point(x,y) );
-		fastSpots.set(k+coordId(x,y), true);
+			SPOTS.get(k).push( new Point(x,y) );
+		FAST_SPOTS.set(k+coordId(x,y), true);
 	}
 
-	public function removeCollision(x,y) {
-		var all = getSpots("coll");
+	public function initDoorColls() {
+		var all = getSpots("doorColl");
+		for(pt in all)
+			FAST_SPOTS.remove("doorColl"+coordId(pt.cx, pt.cy));
+		SPOTS.remove("doorColl");
+	}
+	public function addDoorColl(x,y) {
+		if( !hasSpot("doorColl",x,y) )
+			addSpot("doorColl",x,y);
+	}
+
+	public function removeDoorColl(x,y) {
+		var all = getSpots("doorColl");
 		var i = 0;
 		while(i<all.length) {
 			if( all[i].cx==x && all[i].cy==y ) {
-				fastSpots.remove("coll"+coordId(x,y));
+				FAST_SPOTS.remove("doorColl"+coordId(x,y));
 				all.splice(i,1);
 			}
 			else
 				i++;
 		}
-
 	}
 
-	public inline function hasCollision(x,y) return x<0 || x>=wid || y<0 || y>=hei || hasSpot("coll", x,y);
+	public inline function hasCollision(x,y) return x<0 || x>=wid || y<0 || y>=hei || hasSpot("coll", x,y) || hasSpot("doorColl",x,y);
 
 
 	public function render() {
