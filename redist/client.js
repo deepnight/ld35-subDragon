@@ -150,7 +150,7 @@ Assets.init = function() {
 	Assets.font = hxd_Res.get_loader().loadCache("minecraftiaOutline.fnt",hxd_res_BitmapFont).toFont();
 	Assets.music = new mt_deepnight_Sfx(hxd_Res.get_loader().loadCache("music.mp3",hxd_res_Sound));
 	mt_deepnight_Sfx.setGroupVolume(0,1.0);
-	mt_deepnight_Sfx.setGroupVolume(1,1.0);
+	mt_deepnight_Sfx.setGroupVolume(1,0.66);
 };
 var h3d_IDrawable = function() { };
 $hxClasses["h3d.IDrawable"] = h3d_IDrawable;
@@ -249,6 +249,7 @@ Boot.prototype = $extend(hxd_App.prototype,{
 	init: function() {
 		Boot.ME = this;
 		this.engine.backgroundColor = -16777216;
+		hxd_Timer.wantedFPS = Const.FPS;
 		this.controller = new mt_heaps_Controller(this.s2d);
 		this.ca = this.controller.createAccess("main");
 		this.controller.bind(0,32,70);
@@ -258,7 +259,7 @@ Boot.prototype = $extend(hxd_App.prototype,{
 		this.controller.bind(20,83,40);
 		Assets.init();
 		new Intro();
-		this.onResize();
+		mt_Process.resizeAll();
 	}
 	,onResize: function() {
 		hxd_App.prototype.onResize.call(this);
@@ -526,17 +527,25 @@ Entity.prototype = {
 		}
 	}
 	,physX: function() {
-		this.xr += this.dx;
+		this.xr += this.dx * Game.ME.dt;
 		if(this.lCollisions) {
 			var tmp;
 			if(this.xr < 0.25) {
 				var _this = Game.ME.level;
 				var x = this.cx - 1;
 				var y = this.cy;
+				var tmp1;
 				if(!(x < 0 || x >= _this.wid || y < 0 || y >= _this.hei)) {
 					var key = "coll" + (x + y * _this.wid);
-					var _this1 = _this.fastSpots;
-					tmp = __map_reserved[key] != null ? _this1.existsReserved(key) : _this1.h.hasOwnProperty(key);
+					var _this1 = Level.FAST_SPOTS;
+					tmp1 = __map_reserved[key] != null ? _this1.existsReserved(key) : _this1.h.hasOwnProperty(key);
+				} else {
+					tmp1 = true;
+				}
+				if(!tmp1) {
+					var key1 = "doorColl" + (x + y * _this.wid);
+					var _this2 = Level.FAST_SPOTS;
+					tmp = __map_reserved[key1] != null ? _this2.existsReserved(key1) : _this2.h.hasOwnProperty(key1);
 				} else {
 					tmp = true;
 				}
@@ -544,42 +553,58 @@ Entity.prototype = {
 				tmp = false;
 			}
 			if(tmp) {
-				this.dx *= 0.6;
+				this.dx *= Math.pow(0.6,Game.ME.dt);
 				this.xr = 0.25;
 			}
-			var tmp1;
+			var tmp2;
 			if(this.xr > 0.75) {
-				var _this2 = Game.ME.level;
+				var _this3 = Game.ME.level;
 				var x1 = this.cx + 1;
 				var y1 = this.cy;
-				if(!(x1 < 0 || x1 >= _this2.wid || y1 < 0 || y1 >= _this2.hei)) {
-					var key1 = "coll" + (x1 + y1 * _this2.wid);
-					var _this3 = _this2.fastSpots;
-					tmp1 = __map_reserved[key1] != null ? _this3.existsReserved(key1) : _this3.h.hasOwnProperty(key1);
+				var tmp3;
+				if(!(x1 < 0 || x1 >= _this3.wid || y1 < 0 || y1 >= _this3.hei)) {
+					var key2 = "coll" + (x1 + y1 * _this3.wid);
+					var _this4 = Level.FAST_SPOTS;
+					tmp3 = __map_reserved[key2] != null ? _this4.existsReserved(key2) : _this4.h.hasOwnProperty(key2);
 				} else {
-					tmp1 = true;
+					tmp3 = true;
+				}
+				if(!tmp3) {
+					var key3 = "doorColl" + (x1 + y1 * _this3.wid);
+					var _this5 = Level.FAST_SPOTS;
+					tmp2 = __map_reserved[key3] != null ? _this5.existsReserved(key3) : _this5.h.hasOwnProperty(key3);
+				} else {
+					tmp2 = true;
 				}
 			} else {
-				tmp1 = false;
+				tmp2 = false;
 			}
-			if(tmp1) {
-				this.dx *= 0.6;
+			if(tmp2) {
+				this.dx *= Math.pow(0.6,Game.ME.dt);
 				this.xr = 0.75;
 			}
 		}
 	}
 	,physY: function() {
-		this.yr += this.dy;
+		this.yr += this.dy * Game.ME.dt;
 		if(this.lCollisions) {
 			var tmp;
 			if(this.yr < 0.5) {
 				var _this = Game.ME.level;
 				var x = this.cx;
 				var y = this.cy - 1;
+				var tmp1;
 				if(!(x < 0 || x >= _this.wid || y < 0 || y >= _this.hei)) {
 					var key = "coll" + (x + y * _this.wid);
-					var _this1 = _this.fastSpots;
-					tmp = __map_reserved[key] != null ? _this1.existsReserved(key) : _this1.h.hasOwnProperty(key);
+					var _this1 = Level.FAST_SPOTS;
+					tmp1 = __map_reserved[key] != null ? _this1.existsReserved(key) : _this1.h.hasOwnProperty(key);
+				} else {
+					tmp1 = true;
+				}
+				if(!tmp1) {
+					var key1 = "doorColl" + (x + y * _this.wid);
+					var _this2 = Level.FAST_SPOTS;
+					tmp = __map_reserved[key1] != null ? _this2.existsReserved(key1) : _this2.h.hasOwnProperty(key1);
 				} else {
 					tmp = true;
 				}
@@ -587,25 +612,33 @@ Entity.prototype = {
 				tmp = false;
 			}
 			if(tmp) {
-				this.dy *= 0.8;
+				this.dy *= Math.pow(0.8,Game.ME.dt);
 				this.yr = 0.5;
 			}
-			var tmp1;
+			var tmp2;
 			if(this.yr > 1) {
-				var _this2 = Game.ME.level;
+				var _this3 = Game.ME.level;
 				var x1 = this.cx;
 				var y1 = this.cy + 1;
-				if(!(x1 < 0 || x1 >= _this2.wid || y1 < 0 || y1 >= _this2.hei)) {
-					var key1 = "coll" + (x1 + y1 * _this2.wid);
-					var _this3 = _this2.fastSpots;
-					tmp1 = __map_reserved[key1] != null ? _this3.existsReserved(key1) : _this3.h.hasOwnProperty(key1);
+				var tmp3;
+				if(!(x1 < 0 || x1 >= _this3.wid || y1 < 0 || y1 >= _this3.hei)) {
+					var key2 = "coll" + (x1 + y1 * _this3.wid);
+					var _this4 = Level.FAST_SPOTS;
+					tmp3 = __map_reserved[key2] != null ? _this4.existsReserved(key2) : _this4.h.hasOwnProperty(key2);
 				} else {
-					tmp1 = true;
+					tmp3 = true;
+				}
+				if(!tmp3) {
+					var key3 = "doorColl" + (x1 + y1 * _this3.wid);
+					var _this5 = Level.FAST_SPOTS;
+					tmp2 = __map_reserved[key3] != null ? _this5.existsReserved(key3) : _this5.h.hasOwnProperty(key3);
+				} else {
+					tmp2 = true;
 				}
 			} else {
-				tmp1 = false;
+				tmp2 = false;
 			}
-			if(tmp1) {
+			if(tmp2) {
 				this.dy = 0;
 				this.yr = 1;
 			}
@@ -693,8 +726,8 @@ Entity.prototype = {
 				if(wr < 0.1) {
 					wr = 0;
 				}
-				this.dx -= Math.cos(a) * pow * wr;
-				this.dy -= Math.sin(a) * pow * wr;
+				this.dx -= Math.cos(a) * pow * wr * Game.ME.dt;
+				this.dy -= Math.sin(a) * pow * wr * Game.ME.dt;
 				var wr1 = this.weight / (e.weight + this.weight);
 				if(wr1 > 0.9) {
 					wr1 = 1;
@@ -702,8 +735,8 @@ Entity.prototype = {
 				if(wr1 < 0.1) {
 					wr1 = 0;
 				}
-				e.dx += Math.cos(a) * pow * wr1;
-				e.dy += Math.sin(a) * pow * wr1;
+				e.dx += Math.cos(a) * pow * wr1 * Game.ME.dt;
+				e.dy += Math.sin(a) * pow * wr1 * Game.ME.dt;
 			}
 		}
 		var _g2 = 0;
@@ -717,8 +750,8 @@ Entity.prototype = {
 			}
 		}
 		this.physX();
-		var x = this.dx *= this.frict;
-		if((x < 0 ? -x : x) <= 0.0001) {
+		var x = this.dx *= Math.pow(this.frict,Game.ME.dt);
+		if((x < 0 ? -x : x) <= 0.0001 * Game.ME.dt) {
 			this.dx = 0;
 		}
 		while(this.xr > 1) {
@@ -730,8 +763,8 @@ Entity.prototype = {
 			this.cx--;
 		}
 		this.physY();
-		var x1 = this.dy *= this.frict;
-		if((x1 < 0 ? -x1 : x1) <= 0.0001) {
+		var x1 = this.dy *= Math.pow(this.frict,Game.ME.dt);
+		if((x1 < 0 ? -x1 : x1) <= 0.0001 * Game.ME.dt) {
 			this.dy = 0;
 		}
 		while(this.yr > 1) {
@@ -1966,18 +1999,12 @@ var Game = function() {
 	mt_Process.call(this);
 	Game.ME = this;
 	this.createRoot(Boot.ME.s2d);
-	this.root.set_filter(new h2d_filter_ColorMatrix());
 	this.ctrl = Boot.ME.controller.createAccess("game");
 	this.scroller = new h2d_Layers(this.root);
 	var _this = this.scroller;
-	var v = Const.UPSCALE;
 	_this.posChanged = true;
-	_this.scaleX = v;
-	_this.posChanged = true;
-	_this.scaleY = v;
-	var _this1 = this.scroller;
-	_this1.posChanged = true;
-	_this1.x = 200;
+	_this.x = 200;
+	this.scroller.set_filter(new h2d_filter_ColorMatrix());
 	this.viewport = new Viewport(this.scroller);
 	var actx = new h2d_Object();
 	this.scroller.addChildAt(actx,Const.DP_FX);
@@ -1992,16 +2019,19 @@ var Game = function() {
 	if(p != null) {
 		p.addChild(s);
 	}
-	var _this2 = s.pivot;
-	_this2.centerFactorX = 0.;
-	_this2.centerFactorY = 0.;
-	_this2.usingFactor = true;
-	_this2.isUndefined = false;
+	var _this1 = s.pivot;
+	_this1.centerFactorX = 0.;
+	_this1.centerFactorY = 0.;
+	_this1.usingFactor = true;
+	_this1.isUndefined = false;
 	this.dark = s;
 	this.dark.alpha = 0;
 	this.mask = new h2d_Bitmap(h2d_Tile.fromColor((255. | 0) << 24 | 0,1,1),this.root);
 	this.cm = new mt_deepnight_Cinematic(Const.FPS);
 	this.startLevel();
+	this.delayer.addF(null,function() {
+		Assets.music.playOnGroup(1,true);
+	},1);
 	this.cm.__beginNewQueue();
 	this.cm.__add(function() {
 		_gthis.hero.goto(6,23);
@@ -2024,12 +2054,12 @@ var Game = function() {
 	this.cm.__add(function() {
 		_gthis.hero.setFrozen(false);
 	},0);
-	this.onResize();
 	var _tween = this.tw.create_(function() {
 		return _gthis.mask.alpha;
 	},function(_setV) {
 		_gthis.mask.alpha = _setV;
 	},1,0,null,2000);
+	this.onResize();
 };
 $hxClasses["Game"] = Game;
 Game.__name__ = "Game";
@@ -2290,9 +2320,9 @@ Game.prototype = $extend(mt_Process.prototype,{
 		var _g4 = 0;
 		var _this = this.level;
 		var _g11;
-		var _this1 = _this.spots;
+		var _this1 = Level.SPOTS;
 		if(__map_reserved["door"] != null ? _this1.existsReserved("door") : _this1.h.hasOwnProperty("door")) {
-			var _this2 = _this.spots;
+			var _this2 = Level.SPOTS;
 			_g11 = __map_reserved["door"] != null ? _this2.getReserved("door") : _this2.h["door"];
 		} else {
 			_g11 = [];
@@ -2300,17 +2330,15 @@ Game.prototype = $extend(mt_Process.prototype,{
 		while(_g4 < _g11.length) {
 			var pt = _g11[_g4];
 			++_g4;
-			var _this3 = this.level;
-			var key = "door" + (pt.cx + (pt.cy - 1) * _this3.wid);
-			var _this4 = _this3.fastSpots;
-			if(!(__map_reserved[key] != null ? _this4.existsReserved(key) : _this4.h.hasOwnProperty(key)) && (this.curCheckPoint == null || pt.cx >= this.curCheckPoint.cx)) {
+			var key = "door" + (pt.cx + (pt.cy - 1) * this.level.wid);
+			var _this3 = Level.FAST_SPOTS;
+			if(!(__map_reserved[key] != null ? _this3.existsReserved(key) : _this3.h.hasOwnProperty(key)) && (this.curCheckPoint == null || pt.cx >= this.curCheckPoint.cx)) {
 				var h = 0;
 				var y = pt.cy;
 				while(true) {
-					var _this5 = this.level;
-					var key1 = "door" + (pt.cx + y * _this5.wid);
-					var _this6 = _this5.fastSpots;
-					if(!(__map_reserved[key1] != null ? _this6.existsReserved(key1) : _this6.h.hasOwnProperty(key1))) {
+					var key1 = "door" + (pt.cx + y * this.level.wid);
+					var _this4 = Level.FAST_SPOTS;
+					if(!(__map_reserved[key1] != null ? _this4.existsReserved(key1) : _this4.h.hasOwnProperty(key1))) {
 						break;
 					}
 					++y;
@@ -2320,12 +2348,12 @@ Game.prototype = $extend(mt_Process.prototype,{
 			}
 		}
 		if(this.curCheckPoint == null) {
-			var _this7 = this.level;
+			var _this5 = this.level;
 			var pt1;
-			var _this8 = _this7.spots;
-			if(__map_reserved["hero"] != null ? _this8.existsReserved("hero") : _this8.h.hasOwnProperty("hero")) {
-				var _this9 = _this7.spots;
-				pt1 = (__map_reserved["hero"] != null ? _this9.getReserved("hero") : _this9.h["hero"])[0];
+			var _this6 = Level.SPOTS;
+			if(__map_reserved["hero"] != null ? _this6.existsReserved("hero") : _this6.h.hasOwnProperty("hero")) {
+				var _this7 = Level.SPOTS;
+				pt1 = (__map_reserved["hero"] != null ? _this7.getReserved("hero") : _this7.h["hero"])[0];
 			} else {
 				pt1 = null;
 			}
@@ -2334,12 +2362,12 @@ Game.prototype = $extend(mt_Process.prototype,{
 			this.hero = new en_Head(this.curCheckPoint.cx - 4,this.curCheckPoint.cy);
 		}
 		var _g21 = 0;
-		var _this10 = this.level;
+		var _this8 = this.level;
 		var _g31;
-		var _this11 = _this10.spots;
-		if(__map_reserved["turret"] != null ? _this11.existsReserved("turret") : _this11.h.hasOwnProperty("turret")) {
-			var _this12 = _this10.spots;
-			_g31 = __map_reserved["turret"] != null ? _this12.getReserved("turret") : _this12.h["turret"];
+		var _this9 = Level.SPOTS;
+		if(__map_reserved["turret"] != null ? _this9.existsReserved("turret") : _this9.h.hasOwnProperty("turret")) {
+			var _this10 = Level.SPOTS;
+			_g31 = __map_reserved["turret"] != null ? _this10.getReserved("turret") : _this10.h["turret"];
 		} else {
 			_g31 = [];
 		}
@@ -2351,12 +2379,12 @@ Game.prototype = $extend(mt_Process.prototype,{
 			}
 		}
 		var _g41 = 0;
-		var _this13 = this.level;
+		var _this11 = this.level;
 		var _g5;
-		var _this14 = _this13.spots;
-		if(__map_reserved["liner"] != null ? _this14.existsReserved("liner") : _this14.h.hasOwnProperty("liner")) {
-			var _this15 = _this13.spots;
-			_g5 = __map_reserved["liner"] != null ? _this15.getReserved("liner") : _this15.h["liner"];
+		var _this12 = Level.SPOTS;
+		if(__map_reserved["liner"] != null ? _this12.existsReserved("liner") : _this12.h.hasOwnProperty("liner")) {
+			var _this13 = Level.SPOTS;
+			_g5 = __map_reserved["liner"] != null ? _this13.getReserved("liner") : _this13.h["liner"];
 		} else {
 			_g5 = [];
 		}
@@ -2365,34 +2393,31 @@ Game.prototype = $extend(mt_Process.prototype,{
 			++_g41;
 			if(this.curCheckPoint == null || pt3.cx >= this.curCheckPoint.cx) {
 				var ang;
-				var _this16 = this.level;
-				var key2 = "linerDir" + (pt3.cx + (pt3.cy - 1) * _this16.wid);
-				var _this17 = _this16.fastSpots;
-				if(__map_reserved[key2] != null ? _this17.existsReserved(key2) : _this17.h.hasOwnProperty(key2)) {
+				var key2 = "linerDir" + (pt3.cx + (pt3.cy - 1) * this.level.wid);
+				var _this14 = Level.FAST_SPOTS;
+				if(__map_reserved[key2] != null ? _this14.existsReserved(key2) : _this14.h.hasOwnProperty(key2)) {
 					ang = -1.57;
 				} else {
-					var _this18 = this.level;
-					var key3 = "linerDir" + (pt3.cx + (pt3.cy + 1) * _this18.wid);
-					var _this19 = _this18.fastSpots;
-					if(__map_reserved[key3] != null ? _this19.existsReserved(key3) : _this19.h.hasOwnProperty(key3)) {
+					var key3 = "linerDir" + (pt3.cx + (pt3.cy + 1) * this.level.wid);
+					var _this15 = Level.FAST_SPOTS;
+					if(__map_reserved[key3] != null ? _this15.existsReserved(key3) : _this15.h.hasOwnProperty(key3)) {
 						ang = 1.57;
 					} else {
-						var _this20 = this.level;
-						var key4 = "linerDir" + (pt3.cx + 1 + pt3.cy * _this20.wid);
-						var _this21 = _this20.fastSpots;
-						ang = (__map_reserved[key4] != null ? _this21.existsReserved(key4) : _this21.h.hasOwnProperty(key4)) ? 0 : 3.14;
+						var key4 = "linerDir" + (pt3.cx + 1 + pt3.cy * this.level.wid);
+						var _this16 = Level.FAST_SPOTS;
+						ang = (__map_reserved[key4] != null ? _this16.existsReserved(key4) : _this16.h.hasOwnProperty(key4)) ? 0 : 3.14;
 					}
 				}
 				new en_m_Liner(pt3.cx,pt3.cy,ang);
 			}
 		}
 		var _g6 = 0;
-		var _this22 = this.level;
+		var _this17 = this.level;
 		var _g7;
-		var _this23 = _this22.spots;
-		if(__map_reserved["splasher"] != null ? _this23.existsReserved("splasher") : _this23.h.hasOwnProperty("splasher")) {
-			var _this24 = _this22.spots;
-			_g7 = __map_reserved["splasher"] != null ? _this24.getReserved("splasher") : _this24.h["splasher"];
+		var _this18 = Level.SPOTS;
+		if(__map_reserved["splasher"] != null ? _this18.existsReserved("splasher") : _this18.h.hasOwnProperty("splasher")) {
+			var _this19 = Level.SPOTS;
+			_g7 = __map_reserved["splasher"] != null ? _this19.getReserved("splasher") : _this19.h["splasher"];
 		} else {
 			_g7 = [];
 		}
@@ -2427,88 +2452,103 @@ Game.prototype = $extend(mt_Process.prototype,{
 	}
 	,onResize: function() {
 		mt_Process.prototype.onResize.call(this);
-		var _this = this.mask;
-		var v = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
+		var x = (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.GUARANTEED_HEI;
+		var x1;
+		if(x >= 0) {
+			x1 = x | 0;
+		} else {
+			var i = x | 0;
+			x1 = x == i ? i : i - 1;
+		}
+		Const.UPSCALE = x1 > 1 ? x1 : 1;
+		var _this = this.scroller;
+		var v = Const.UPSCALE;
 		_this.posChanged = true;
 		_this.scaleX = v;
+		_this.posChanged = true;
+		_this.scaleY = v;
 		var _this1 = this.mask;
-		var v1 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
+		var v1 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
 		_this1.posChanged = true;
-		_this1.scaleY = v1;
-		var _this2 = this.ctrap;
-		var v2 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
+		_this1.scaleX = v1;
+		var _this2 = this.mask;
+		var v2 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
 		_this2.posChanged = true;
-		_this2.scaleX = v2;
+		_this2.scaleY = v2;
 		var _this3 = this.ctrap;
-		var v3 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
+		var v3 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
 		_this3.posChanged = true;
-		_this3.scaleY = v3;
-		var _this4 = this.dark;
-		var v4 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
-		var _this5 = this.dark;
-		if(!_this5.destroyed && _this5.lib != null && _this5.groupName != null) {
-			var fd = _this5.frameData;
-			_this5.rawTile.setPosition(fd.x,fd.y);
-			_this5.rawTile.setSize(fd.wid,fd.hei);
-			var _this6 = _this5.pivot;
-			if(!_this6.isUndefined && !_this6.usingFactor) {
-				_this5.rawTile.dx = -(_this5.pivot.coordX + fd.realX | 0);
-				_this5.rawTile.dy = -(_this5.pivot.coordY + fd.realY | 0);
-			} else {
-				var _this7 = _this5.pivot;
-				if(!_this7.isUndefined && _this7.usingFactor) {
-					_this5.rawTile.dx = -(fd.realWid * _this5.pivot.centerFactorX + fd.realX | 0);
-					_this5.rawTile.dy = -(fd.realHei * _this5.pivot.centerFactorY + fd.realY | 0);
-				}
-			}
-		} else {
-			var _this8 = _this5.pivot;
-			if(!_this8.isUndefined && !_this8.usingFactor) {
-				_this5.rawTile.dx = -(_this5.pivot.coordX | 0);
-				_this5.rawTile.dy = -(_this5.pivot.coordY | 0);
-			} else {
-				var _this9 = _this5.pivot;
-				if(!_this9.isUndefined && _this9.usingFactor) {
-					_this5.rawTile.dx = -(_this5.rawTile.width * _this5.pivot.centerFactorX | 0);
-					_this5.rawTile.dy = -(_this5.rawTile.height * _this5.pivot.centerFactorY | 0);
-				}
-			}
-		}
+		_this3.scaleX = v3;
+		var _this4 = this.ctrap;
+		var v4 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
 		_this4.posChanged = true;
-		_this4.scaleX = v4 / _this5.rawTile.width;
-		var _this10 = this.dark;
-		var v5 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
-		var _this11 = this.dark;
-		if(!_this11.destroyed && _this11.lib != null && _this11.groupName != null) {
-			var fd1 = _this11.frameData;
-			_this11.rawTile.setPosition(fd1.x,fd1.y);
-			_this11.rawTile.setSize(fd1.wid,fd1.hei);
-			var _this12 = _this11.pivot;
-			if(!_this12.isUndefined && !_this12.usingFactor) {
-				_this11.rawTile.dx = -(_this11.pivot.coordX + fd1.realX | 0);
-				_this11.rawTile.dy = -(_this11.pivot.coordY + fd1.realY | 0);
+		_this4.scaleY = v4;
+		var _this5 = this.dark;
+		var v5 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
+		var _this6 = this.dark;
+		if(!_this6.destroyed && _this6.lib != null && _this6.groupName != null) {
+			var fd = _this6.frameData;
+			_this6.rawTile.setPosition(fd.x,fd.y);
+			_this6.rawTile.setSize(fd.wid,fd.hei);
+			var _this7 = _this6.pivot;
+			if(!_this7.isUndefined && !_this7.usingFactor) {
+				_this6.rawTile.dx = -(_this6.pivot.coordX + fd.realX | 0);
+				_this6.rawTile.dy = -(_this6.pivot.coordY + fd.realY | 0);
 			} else {
-				var _this13 = _this11.pivot;
-				if(!_this13.isUndefined && _this13.usingFactor) {
-					_this11.rawTile.dx = -(fd1.realWid * _this11.pivot.centerFactorX + fd1.realX | 0);
-					_this11.rawTile.dy = -(fd1.realHei * _this11.pivot.centerFactorY + fd1.realY | 0);
+				var _this8 = _this6.pivot;
+				if(!_this8.isUndefined && _this8.usingFactor) {
+					_this6.rawTile.dx = -(fd.realWid * _this6.pivot.centerFactorX + fd.realX | 0);
+					_this6.rawTile.dy = -(fd.realHei * _this6.pivot.centerFactorY + fd.realY | 0);
 				}
 			}
 		} else {
-			var _this14 = _this11.pivot;
-			if(!_this14.isUndefined && !_this14.usingFactor) {
-				_this11.rawTile.dx = -(_this11.pivot.coordX | 0);
-				_this11.rawTile.dy = -(_this11.pivot.coordY | 0);
+			var _this9 = _this6.pivot;
+			if(!_this9.isUndefined && !_this9.usingFactor) {
+				_this6.rawTile.dx = -(_this6.pivot.coordX | 0);
+				_this6.rawTile.dy = -(_this6.pivot.coordY | 0);
 			} else {
-				var _this15 = _this11.pivot;
-				if(!_this15.isUndefined && _this15.usingFactor) {
-					_this11.rawTile.dx = -(_this11.rawTile.width * _this11.pivot.centerFactorX | 0);
-					_this11.rawTile.dy = -(_this11.rawTile.height * _this11.pivot.centerFactorY | 0);
+				var _this10 = _this6.pivot;
+				if(!_this10.isUndefined && _this10.usingFactor) {
+					_this6.rawTile.dx = -(_this6.rawTile.width * _this6.pivot.centerFactorX | 0);
+					_this6.rawTile.dy = -(_this6.rawTile.height * _this6.pivot.centerFactorY | 0);
 				}
 			}
 		}
-		_this10.posChanged = true;
-		_this10.scaleY = v5 / _this11.rawTile.height;
+		_this5.posChanged = true;
+		_this5.scaleX = v5 / _this6.rawTile.width;
+		var _this11 = this.dark;
+		var v6 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
+		var _this12 = this.dark;
+		if(!_this12.destroyed && _this12.lib != null && _this12.groupName != null) {
+			var fd1 = _this12.frameData;
+			_this12.rawTile.setPosition(fd1.x,fd1.y);
+			_this12.rawTile.setSize(fd1.wid,fd1.hei);
+			var _this13 = _this12.pivot;
+			if(!_this13.isUndefined && !_this13.usingFactor) {
+				_this12.rawTile.dx = -(_this12.pivot.coordX + fd1.realX | 0);
+				_this12.rawTile.dy = -(_this12.pivot.coordY + fd1.realY | 0);
+			} else {
+				var _this14 = _this12.pivot;
+				if(!_this14.isUndefined && _this14.usingFactor) {
+					_this12.rawTile.dx = -(fd1.realWid * _this12.pivot.centerFactorX + fd1.realX | 0);
+					_this12.rawTile.dy = -(fd1.realHei * _this12.pivot.centerFactorY + fd1.realY | 0);
+				}
+			}
+		} else {
+			var _this15 = _this12.pivot;
+			if(!_this15.isUndefined && !_this15.usingFactor) {
+				_this12.rawTile.dx = -(_this12.pivot.coordX | 0);
+				_this12.rawTile.dy = -(_this12.pivot.coordY | 0);
+			} else {
+				var _this16 = _this12.pivot;
+				if(!_this16.isUndefined && _this16.usingFactor) {
+					_this12.rawTile.dx = -(_this12.rawTile.width * _this12.pivot.centerFactorX | 0);
+					_this12.rawTile.dy = -(_this12.rawTile.height * _this12.pivot.centerFactorY | 0);
+				}
+			}
+		}
+		_this11.posChanged = true;
+		_this11.scaleY = v6 / _this12.rawTile.height;
 	}
 	,postUpdate: function() {
 		mt_Process.prototype.postUpdate.call(this);
@@ -3021,7 +3061,6 @@ var Intro = function() {
 			_gthis.destroyed = true;
 		});
 	},3800);
-	Assets.music.playOnGroup(1,true);
 };
 $hxClasses["Intro"] = Intro;
 Intro.__name__ = "Intro";
@@ -3043,235 +3082,271 @@ Lambda.array = function(it) {
 };
 var Level = function() {
 	mt_Process.call(this,Game.ME);
+	var time = Date.now() / 1000;
 	this.createRootInLayers(Game.ME.scroller,0);
-	this.spots = new haxe_ds_StringMap();
-	this.fastSpots = new haxe_ds_StringMap();
-	var bd = hxd_Res.get_loader().loadCache("level.png",hxd_res_Image).toBitmap();
-	this.wid = bd.ctx.canvas.width;
-	this.hei = bd.ctx.canvas.height;
-	var _g = 0;
-	var _g1 = this.wid;
-	while(_g < _g1) {
-		var cx = _g++;
-		var _g2 = 0;
-		var _g11 = this.hei;
-		while(_g2 < _g11) {
-			var cy = _g2++;
-			var c = bd.getPixel(cx,cy) & 16777215;
-			switch(c) {
-			case 65280:
-				var _this = this.spots;
-				if(!(__map_reserved["hero"] != null ? _this.existsReserved("hero") : _this.h.hasOwnProperty("hero"))) {
-					var this1 = this.spots;
-					var value = [new Point(cx,cy)];
-					var _this1 = this1;
-					if(__map_reserved["hero"] != null) {
-						_this1.setReserved("hero",value);
+	if(Level.SPOTS == null) {
+		Level.SPOTS = new haxe_ds_StringMap();
+		Level.FAST_SPOTS = new haxe_ds_StringMap();
+		var bd = hxd_Res.get_loader().loadCache("level.png",hxd_res_Image).toBitmap();
+		this.wid = Level.WID = bd.ctx.canvas.width;
+		this.hei = Level.HEI = bd.ctx.canvas.height;
+		var _g = 0;
+		var _g1 = this.wid;
+		while(_g < _g1) {
+			var cx = _g++;
+			var _g2 = 0;
+			var _g11 = this.hei;
+			while(_g2 < _g11) {
+				var cy = _g2++;
+				var c = bd.getPixel(cx,cy) & 16777215;
+				switch(c) {
+				case 65280:
+					var _this = Level.SPOTS;
+					if(!(__map_reserved["hero"] != null ? _this.existsReserved("hero") : _this.h.hasOwnProperty("hero"))) {
+						var this1 = Level.SPOTS;
+						var value = [new Point(cx,cy)];
+						var _this1 = this1;
+						if(__map_reserved["hero"] != null) {
+							_this1.setReserved("hero",value);
+						} else {
+							_this1.h["hero"] = value;
+						}
 					} else {
-						_this1.h["hero"] = value;
+						var _this2 = Level.SPOTS;
+						(__map_reserved["hero"] != null ? _this2.getReserved("hero") : _this2.h["hero"]).push(new Point(cx,cy));
 					}
-				} else {
-					var _this2 = this.spots;
-					(__map_reserved["hero"] != null ? _this2.getReserved("hero") : _this2.h["hero"]).push(new Point(cx,cy));
-				}
-				var key = "hero" + (cx + cy * this.wid);
-				var _this3 = this.fastSpots;
-				if(__map_reserved[key] != null) {
-					_this3.setReserved(key,true);
-				} else {
-					_this3.h[key] = true;
-				}
-				break;
-			case 4379016:
-				var _this4 = this.spots;
-				if(!(__map_reserved["splasher"] != null ? _this4.existsReserved("splasher") : _this4.h.hasOwnProperty("splasher"))) {
-					var this2 = this.spots;
-					var value1 = [new Point(cx,cy)];
-					var _this5 = this2;
-					if(__map_reserved["splasher"] != null) {
-						_this5.setReserved("splasher",value1);
+					var key = "hero" + (cx + cy * this.wid);
+					var _this3 = Level.FAST_SPOTS;
+					if(__map_reserved[key] != null) {
+						_this3.setReserved(key,true);
 					} else {
-						_this5.h["splasher"] = value1;
+						_this3.h[key] = true;
 					}
-				} else {
-					var _this6 = this.spots;
-					(__map_reserved["splasher"] != null ? _this6.getReserved("splasher") : _this6.h["splasher"]).push(new Point(cx,cy));
-				}
-				var key1 = "splasher" + (cx + cy * this.wid);
-				var _this7 = this.fastSpots;
-				if(__map_reserved[key1] != null) {
-					_this7.setReserved(key1,true);
-				} else {
-					_this7.h[key1] = true;
-				}
-				break;
-			case 5354239:
-				this.waterY = cy;
-				break;
-			case 6118749:
-				var _this8 = this.spots;
-				if(!(__map_reserved["check"] != null ? _this8.existsReserved("check") : _this8.h.hasOwnProperty("check"))) {
-					var this3 = this.spots;
-					var value2 = [new Point(cx,cy)];
-					var _this9 = this3;
-					if(__map_reserved["check"] != null) {
-						_this9.setReserved("check",value2);
+					break;
+				case 4379016:
+					var _this4 = Level.SPOTS;
+					if(!(__map_reserved["splasher"] != null ? _this4.existsReserved("splasher") : _this4.h.hasOwnProperty("splasher"))) {
+						var this2 = Level.SPOTS;
+						var value1 = [new Point(cx,cy)];
+						var _this5 = this2;
+						if(__map_reserved["splasher"] != null) {
+							_this5.setReserved("splasher",value1);
+						} else {
+							_this5.h["splasher"] = value1;
+						}
 					} else {
-						_this9.h["check"] = value2;
+						var _this6 = Level.SPOTS;
+						(__map_reserved["splasher"] != null ? _this6.getReserved("splasher") : _this6.h["splasher"]).push(new Point(cx,cy));
 					}
-				} else {
-					var _this10 = this.spots;
-					(__map_reserved["check"] != null ? _this10.getReserved("check") : _this10.h["check"]).push(new Point(cx,cy));
-				}
-				var key2 = "check" + (cx + cy * this.wid);
-				var _this11 = this.fastSpots;
-				if(__map_reserved[key2] != null) {
-					_this11.setReserved(key2,true);
-				} else {
-					_this11.h[key2] = true;
-				}
-				break;
-			case 8413184:
-				var _this12 = this.spots;
-				if(!(__map_reserved["linerDir"] != null ? _this12.existsReserved("linerDir") : _this12.h.hasOwnProperty("linerDir"))) {
-					var this4 = this.spots;
-					var value3 = [new Point(cx,cy)];
-					var _this13 = this4;
-					if(__map_reserved["linerDir"] != null) {
-						_this13.setReserved("linerDir",value3);
+					var key1 = "splasher" + (cx + cy * this.wid);
+					var _this7 = Level.FAST_SPOTS;
+					if(__map_reserved[key1] != null) {
+						_this7.setReserved(key1,true);
 					} else {
-						_this13.h["linerDir"] = value3;
+						_this7.h[key1] = true;
 					}
-				} else {
-					var _this14 = this.spots;
-					(__map_reserved["linerDir"] != null ? _this14.getReserved("linerDir") : _this14.h["linerDir"]).push(new Point(cx,cy));
-				}
-				var key3 = "linerDir" + (cx + cy * this.wid);
-				var _this15 = this.fastSpots;
-				if(__map_reserved[key3] != null) {
-					_this15.setReserved(key3,true);
-				} else {
-					_this15.h[key3] = true;
-				}
-				break;
-			case 8543548:
-				var _this16 = this.spots;
-				if(!(__map_reserved["door"] != null ? _this16.existsReserved("door") : _this16.h.hasOwnProperty("door"))) {
-					var this5 = this.spots;
-					var value4 = [new Point(cx,cy)];
-					var _this17 = this5;
-					if(__map_reserved["door"] != null) {
-						_this17.setReserved("door",value4);
+					break;
+				case 5354239:
+					var _this8 = Level.SPOTS;
+					if(!(__map_reserved["waterLevel"] != null ? _this8.existsReserved("waterLevel") : _this8.h.hasOwnProperty("waterLevel"))) {
+						var this3 = Level.SPOTS;
+						var value2 = [new Point(cx,cy)];
+						var _this9 = this3;
+						if(__map_reserved["waterLevel"] != null) {
+							_this9.setReserved("waterLevel",value2);
+						} else {
+							_this9.h["waterLevel"] = value2;
+						}
 					} else {
-						_this17.h["door"] = value4;
+						var _this10 = Level.SPOTS;
+						(__map_reserved["waterLevel"] != null ? _this10.getReserved("waterLevel") : _this10.h["waterLevel"]).push(new Point(cx,cy));
 					}
-				} else {
-					var _this18 = this.spots;
-					(__map_reserved["door"] != null ? _this18.getReserved("door") : _this18.h["door"]).push(new Point(cx,cy));
-				}
-				var key4 = "door" + (cx + cy * this.wid);
-				var _this19 = this.fastSpots;
-				if(__map_reserved[key4] != null) {
-					_this19.setReserved(key4,true);
-				} else {
-					_this19.h[key4] = true;
-				}
-				break;
-			case 16711680:
-				var _this20 = this.spots;
-				if(!(__map_reserved["turret"] != null ? _this20.existsReserved("turret") : _this20.h.hasOwnProperty("turret"))) {
-					var this6 = this.spots;
-					var value5 = [new Point(cx,cy)];
-					var _this21 = this6;
-					if(__map_reserved["turret"] != null) {
-						_this21.setReserved("turret",value5);
+					var key2 = "waterLevel" + (cx + cy * this.wid);
+					var _this11 = Level.FAST_SPOTS;
+					if(__map_reserved[key2] != null) {
+						_this11.setReserved(key2,true);
 					} else {
-						_this21.h["turret"] = value5;
+						_this11.h[key2] = true;
 					}
-				} else {
-					var _this22 = this.spots;
-					(__map_reserved["turret"] != null ? _this22.getReserved("turret") : _this22.h["turret"]).push(new Point(cx,cy));
-				}
-				var key5 = "turret" + (cx + cy * this.wid);
-				var _this23 = this.fastSpots;
-				if(__map_reserved[key5] != null) {
-					_this23.setReserved(key5,true);
-				} else {
-					_this23.h[key5] = true;
-				}
-				break;
-			case 16760832:
-				var _this24 = this.spots;
-				if(!(__map_reserved["liner"] != null ? _this24.existsReserved("liner") : _this24.h.hasOwnProperty("liner"))) {
-					var this7 = this.spots;
-					var value6 = [new Point(cx,cy)];
-					var _this25 = this7;
-					if(__map_reserved["liner"] != null) {
-						_this25.setReserved("liner",value6);
+					break;
+				case 6118749:
+					var _this12 = Level.SPOTS;
+					if(!(__map_reserved["check"] != null ? _this12.existsReserved("check") : _this12.h.hasOwnProperty("check"))) {
+						var this4 = Level.SPOTS;
+						var value3 = [new Point(cx,cy)];
+						var _this13 = this4;
+						if(__map_reserved["check"] != null) {
+							_this13.setReserved("check",value3);
+						} else {
+							_this13.h["check"] = value3;
+						}
 					} else {
-						_this25.h["liner"] = value6;
+						var _this14 = Level.SPOTS;
+						(__map_reserved["check"] != null ? _this14.getReserved("check") : _this14.h["check"]).push(new Point(cx,cy));
 					}
-				} else {
-					var _this26 = this.spots;
-					(__map_reserved["liner"] != null ? _this26.getReserved("liner") : _this26.h["liner"]).push(new Point(cx,cy));
-				}
-				var key6 = "liner" + (cx + cy * this.wid);
-				var _this27 = this.fastSpots;
-				if(__map_reserved[key6] != null) {
-					_this27.setReserved(key6,true);
-				} else {
-					_this27.h[key6] = true;
-				}
-				break;
-			case 16777215:
-				var _this28 = this.spots;
-				if(!(__map_reserved["wall"] != null ? _this28.existsReserved("wall") : _this28.h.hasOwnProperty("wall"))) {
-					var this8 = this.spots;
-					var value7 = [new Point(cx,cy)];
-					var _this29 = this8;
-					if(__map_reserved["wall"] != null) {
-						_this29.setReserved("wall",value7);
+					var key3 = "check" + (cx + cy * this.wid);
+					var _this15 = Level.FAST_SPOTS;
+					if(__map_reserved[key3] != null) {
+						_this15.setReserved(key3,true);
 					} else {
-						_this29.h["wall"] = value7;
+						_this15.h[key3] = true;
 					}
-				} else {
-					var _this30 = this.spots;
-					(__map_reserved["wall"] != null ? _this30.getReserved("wall") : _this30.h["wall"]).push(new Point(cx,cy));
-				}
-				var key7 = "wall" + (cx + cy * this.wid);
-				var _this31 = this.fastSpots;
-				if(__map_reserved[key7] != null) {
-					_this31.setReserved(key7,true);
-				} else {
-					_this31.h[key7] = true;
-				}
-				var _this32 = this.spots;
-				if(!(__map_reserved["coll"] != null ? _this32.existsReserved("coll") : _this32.h.hasOwnProperty("coll"))) {
-					var this9 = this.spots;
-					var value8 = [new Point(cx,cy)];
-					var _this33 = this9;
-					if(__map_reserved["coll"] != null) {
-						_this33.setReserved("coll",value8);
+					break;
+				case 8413184:
+					var _this16 = Level.SPOTS;
+					if(!(__map_reserved["linerDir"] != null ? _this16.existsReserved("linerDir") : _this16.h.hasOwnProperty("linerDir"))) {
+						var this5 = Level.SPOTS;
+						var value4 = [new Point(cx,cy)];
+						var _this17 = this5;
+						if(__map_reserved["linerDir"] != null) {
+							_this17.setReserved("linerDir",value4);
+						} else {
+							_this17.h["linerDir"] = value4;
+						}
 					} else {
-						_this33.h["coll"] = value8;
+						var _this18 = Level.SPOTS;
+						(__map_reserved["linerDir"] != null ? _this18.getReserved("linerDir") : _this18.h["linerDir"]).push(new Point(cx,cy));
 					}
-				} else {
-					var _this34 = this.spots;
-					(__map_reserved["coll"] != null ? _this34.getReserved("coll") : _this34.h["coll"]).push(new Point(cx,cy));
+					var key4 = "linerDir" + (cx + cy * this.wid);
+					var _this19 = Level.FAST_SPOTS;
+					if(__map_reserved[key4] != null) {
+						_this19.setReserved(key4,true);
+					} else {
+						_this19.h[key4] = true;
+					}
+					break;
+				case 8543548:
+					var _this20 = Level.SPOTS;
+					if(!(__map_reserved["door"] != null ? _this20.existsReserved("door") : _this20.h.hasOwnProperty("door"))) {
+						var this6 = Level.SPOTS;
+						var value5 = [new Point(cx,cy)];
+						var _this21 = this6;
+						if(__map_reserved["door"] != null) {
+							_this21.setReserved("door",value5);
+						} else {
+							_this21.h["door"] = value5;
+						}
+					} else {
+						var _this22 = Level.SPOTS;
+						(__map_reserved["door"] != null ? _this22.getReserved("door") : _this22.h["door"]).push(new Point(cx,cy));
+					}
+					var key5 = "door" + (cx + cy * this.wid);
+					var _this23 = Level.FAST_SPOTS;
+					if(__map_reserved[key5] != null) {
+						_this23.setReserved(key5,true);
+					} else {
+						_this23.h[key5] = true;
+					}
+					break;
+				case 16711680:
+					var _this24 = Level.SPOTS;
+					if(!(__map_reserved["turret"] != null ? _this24.existsReserved("turret") : _this24.h.hasOwnProperty("turret"))) {
+						var this7 = Level.SPOTS;
+						var value6 = [new Point(cx,cy)];
+						var _this25 = this7;
+						if(__map_reserved["turret"] != null) {
+							_this25.setReserved("turret",value6);
+						} else {
+							_this25.h["turret"] = value6;
+						}
+					} else {
+						var _this26 = Level.SPOTS;
+						(__map_reserved["turret"] != null ? _this26.getReserved("turret") : _this26.h["turret"]).push(new Point(cx,cy));
+					}
+					var key6 = "turret" + (cx + cy * this.wid);
+					var _this27 = Level.FAST_SPOTS;
+					if(__map_reserved[key6] != null) {
+						_this27.setReserved(key6,true);
+					} else {
+						_this27.h[key6] = true;
+					}
+					break;
+				case 16760832:
+					var _this28 = Level.SPOTS;
+					if(!(__map_reserved["liner"] != null ? _this28.existsReserved("liner") : _this28.h.hasOwnProperty("liner"))) {
+						var this8 = Level.SPOTS;
+						var value7 = [new Point(cx,cy)];
+						var _this29 = this8;
+						if(__map_reserved["liner"] != null) {
+							_this29.setReserved("liner",value7);
+						} else {
+							_this29.h["liner"] = value7;
+						}
+					} else {
+						var _this30 = Level.SPOTS;
+						(__map_reserved["liner"] != null ? _this30.getReserved("liner") : _this30.h["liner"]).push(new Point(cx,cy));
+					}
+					var key7 = "liner" + (cx + cy * this.wid);
+					var _this31 = Level.FAST_SPOTS;
+					if(__map_reserved[key7] != null) {
+						_this31.setReserved(key7,true);
+					} else {
+						_this31.h[key7] = true;
+					}
+					break;
+				case 16777215:
+					var _this32 = Level.SPOTS;
+					if(!(__map_reserved["wall"] != null ? _this32.existsReserved("wall") : _this32.h.hasOwnProperty("wall"))) {
+						var this9 = Level.SPOTS;
+						var value8 = [new Point(cx,cy)];
+						var _this33 = this9;
+						if(__map_reserved["wall"] != null) {
+							_this33.setReserved("wall",value8);
+						} else {
+							_this33.h["wall"] = value8;
+						}
+					} else {
+						var _this34 = Level.SPOTS;
+						(__map_reserved["wall"] != null ? _this34.getReserved("wall") : _this34.h["wall"]).push(new Point(cx,cy));
+					}
+					var key8 = "wall" + (cx + cy * this.wid);
+					var _this35 = Level.FAST_SPOTS;
+					if(__map_reserved[key8] != null) {
+						_this35.setReserved(key8,true);
+					} else {
+						_this35.h[key8] = true;
+					}
+					var _this36 = Level.SPOTS;
+					if(!(__map_reserved["coll"] != null ? _this36.existsReserved("coll") : _this36.h.hasOwnProperty("coll"))) {
+						var this10 = Level.SPOTS;
+						var value9 = [new Point(cx,cy)];
+						var _this37 = this10;
+						if(__map_reserved["coll"] != null) {
+							_this37.setReserved("coll",value9);
+						} else {
+							_this37.h["coll"] = value9;
+						}
+					} else {
+						var _this38 = Level.SPOTS;
+						(__map_reserved["coll"] != null ? _this38.getReserved("coll") : _this38.h["coll"]).push(new Point(cx,cy));
+					}
+					var key9 = "coll" + (cx + cy * this.wid);
+					var _this39 = Level.FAST_SPOTS;
+					if(__map_reserved[key9] != null) {
+						_this39.setReserved(key9,true);
+					} else {
+						_this39.h[key9] = true;
+					}
+					break;
 				}
-				var key8 = "coll" + (cx + cy * this.wid);
-				var _this35 = this.fastSpots;
-				if(__map_reserved[key8] != null) {
-					_this35.setReserved(key8,true);
-				} else {
-					_this35.h[key8] = true;
-				}
-				break;
 			}
 		}
+		bd.ctx = null;
+		bd.pixel = null;
+	} else {
+		this.wid = Level.WID;
+		this.hei = Level.HEI;
 	}
-	bd.ctx = null;
-	bd.pixel = null;
+	this.initDoorColls();
+	var tmp;
+	var _this40 = Level.SPOTS;
+	if(__map_reserved["waterLevel"] != null ? _this40.existsReserved("waterLevel") : _this40.h.hasOwnProperty("waterLevel")) {
+		var _this41 = Level.SPOTS;
+		tmp = (__map_reserved["waterLevel"] != null ? _this41.getReserved("waterLevel") : _this41.h["waterLevel"])[0];
+	} else {
+		tmp = null;
+	}
+	this.waterY = tmp.cy;
 	this.waves = [];
 	var t = hxd_Res.get_loader().loadCache("wavesLoop.png",hxd_res_Image).toTile();
 	t.setSize(this.wid * Const.GRID + 128,t.height);
@@ -3369,18 +3444,62 @@ Level.prototype = $extend(mt_Process.prototype,{
 		}
 		this.circles = null;
 	}
-	,removeCollision: function(x,y) {
+	,initDoorColls: function() {
 		var all;
-		var _this = this.spots;
-		if(__map_reserved["coll"] != null ? _this.existsReserved("coll") : _this.h.hasOwnProperty("coll")) {
-			var _this1 = this.spots;
-			all = __map_reserved["coll"] != null ? _this1.getReserved("coll") : _this1.h["coll"];
+		var _this = Level.SPOTS;
+		if(__map_reserved["doorColl"] != null ? _this.existsReserved("doorColl") : _this.h.hasOwnProperty("doorColl")) {
+			var _this1 = Level.SPOTS;
+			all = __map_reserved["doorColl"] != null ? _this1.getReserved("doorColl") : _this1.h["doorColl"];
+		} else {
+			all = [];
+		}
+		var _g = 0;
+		while(_g < all.length) {
+			var pt = all[_g];
+			++_g;
+			Level.FAST_SPOTS.remove("doorColl" + (pt.cx + pt.cy * this.wid));
+		}
+		Level.SPOTS.remove("doorColl");
+	}
+	,addDoorColl: function(x,y) {
+		var key = "doorColl" + (x + y * this.wid);
+		var _this = Level.FAST_SPOTS;
+		if(!(__map_reserved[key] != null ? _this.existsReserved(key) : _this.h.hasOwnProperty(key))) {
+			var _this1 = Level.SPOTS;
+			if(!(__map_reserved["doorColl"] != null ? _this1.existsReserved("doorColl") : _this1.h.hasOwnProperty("doorColl"))) {
+				var this1 = Level.SPOTS;
+				var value = [new Point(x,y)];
+				var _this2 = this1;
+				if(__map_reserved["doorColl"] != null) {
+					_this2.setReserved("doorColl",value);
+				} else {
+					_this2.h["doorColl"] = value;
+				}
+			} else {
+				var _this3 = Level.SPOTS;
+				(__map_reserved["doorColl"] != null ? _this3.getReserved("doorColl") : _this3.h["doorColl"]).push(new Point(x,y));
+			}
+			var key1 = "doorColl" + (x + y * this.wid);
+			var _this4 = Level.FAST_SPOTS;
+			if(__map_reserved[key1] != null) {
+				_this4.setReserved(key1,true);
+			} else {
+				_this4.h[key1] = true;
+			}
+		}
+	}
+	,removeDoorColl: function(x,y) {
+		var all;
+		var _this = Level.SPOTS;
+		if(__map_reserved["doorColl"] != null ? _this.existsReserved("doorColl") : _this.h.hasOwnProperty("doorColl")) {
+			var _this1 = Level.SPOTS;
+			all = __map_reserved["doorColl"] != null ? _this1.getReserved("doorColl") : _this1.h["doorColl"];
 		} else {
 			all = [];
 		}
 		var i = 0;
 		while(i < all.length) if(all[i].cx == x && all[i].cy == y) {
-			this.fastSpots.remove("coll" + (x + y * this.wid));
+			Level.FAST_SPOTS.remove("doorColl" + (x + y * this.wid));
 			all.splice(i,1);
 		} else {
 			++i;
@@ -3481,7 +3600,7 @@ Level.prototype = $extend(mt_Process.prototype,{
 					}
 				}
 				var key = "wall" + (cx + cy * this.wid);
-				var _this8 = this.fastSpots;
+				var _this8 = Level.FAST_SPOTS;
 				if(__map_reserved[key] != null ? _this8.existsReserved(key) : _this8.h.hasOwnProperty(key)) {
 					if(cx >= 213) {
 						var e6 = this.add(this.bg,"rockSand",x + Math.random() * 3 * (Std.random(2) * 2 - 1),y + Math.random() * 3 * (Std.random(2) * 2 - 1));
@@ -3526,10 +3645,10 @@ Level.prototype = $extend(mt_Process.prototype,{
 					var tmp;
 					if(cy >= this.waterY + 5 && Std.random(100) < 30) {
 						var key1 = "wall" + (cx + 1 + cy * this.wid);
-						var _this9 = this.fastSpots;
+						var _this9 = Level.FAST_SPOTS;
 						if(!(!(__map_reserved[key1] != null ? _this9.existsReserved(key1) : _this9.h.hasOwnProperty(key1)))) {
 							var key2 = "wall" + (cx - 1 + cy * this.wid);
-							var _this10 = this.fastSpots;
+							var _this10 = Level.FAST_SPOTS;
 							tmp = !(__map_reserved[key2] != null ? _this10.existsReserved(key2) : _this10.h.hasOwnProperty(key2));
 						} else {
 							tmp = true;
@@ -3902,19 +4021,12 @@ var Viewport = function(s) {
 	mt_Process.call(this,Game.ME);
 	this.s = s;
 	this.x = this.y = 0;
-	this.wid = this.hei = 1;
-	this.onResize();
 };
 $hxClasses["Viewport"] = Viewport;
 Viewport.__name__ = "Viewport";
 Viewport.__super__ = mt_Process;
 Viewport.prototype = $extend(mt_Process.prototype,{
-	onResize: function() {
-		mt_Process.prototype.onResize.call(this);
-		this.wid = (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE;
-		this.hei = (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE;
-	}
-	,shake: function(pow,dsec) {
+	shake: function(pow,dsec) {
 		if(dsec == null) {
 			dsec = 1.0;
 		}
@@ -3938,15 +4050,15 @@ Viewport.prototype = $extend(mt_Process.prototype,{
 		this.x = (e.cx + e.xr) * Const.GRID + Math.cos(a) * spd;
 		this.y = (e.cy + e.yr) * Const.GRID + Math.sin(a) * spd;
 		var x = this.x;
-		var min = this.wid * 0.5;
-		var max = Game.ME.level.wid * Const.GRID - this.wid * 0.5;
+		var min = (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE * 0.5;
+		var max = Game.ME.level.wid * Const.GRID - (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE * 0.5;
 		this.x = x < min ? min : x > max ? max : x;
 		var x1 = this.y;
-		var min1 = this.hei * 0.5;
-		var max1 = Game.ME.level.hei * Const.GRID - this.hei * 0.5;
+		var min1 = (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE * 0.5;
+		var max1 = Game.ME.level.hei * Const.GRID - (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE * 0.5;
 		this.y = x1 < min1 ? min1 : x1 > max1 ? max1 : x1;
-		var tx = -(this.x - this.wid * 0.5) * Const.UPSCALE;
-		var ty = -(this.y - this.hei * 0.5) * Const.UPSCALE;
+		var tx = -(this.x - (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE * 0.5) * Const.UPSCALE;
+		var ty = -(this.y - (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE * 0.5) * Const.UPSCALE;
 		var ax = this.s.x;
 		var ay = this.s.y;
 		var spd1 = (ax - tx) * (ax - tx) + (ay - ty) * (ay - ty) >= 160000 ? 0.11 : 0.05;
@@ -3974,12 +4086,12 @@ Viewport.prototype = $extend(mt_Process.prototype,{
 		_this1.y = (x3 > 0 ? x3 + .5 : x3 < 0 ? x3 - .5 : 0) | 0;
 		var _this2 = this.s;
 		var x4 = this.s.x;
-		var min2 = -(Game.ME.level.wid * Const.GRID * Const.UPSCALE) + this.wid * 0.5;
+		var min2 = -(Game.ME.level.wid * Const.GRID * Const.UPSCALE) + (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE * 0.5;
 		_this2.posChanged = true;
 		_this2.x = x4 < min2 ? min2 : x4 > 0 ? 0 : x4;
 		var _this3 = this.s;
 		var x5 = this.s.y;
-		var min3 = -(Game.ME.level.hei * Const.GRID * Const.UPSCALE) + this.hei * 0.5;
+		var min3 = -(Game.ME.level.hei * Const.GRID * Const.UPSCALE) + (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE * 0.5;
 		_this3.posChanged = true;
 		_this3.y = x5 < min3 ? min3 : x5 > 0 ? 0 : x5;
 	}
@@ -4284,10 +4396,18 @@ en_Bullet.prototype = $extend(Entity.prototype,{
 		var x = this.cx;
 		var y = this.cy;
 		var tmp1;
+		var tmp2;
 		if(!(x < 0 || x >= _this1.wid || y < 0 || y >= _this1.hei)) {
 			var key = "coll" + (x + y * _this1.wid);
-			var _this2 = _this1.fastSpots;
-			tmp1 = __map_reserved[key] != null ? _this2.existsReserved(key) : _this2.h.hasOwnProperty(key);
+			var _this2 = Level.FAST_SPOTS;
+			tmp2 = __map_reserved[key] != null ? _this2.existsReserved(key) : _this2.h.hasOwnProperty(key);
+		} else {
+			tmp2 = true;
+		}
+		if(!tmp2) {
+			var key1 = "doorColl" + (x + y * _this1.wid);
+			var _this3 = Level.FAST_SPOTS;
+			tmp1 = __map_reserved[key1] != null ? _this3.existsReserved(key1) : _this3.h.hasOwnProperty(key1);
 		} else {
 			tmp1 = true;
 		}
@@ -4380,36 +4500,13 @@ var en_Door = function(x,y,h) {
 	var _g1 = this.hei;
 	while(_g < _g1) {
 		var d = _g++;
-		var _this8 = Game.ME.level;
-		var x1 = this.cx;
-		var y1 = this.cy + d;
-		var _this9 = _this8.spots;
-		if(!(__map_reserved["coll"] != null ? _this9.existsReserved("coll") : _this9.h.hasOwnProperty("coll"))) {
-			var this1 = _this8.spots;
-			var value = [new Point(x1,y1)];
-			var _this10 = this1;
-			if(__map_reserved["coll"] != null) {
-				_this10.setReserved("coll",value);
-			} else {
-				_this10.h["coll"] = value;
-			}
-		} else {
-			var _this11 = _this8.spots;
-			(__map_reserved["coll"] != null ? _this11.getReserved("coll") : _this11.h["coll"]).push(new Point(x1,y1));
-		}
-		var key = "coll" + (x1 + y1 * _this8.wid);
-		var _this12 = _this8.fastSpots;
-		if(__map_reserved[key] != null) {
-			_this12.setReserved(key,true);
-		} else {
-			_this12.h[key] = true;
-		}
+		Game.ME.level.addDoorColl(this.cx,this.cy + d);
 		var s2 = new mt_heaps_slib_HSprite(Assets.tiles,"door",0);
-		var _this13 = s2.pivot;
-		_this13.centerFactorX = 0.;
-		_this13.centerFactorY = 0.;
-		_this13.usingFactor = true;
-		_this13.isUndefined = false;
+		var _this8 = s2.pivot;
+		_this8.centerFactorX = 0.;
+		_this8.centerFactorY = 0.;
+		_this8.usingFactor = true;
+		_this8.isUndefined = false;
 		var e = s2;
 		this.parts.push(e);
 		Game.ME.scroller.addChildAt(e,Const.DP_BG);
@@ -4543,7 +4640,7 @@ en_Door.prototype = $extend(Entity.prototype,{
 			var _g31 = this.hei;
 			while(_g21 < _g31) {
 				var d2 = _g21++;
-				Game.ME.level.removeCollision(this.cx,this.cy + d2);
+				Game.ME.level.removeDoorColl(this.cx,this.cy + d2);
 			}
 		}
 	}
@@ -4853,10 +4950,18 @@ en_Ring.prototype = $extend(Entity.prototype,{
 				var _this3 = Game.ME.level;
 				var x = this.cx;
 				var y = this.cy + 1;
+				var tmp4;
 				if(!(x < 0 || x >= _this3.wid || y < 0 || y >= _this3.hei)) {
 					var key = "coll" + (x + y * _this3.wid);
-					var _this4 = _this3.fastSpots;
-					tmp3 = __map_reserved[key] != null ? _this4.existsReserved(key) : _this4.h.hasOwnProperty(key);
+					var _this4 = Level.FAST_SPOTS;
+					tmp4 = __map_reserved[key] != null ? _this4.existsReserved(key) : _this4.h.hasOwnProperty(key);
+				} else {
+					tmp4 = true;
+				}
+				if(!tmp4) {
+					var key1 = "doorColl" + (x + y * _this3.wid);
+					var _this5 = Level.FAST_SPOTS;
+					tmp3 = __map_reserved[key1] != null ? _this5.existsReserved(key1) : _this5.h.hasOwnProperty(key1);
 				} else {
 					tmp3 = true;
 				}
@@ -4867,7 +4972,7 @@ en_Ring.prototype = $extend(Entity.prototype,{
 				this.dr *= 0.8;
 			}
 			this.frict = 0.7;
-			this.dy += this.cy < Game.ME.level.waterY ? null ? (0.03 + Math.random() * 0.010000000000000002) * (Std.random(2) * 2 - 1) : 0.03 + Math.random() * 0.010000000000000002 : null ? (0.02 + Math.random() * 0.0099999999999999985) * (Std.random(2) * 2 - 1) : 0.02 + Math.random() * 0.0099999999999999985;
+			this.dy += (this.cy < Game.ME.level.waterY ? null ? (0.03 + Math.random() * 0.010000000000000002) * (Std.random(2) * 2 - 1) : 0.03 + Math.random() * 0.010000000000000002 : null ? (0.02 + Math.random() * 0.0099999999999999985) * (Std.random(2) * 2 - 1) : 0.02 + Math.random() * 0.0099999999999999985) * Game.ME.dt;
 		}
 		var _g1 = 0;
 		var _g11 = this.delayedBullets;
@@ -5405,10 +5510,10 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 				}
 			}
 		}
-		this.speed += (this.frozen ? 0.7 : 1) * trust * 0.050;
-		this.dx += Math.cos(this.ang) * this.speed;
-		this.dy += Math.sin(this.ang) * this.speed;
-		this.speed *= 0.5;
+		this.speed += (this.frozen ? 0.7 : 1) * trust * 0.050 * Game.ME.dt;
+		this.dx += Math.cos(this.ang) * this.speed * Game.ME.dt;
+		this.dy += Math.sin(this.ang) * this.speed * Game.ME.dt;
+		this.speed *= Math.pow(0.5,Game.ME.dt);
 		var tmp28;
 		if(trust >= 0.9) {
 			var _this11 = this.cd;
@@ -5447,26 +5552,23 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 			Game.ME.fx.bubble((this.cx + this.xr) * Const.GRID,(this.cy + this.yr) * Const.GRID);
 			Game.ME.fx.bubble((this.cx + this.xr) * Const.GRID,(this.cy + this.yr) * Const.GRID);
 		}
-		var _this12 = Game.ME.level;
-		var key = "door" + (this.cx + this.cy * _this12.wid);
-		var _this13 = _this12.fastSpots;
-		if((__map_reserved[key] != null ? _this13.existsReserved(key) : _this13.h.hasOwnProperty(key)) && (Game.ME.curCheckPoint == null || Game.ME.curCheckPoint.cx < this.cx)) {
+		var key = "door" + (this.cx + this.cy * Game.ME.level.wid);
+		var _this12 = Level.FAST_SPOTS;
+		if((__map_reserved[key] != null ? _this12.existsReserved(key) : _this12.h.hasOwnProperty(key)) && (Game.ME.curCheckPoint == null || Game.ME.curCheckPoint.cx < this.cx)) {
 			var top = this.cy;
 			while(true) {
-				var _this14 = Game.ME.level;
-				var key1 = "door" + (this.cx + (top - 1) * _this14.wid);
-				var _this15 = _this14.fastSpots;
-				if(!(__map_reserved[key1] != null ? _this15.existsReserved(key1) : _this15.h.hasOwnProperty(key1))) {
+				var key1 = "door" + (this.cx + (top - 1) * Game.ME.level.wid);
+				var _this13 = Level.FAST_SPOTS;
+				if(!(__map_reserved[key1] != null ? _this13.existsReserved(key1) : _this13.h.hasOwnProperty(key1))) {
 					break;
 				}
 				--top;
 			}
 			var bot = this.cy;
 			while(true) {
-				var _this16 = Game.ME.level;
-				var key2 = "door" + (this.cx + (bot + 1) * _this16.wid);
-				var _this17 = _this16.fastSpots;
-				if(!(__map_reserved[key2] != null ? _this17.existsReserved(key2) : _this17.h.hasOwnProperty(key2))) {
+				var key2 = "door" + (this.cx + (bot + 1) * Game.ME.level.wid);
+				var _this14 = Level.FAST_SPOTS;
+				if(!(__map_reserved[key2] != null ? _this14.existsReserved(key2) : _this14.h.hasOwnProperty(key2))) {
 					break;
 				}
 				++bot;
@@ -5919,8 +6021,8 @@ en_Tail.prototype = $extend(en_Ring.prototype,{
 				var ty = (_this7.cy + _this7.yr) * Const.GRID + Math.sin(this.frozenAng) * this.frozenDist;
 				var ta = Math.atan2(ty - (this.cy + this.yr) * Const.GRID,tx - (this.cx + this.xr) * Const.GRID);
 				var d = Math.sqrt(this.distSqrFree(tx,ty)) / Const.GRID;
-				this.dx += Math.cos(ta) * d * 0.3;
-				this.dy += Math.sin(ta) * d * 0.3;
+				this.dx += Math.cos(ta) * d * 0.3 * Game.ME.dt;
+				this.dy += Math.sin(ta) * d * 0.3 * Game.ME.dt;
 			} else {
 				var e3 = this.parent;
 				var ta1 = Math.atan2((e3.cy + e3.yr) * Const.GRID - (this.cy + this.yr) * Const.GRID,(e3.cx + e3.xr) * Const.GRID - (this.cx + this.xr) * Const.GRID);
@@ -5941,8 +6043,8 @@ en_Tail.prototype = $extend(en_Ring.prototype,{
 				while(a8 > 3.141592653589793) a8 -= 6.283185307179586;
 				tmp4.ang = tmp5 + a8 * 0.7;
 				var d1 = (Math.sqrt(this.distSqr(this.parent)) - this.linkDist * 1.2) / Const.GRID;
-				this.dx += Math.cos(this.ang) * d1 * 0.3;
-				this.dy += Math.sin(this.ang) * d1 * 0.3;
+				this.dx += Math.cos(this.ang) * d1 * 0.3 * Game.ME.dt;
+				this.dy += Math.sin(this.ang) * d1 * 0.3 * Game.ME.dt;
 			}
 		}
 		if(this.shootSpr.visible) {
@@ -44556,7 +44658,8 @@ Assets.SBANK = (function($this) {
 	return $r;
 }(this));
 Const.FPS = 30;
-Const.UPSCALE = 2;
+Const.UPSCALE = 1;
+Const.GUARANTEED_HEI = 320;
 Const.GRID = 16;
 Const.uniq = 0;
 Const.DP_BG = Const.uniq++;

@@ -24,13 +24,12 @@ class Game extends mt.Process {
 
 		ME = this;
 		createRoot(Boot.ME.s2d);
-		root.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
 		ctrl = Boot.ME.controller.createAccess("game");
 
 		scroller = new h2d.Layers(root);
-		scroller.setScale(Const.UPSCALE);
 		//scroller.filters.push( new h2d.filter.Displacement(h2d.Tile.fromColor(0x8080ff, 2,2)) );
 		scroller.x = 200;
+		scroller.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
 		viewport = new Viewport(scroller);
 
 		var actx = new h2d.Object();
@@ -51,6 +50,11 @@ class Game extends mt.Process {
 		cm = new mt.deepnight.Cinematic(Const.FPS);
 
 		startLevel();
+		delayer.addF(function() {
+			#if !debug
+			Assets.music.playOnGroup(1,true);
+			#end
+		},1);
 
 		#if !debug
 		cm.create({
@@ -62,9 +66,9 @@ class Game extends mt.Process {
 		});
 		#end
 
-		onResize();
-
 		tw.createMs(mask.alpha, 1>0, 2000);
+
+		onResize();
 	}
 
 	function showHelp(complete:Bool) {
@@ -261,6 +265,8 @@ class Game extends mt.Process {
 
 	override function onResize() {
 		super.onResize();
+		Const.UPSCALE = MLib.max( MLib.floor( h()/Const.GUARANTEED_HEI ), 1);
+		scroller.setScale(Const.UPSCALE);
 		mask.scaleX = w();
 		mask.scaleY = h();
 		ctrap.scaleX = w();

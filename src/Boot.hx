@@ -48,7 +48,7 @@ class Boot extends hxd.App {
 		// 	t.scale(2);
 		// }
 
-		onResize();
+		mt.Process.resizeAll();
 	}
 
 	override function onResize() {

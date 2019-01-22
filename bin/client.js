@@ -57,58 +57,6 @@ hxd_res_Loader.prototype = {
 	}
 	,__class__: hxd_res_Loader
 };
-var js__$Boot_HaxeError = function(val) {
-	Error.call(this);
-	this.val = val;
-	if(Error.captureStackTrace) {
-		Error.captureStackTrace(this,js__$Boot_HaxeError);
-	}
-};
-$hxClasses["js._Boot.HaxeError"] = js__$Boot_HaxeError;
-js__$Boot_HaxeError.__name__ = "js._Boot.HaxeError";
-js__$Boot_HaxeError.wrap = function(val) {
-	if(((val) instanceof Error)) {
-		return val;
-	} else {
-		return new js__$Boot_HaxeError(val);
-	}
-};
-js__$Boot_HaxeError.__super__ = Error;
-js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
-	__class__: js__$Boot_HaxeError
-});
-var haxe_IMap = function() { };
-$hxClasses["haxe.IMap"] = haxe_IMap;
-haxe_IMap.__name__ = "haxe.IMap";
-var haxe_ds_IntMap = function() {
-	this.h = { };
-};
-$hxClasses["haxe.ds.IntMap"] = haxe_ds_IntMap;
-haxe_ds_IntMap.__name__ = "haxe.ds.IntMap";
-haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
-haxe_ds_IntMap.prototype = {
-	remove: function(key) {
-		if(!this.h.hasOwnProperty(key)) {
-			return false;
-		}
-		delete(this.h[key]);
-		return true;
-	}
-	,keys: function() {
-		var a = [];
-		for( var key in this.h ) this.h.hasOwnProperty(key) ? a.push(key | 0) : null;
-		return HxOverrides.iter(a);
-	}
-	,iterator: function() {
-		return { ref : this.h, it : this.keys(), hasNext : function() {
-			return this.it.hasNext();
-		}, next : function() {
-			var i = this.it.next();
-			return this.ref[i];
-		}};
-	}
-	,__class__: haxe_ds_IntMap
-};
 var mt_deepnight_Sfx = function(s) {
 	this.sound = s;
 	this.volume = 1;
@@ -311,7 +259,7 @@ Boot.prototype = $extend(hxd_App.prototype,{
 		this.controller.bind(20,83,40);
 		Assets.init();
 		new Intro();
-		this.onResize();
+		mt_Process.resizeAll();
 	}
 	,onResize: function() {
 		hxd_App.prototype.onResize.call(this);
@@ -407,26 +355,26 @@ var Entity = function(x,y) {
 		_this1.groupName = "level";
 	}
 	if(!_this1.destroyed && _this1.lib != null && _this1.groupName != null) {
-		var _this11 = _this1.lib;
+		var _this2 = _this1.lib;
 		var k = _this1.groupName;
 		var tmp;
 		if(k == null) {
-			tmp = _this11.currentGroup;
+			tmp = _this2.currentGroup;
 		} else {
-			var _this2 = _this11.groups;
-			tmp = __map_reserved[k] != null ? _this2.getReserved(k) : _this2.h[k];
+			var _this3 = _this2.groups;
+			tmp = __map_reserved[k] != null ? _this3.getReserved(k) : _this3.h[k];
 		}
 		_this1.group = tmp;
-		var _this3 = _this1.lib;
+		var _this4 = _this1.lib;
 		var k1 = _this1.groupName;
-		var g1;
+		var g;
 		if(k1 == null) {
-			g1 = _this3.currentGroup;
+			g = _this4.currentGroup;
 		} else {
-			var _this4 = _this3.groups;
-			g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+			var _this5 = _this4.groups;
+			g = __map_reserved[k1] != null ? _this5.getReserved(k1) : _this5.h[k1];
 		}
-		_this1.frameData = g1 == null ? null : g1.frames[0];
+		_this1.frameData = g == null ? null : g.frames[0];
 		if(_this1.frameData == null) {
 			throw new js__$Boot_HaxeError("Unknown frame: " + _this1.groupName + "(" + 0 + ")");
 		}
@@ -535,7 +483,7 @@ Entity.prototype = {
 	,onDispose: function() {
 		HxOverrides.remove(Entity.ALL,this);
 		var _this = this.spr;
-		if(_this.parent != null) {
+		if(_this != null && _this.parent != null) {
 			_this.parent.removeChild(_this);
 		}
 	}
@@ -1157,10 +1105,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var _g = 0;
 			var _g1 = _this.all;
 			while(_g < _g1.length) {
-				var p11 = _g1[_g];
+				var p2 = _g1[_g];
 				++_g;
-				if(best == null || p11.stamp <= best.stamp) {
-					best = p11;
+				if(best == null || p2.stamp <= best.stamp) {
+					best = p2;
 				}
 			}
 			if(best.onKill != null) {
@@ -1194,10 +1142,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var _g = 0;
 			var _g1 = _this.all;
 			while(_g < _g1.length) {
-				var p11 = _g1[_g];
+				var p2 = _g1[_g];
 				++_g;
-				if(best == null || p11.stamp <= best.stamp) {
-					best = p11;
+				if(best == null || p2.stamp <= best.stamp) {
+					best = p2;
 				}
 			}
 			if(best.onKill != null) {
@@ -1230,140 +1178,140 @@ Fx.prototype = $extend(mt_Process.prototype,{
 		var y2 = y + Math.random() * 4 * (Std.random(2) * 2 - 1);
 		var _this2 = this.pool;
 		var sb1 = this.addSb;
-		var p2;
+		var p3;
 		if(_this2.nalloc < _this2.all.length) {
-			var p3 = _this2.all[_this2.nalloc];
-			p3.reset(sb1,t1,x2,y2);
-			p3.poolIdx = _this2.nalloc;
+			var p4 = _this2.all[_this2.nalloc];
+			p4.reset(sb1,t1,x2,y2);
+			p4.poolIdx = _this2.nalloc;
 			_this2.nalloc++;
-			p2 = p3;
+			p3 = p4;
 		} else {
 			var best1 = null;
 			var _g2 = 0;
 			var _g11 = _this2.all;
 			while(_g2 < _g11.length) {
-				var p12 = _g11[_g2];
+				var p5 = _g11[_g2];
 				++_g2;
-				if(best1 == null || p12.stamp <= best1.stamp) {
-					best1 = p12;
+				if(best1 == null || p5.stamp <= best1.stamp) {
+					best1 = p5;
 				}
 			}
 			if(best1.onKill != null) {
 				best1.onKill();
 			}
 			best1.reset(sb1,t1,x2,y2);
-			p2 = best1;
+			p3 = best1;
 		}
 		var v2 = null ? (0.6 + Math.random() * 0.4) * (Std.random(2) * 2 - 1) : 0.6 + Math.random() * 0.4;
-		p2.a = v2 * (soft ? 0.5 : 1);
-		var _this3 = p2.t;
+		p3.a = v2 * (soft ? 0.5 : 1);
+		var _this3 = p3.t;
 		_this3.dx = -(0.5 * _this3.width | 0);
 		_this3.dy = -(_this3.height | 0);
-		p2.animXr = 0.5;
-		p2.animYr = 1;
+		p3.animXr = 0.5;
+		p3.animYr = 1;
 		var v3 = null ? (0.2 + Math.random() * 0.099999999999999978) * (Std.random(2) * 2 - 1) : 0.2 + Math.random() * 0.099999999999999978;
-		p2.scaleX = p2.scaleY = v3;
+		p3.scaleX = p3.scaleY = v3;
 		if(soft) {
-			p2.scaleY *= 0.25;
+			p3.scaleY *= 0.25;
 		}
-		p2.ds = 0.4;
-		p2.dsFrict = 0.8;
+		p3.ds = 0.4;
+		p3.dsFrict = 0.8;
 		var tmp1 = this.secToFrames(null ? (0.3 + Math.random() * 0.3) * (Std.random(2) * 2 - 1) : 0.3 + Math.random() * 0.3);
-		p2.set_lifeF(tmp1);
-		p2.onUpdate = function(_1) {
-			p2.scaleY *= 0.9;
+		p3.set_lifeF(tmp1);
+		p3.onUpdate = function(_1) {
+			p3.scaleY *= 0.9;
 		};
 		var t2 = Assets.tiles.getTileRandom("splash");
 		var x3 = x + Math.random() * 10 * (Std.random(2) * 2 - 1);
 		var y3 = y + Math.random() * 4 * (Std.random(2) * 2 - 1);
 		var _this4 = this.pool;
 		var sb2 = this.addSb;
-		var p4;
+		var p6;
 		if(_this4.nalloc < _this4.all.length) {
-			var p5 = _this4.all[_this4.nalloc];
-			p5.reset(sb2,t2,x3,y3);
-			p5.poolIdx = _this4.nalloc;
+			var p7 = _this4.all[_this4.nalloc];
+			p7.reset(sb2,t2,x3,y3);
+			p7.poolIdx = _this4.nalloc;
 			_this4.nalloc++;
-			p4 = p5;
+			p6 = p7;
 		} else {
 			var best2 = null;
 			var _g3 = 0;
 			var _g12 = _this4.all;
 			while(_g3 < _g12.length) {
-				var p13 = _g12[_g3];
+				var p8 = _g12[_g3];
 				++_g3;
-				if(best2 == null || p13.stamp <= best2.stamp) {
-					best2 = p13;
+				if(best2 == null || p8.stamp <= best2.stamp) {
+					best2 = p8;
 				}
 			}
 			if(best2.onKill != null) {
 				best2.onKill();
 			}
 			best2.reset(sb2,t2,x3,y3);
-			p4 = best2;
+			p6 = best2;
 		}
 		var v4 = null ? (0.05 + Math.random() * 0.03) * (Std.random(2) * 2 - 1) : 0.05 + Math.random() * 0.03;
-		p4.a = v4;
-		var _this5 = p4.t;
+		p6.a = v4;
+		var _this5 = p6.t;
 		_this5.dx = -(0.5 * _this5.width | 0);
 		_this5.dy = -(_this5.height | 0);
-		p4.animXr = 0.5;
-		p4.animYr = 1;
+		p6.animXr = 0.5;
+		p6.animYr = 1;
 		var tmp2 = null ? (0.5 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.5;
-		p4.scaleX = tmp2;
+		p6.scaleX = tmp2;
 		var tmp3 = null ? (0.8 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.8 + Math.random() * 0.5;
-		p4.scaleY = -tmp3;
+		p6.scaleY = -tmp3;
 		var tmp4 = this.secToFrames(null ? (0.2 + Math.random() * 0.2) * (Std.random(2) * 2 - 1) : 0.2 + Math.random() * 0.2);
-		p4.set_lifeF(tmp4);
-		p4.onUpdate = function(_2) {
-			p4.scaleX *= 0.9;
-			p4.scaleY -= 0.1;
+		p6.set_lifeF(tmp4);
+		p6.onUpdate = function(_2) {
+			p6.scaleX *= 0.9;
+			p6.scaleY -= 0.1;
 		};
 		var t3 = Assets.tiles.getTileRandom("splash");
 		var x4 = x + Math.random() * 10 * (Std.random(2) * 2 - 1);
 		var y4 = y + Math.random() * 4 * (Std.random(2) * 2 - 1);
 		var _this6 = this.pool;
 		var sb3 = this.addSb;
-		var p6;
+		var p9;
 		if(_this6.nalloc < _this6.all.length) {
-			var p7 = _this6.all[_this6.nalloc];
-			p7.reset(sb3,t3,x4,y4);
-			p7.poolIdx = _this6.nalloc;
+			var p10 = _this6.all[_this6.nalloc];
+			p10.reset(sb3,t3,x4,y4);
+			p10.poolIdx = _this6.nalloc;
 			_this6.nalloc++;
-			p6 = p7;
+			p9 = p10;
 		} else {
 			var best3 = null;
 			var _g4 = 0;
 			var _g13 = _this6.all;
 			while(_g4 < _g13.length) {
-				var p14 = _g13[_g4];
+				var p11 = _g13[_g4];
 				++_g4;
-				if(best3 == null || p14.stamp <= best3.stamp) {
-					best3 = p14;
+				if(best3 == null || p11.stamp <= best3.stamp) {
+					best3 = p11;
 				}
 			}
 			if(best3.onKill != null) {
 				best3.onKill();
 			}
 			best3.reset(sb3,t3,x4,y4);
-			p6 = best3;
+			p9 = best3;
 		}
 		var v5 = null ? (0.05 + Math.random() * 0.03) * (Std.random(2) * 2 - 1) : 0.05 + Math.random() * 0.03;
-		p6.a = v5;
-		var _this7 = p6.t;
+		p9.a = v5;
+		var _this7 = p9.t;
 		_this7.dx = -(0.5 * _this7.width | 0);
 		_this7.dy = -(_this7.height | 0);
-		p6.animXr = 0.5;
-		p6.animYr = 1;
+		p9.animXr = 0.5;
+		p9.animYr = 1;
 		var tmp5 = null ? (0.5 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.5;
-		p6.scaleX = tmp5;
+		p9.scaleX = tmp5;
 		var tmp6 = null ? (0.8 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.8 + Math.random() * 0.5;
-		p6.scaleY = -tmp6;
+		p9.scaleY = -tmp6;
 		var tmp7 = this.secToFrames(null ? (0.2 + Math.random() * 0.2) * (Std.random(2) * 2 - 1) : 0.2 + Math.random() * 0.2);
-		p6.set_lifeF(tmp7);
-		p6.onUpdate = function(_3) {
-			p6.scaleX *= 0.9;
-			p6.scaleY -= 0.1;
+		p9.set_lifeF(tmp7);
+		p9.onUpdate = function(_3) {
+			p9.scaleX *= 0.9;
+			p9.scaleY -= 0.1;
 		};
 	}
 	,tail: function(x,y,a) {
@@ -1382,10 +1330,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var _g = 0;
 			var _g1 = _this.all;
 			while(_g < _g1.length) {
-				var p11 = _g1[_g];
+				var p2 = _g1[_g];
 				++_g;
-				if(best == null || p11.stamp <= best.stamp) {
-					best = p11;
+				if(best == null || p2.stamp <= best.stamp) {
+					best = p2;
 				}
 			}
 			if(best.onKill != null) {
@@ -1435,10 +1383,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 				var _g1 = 0;
 				var _g11 = _this.all;
 				while(_g1 < _g11.length) {
-					var p11 = _g11[_g1];
+					var p2 = _g11[_g1];
 					++_g1;
-					if(best == null || p11.stamp <= best.stamp) {
-						best = p11;
+					if(best == null || p2.stamp <= best.stamp) {
+						best = p2;
 					}
 				}
 				if(best.onKill != null) {
@@ -1479,10 +1427,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var _g = 0;
 			var _g1 = _this.all;
 			while(_g < _g1.length) {
-				var p11 = _g1[_g];
+				var p2 = _g1[_g];
 				++_g;
-				if(best == null || p11.stamp <= best.stamp) {
-					best = p11;
+				if(best == null || p2.stamp <= best.stamp) {
+					best = p2;
 				}
 			}
 			if(best.onKill != null) {
@@ -1515,10 +1463,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var _g = 0;
 			var _g1 = _this.all;
 			while(_g < _g1.length) {
-				var p11 = _g1[_g];
+				var p2 = _g1[_g];
 				++_g;
-				if(best == null || p11.stamp <= best.stamp) {
-					best = p11;
+				if(best == null || p2.stamp <= best.stamp) {
+					best = p2;
 				}
 			}
 			if(best.onKill != null) {
@@ -1540,114 +1488,114 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var y2 = y + Math.random() * 2 * (Std.random(2) * 2 - 1);
 			var _this1 = this.pool;
 			var sb1 = this.addSb;
-			var p2;
+			var p3;
 			if(_this1.nalloc < _this1.all.length) {
-				var p3 = _this1.all[_this1.nalloc];
-				p3.reset(sb1,t1,x2,y2);
-				p3.poolIdx = _this1.nalloc;
+				var p4 = _this1.all[_this1.nalloc];
+				p4.reset(sb1,t1,x2,y2);
+				p4.poolIdx = _this1.nalloc;
 				_this1.nalloc++;
-				p2 = p3;
+				p3 = p4;
 			} else {
 				var best1 = null;
 				var _g2 = 0;
 				var _g11 = _this1.all;
 				while(_g2 < _g11.length) {
-					var p12 = _g11[_g2];
+					var p5 = _g11[_g2];
 					++_g2;
-					if(best1 == null || p12.stamp <= best1.stamp) {
-						best1 = p12;
+					if(best1 == null || p5.stamp <= best1.stamp) {
+						best1 = p5;
 					}
 				}
 				if(best1.onKill != null) {
 					best1.onKill();
 				}
 				best1.reset(sb1,t1,x2,y2);
-				p2 = best1;
+				p3 = best1;
 			}
-			p2.a = null ? (0.5 + Math.random() * 0.30000000000000004) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.30000000000000004;
-			p2.scaleX = p2.scaleY = null ? (0.5 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.5;
+			p3.a = null ? (0.5 + Math.random() * 0.30000000000000004) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.30000000000000004;
+			p3.scaleX = p3.scaleY = null ? (0.5 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.5;
 			var spd = null ? (3 + Math.random() * 5) * (Std.random(2) * 2 - 1) : 3 + Math.random() * 5;
-			p2.dx = Math.cos(a) * spd;
-			p2.dy = Math.sin(a) * spd;
-			p2.rotation = a;
-			p2.frictX = p2.frictY = 0.85;
-			p2.set_lifeF(this.secToFrames(null ? (0.1 + Math.random() * 0.1) * (Std.random(2) * 2 - 1) : 0.1 + Math.random() * 0.1));
+			p3.dx = Math.cos(a) * spd;
+			p3.dy = Math.sin(a) * spd;
+			p3.rotation = a;
+			p3.frictX = p3.frictY = 0.85;
+			p3.set_lifeF(this.secToFrames(null ? (0.1 + Math.random() * 0.1) * (Std.random(2) * 2 - 1) : 0.1 + Math.random() * 0.1));
 			var a1 = ang + 3.14 + (0.2 + Math.random() * 0.2) * (Std.random(2) * 2 - 1);
 			var t2 = Assets.tiles.getTileRandom("fxFireLine");
 			var x3 = x + Math.random() * (Std.random(2) * 2 - 1);
 			var y3 = y + Math.random() * 2 * (Std.random(2) * 2 - 1);
 			var _this2 = this.pool;
 			var sb2 = this.addSb;
-			var p4;
+			var p6;
 			if(_this2.nalloc < _this2.all.length) {
-				var p5 = _this2.all[_this2.nalloc];
-				p5.reset(sb2,t2,x3,y3);
-				p5.poolIdx = _this2.nalloc;
+				var p7 = _this2.all[_this2.nalloc];
+				p7.reset(sb2,t2,x3,y3);
+				p7.poolIdx = _this2.nalloc;
 				_this2.nalloc++;
-				p4 = p5;
+				p6 = p7;
 			} else {
 				var best2 = null;
 				var _g3 = 0;
 				var _g12 = _this2.all;
 				while(_g3 < _g12.length) {
-					var p13 = _g12[_g3];
+					var p8 = _g12[_g3];
 					++_g3;
-					if(best2 == null || p13.stamp <= best2.stamp) {
-						best2 = p13;
+					if(best2 == null || p8.stamp <= best2.stamp) {
+						best2 = p8;
 					}
 				}
 				if(best2.onKill != null) {
 					best2.onKill();
 				}
 				best2.reset(sb2,t2,x3,y3);
-				p4 = best2;
+				p6 = best2;
 			}
-			p4.a = null ? (0.5 + Math.random() * 0.30000000000000004) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.30000000000000004;
-			p4.scaleX = p4.scaleY = null ? (0.5 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.5;
+			p6.a = null ? (0.5 + Math.random() * 0.30000000000000004) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.30000000000000004;
+			p6.scaleX = p6.scaleY = null ? (0.5 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.5;
 			var spd1 = null ? (3 + Math.random() * 5) * (Std.random(2) * 2 - 1) : 3 + Math.random() * 5;
-			p4.dx = Math.cos(a1) * spd1;
-			p4.dy = Math.sin(a1) * spd1;
-			p4.rotation = a1;
-			p4.frictX = p4.frictY = 0.85;
-			p4.set_lifeF(this.secToFrames(null ? (0.1 + Math.random() * 0.1) * (Std.random(2) * 2 - 1) : 0.1 + Math.random() * 0.1));
+			p6.dx = Math.cos(a1) * spd1;
+			p6.dy = Math.sin(a1) * spd1;
+			p6.rotation = a1;
+			p6.frictX = p6.frictY = 0.85;
+			p6.set_lifeF(this.secToFrames(null ? (0.1 + Math.random() * 0.1) * (Std.random(2) * 2 - 1) : 0.1 + Math.random() * 0.1));
 			var a2 = ang + 3.14 + (0.2 + Math.random() * 0.2) * (Std.random(2) * 2 - 1);
 			var t3 = Assets.tiles.getTileRandom("fxFireLine");
 			var x4 = x + Math.random() * (Std.random(2) * 2 - 1);
 			var y4 = y + Math.random() * 2 * (Std.random(2) * 2 - 1);
 			var _this3 = this.pool;
 			var sb3 = this.addSb;
-			var p6;
+			var p9;
 			if(_this3.nalloc < _this3.all.length) {
-				var p7 = _this3.all[_this3.nalloc];
-				p7.reset(sb3,t3,x4,y4);
-				p7.poolIdx = _this3.nalloc;
+				var p10 = _this3.all[_this3.nalloc];
+				p10.reset(sb3,t3,x4,y4);
+				p10.poolIdx = _this3.nalloc;
 				_this3.nalloc++;
-				p6 = p7;
+				p9 = p10;
 			} else {
 				var best3 = null;
 				var _g4 = 0;
 				var _g13 = _this3.all;
 				while(_g4 < _g13.length) {
-					var p14 = _g13[_g4];
+					var p11 = _g13[_g4];
 					++_g4;
-					if(best3 == null || p14.stamp <= best3.stamp) {
-						best3 = p14;
+					if(best3 == null || p11.stamp <= best3.stamp) {
+						best3 = p11;
 					}
 				}
 				if(best3.onKill != null) {
 					best3.onKill();
 				}
 				best3.reset(sb3,t3,x4,y4);
-				p6 = best3;
+				p9 = best3;
 			}
-			p6.a = null ? (0.5 + Math.random() * 0.30000000000000004) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.30000000000000004;
-			p6.scaleX = p6.scaleY = null ? (0.5 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.5;
+			p9.a = null ? (0.5 + Math.random() * 0.30000000000000004) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.30000000000000004;
+			p9.scaleX = p9.scaleY = null ? (0.5 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 0.5 + Math.random() * 0.5;
 			var spd2 = null ? (3 + Math.random() * 5) * (Std.random(2) * 2 - 1) : 3 + Math.random() * 5;
-			p6.dx = Math.cos(a2) * spd2;
-			p6.dy = Math.sin(a2) * spd2;
-			p6.rotation = a2;
-			p6.frictX = p6.frictY = 0.85;
-			p6.set_lifeF(this.secToFrames(null ? (0.1 + Math.random() * 0.1) * (Std.random(2) * 2 - 1) : 0.1 + Math.random() * 0.1));
+			p9.dx = Math.cos(a2) * spd2;
+			p9.dy = Math.sin(a2) * spd2;
+			p9.rotation = a2;
+			p9.frictX = p9.frictY = 0.85;
+			p9.set_lifeF(this.secToFrames(null ? (0.1 + Math.random() * 0.1) * (Std.random(2) * 2 - 1) : 0.1 + Math.random() * 0.1));
 		}
 	}
 	,bulletHitEcho: function(x,y) {
@@ -1666,10 +1614,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var _g = 0;
 			var _g1 = _this.all;
 			while(_g < _g1.length) {
-				var p11 = _g1[_g];
+				var p2 = _g1[_g];
 				++_g;
-				if(best == null || p11.stamp <= best.stamp) {
-					best = p11;
+				if(best == null || p2.stamp <= best.stamp) {
+					best = p2;
 				}
 			}
 			if(best.onKill != null) {
@@ -1704,10 +1652,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 				var _g1 = 0;
 				var _g11 = _this.all;
 				while(_g1 < _g11.length) {
-					var p11 = _g11[_g1];
+					var p2 = _g11[_g1];
 					++_g1;
-					if(best == null || p11.stamp <= best.stamp) {
-						best = p11;
+					if(best == null || p2.stamp <= best.stamp) {
+						best = p2;
 					}
 				}
 				if(best.onKill != null) {
@@ -1748,10 +1696,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var _g = 0;
 			var _g1 = _this.all;
 			while(_g < _g1.length) {
-				var p11 = _g1[_g];
+				var p2 = _g1[_g];
 				++_g;
-				if(best == null || p11.stamp <= best.stamp) {
-					best = p11;
+				if(best == null || p2.stamp <= best.stamp) {
+					best = p2;
 				}
 			}
 			if(best.onKill != null) {
@@ -1831,10 +1779,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 				var _g1 = 0;
 				var _g11 = _this.all;
 				while(_g1 < _g11.length) {
-					var p11 = _g11[_g1];
+					var p2 = _g11[_g1];
 					++_g1;
-					if(best == null || p11.stamp <= best.stamp) {
-						best = p11;
+					if(best == null || p2.stamp <= best.stamp) {
+						best = p2;
 					}
 				}
 				if(best.onKill != null) {
@@ -1862,41 +1810,41 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var y2 = y + Math.random() * 2 * (Std.random(2) * 2 - 1);
 			var _this1 = this.pool;
 			var sb1 = this.addSb;
-			var p2;
+			var p3;
 			if(_this1.nalloc < _this1.all.length) {
-				var p3 = _this1.all[_this1.nalloc];
-				p3.reset(sb1,t1,x2,y2);
-				p3.poolIdx = _this1.nalloc;
+				var p4 = _this1.all[_this1.nalloc];
+				p4.reset(sb1,t1,x2,y2);
+				p4.poolIdx = _this1.nalloc;
 				_this1.nalloc++;
-				p2 = p3;
+				p3 = p4;
 			} else {
 				var best1 = null;
 				var _g2 = 0;
 				var _g13 = _this1.all;
 				while(_g2 < _g13.length) {
-					var p12 = _g13[_g2];
+					var p5 = _g13[_g2];
 					++_g2;
-					if(best1 == null || p12.stamp <= best1.stamp) {
-						best1 = p12;
+					if(best1 == null || p5.stamp <= best1.stamp) {
+						best1 = p5;
 					}
 				}
 				if(best1.onKill != null) {
 					best1.onKill();
 				}
 				best1.reset(sb1,t1,x2,y2);
-				p2 = best1;
+				p3 = best1;
 			}
-			p2.a = null ? (0.4 + Math.random() * 0.19999999999999996) * (Std.random(2) * 2 - 1) : 0.4 + Math.random() * 0.19999999999999996;
-			p2.scaleX = p2.scaleY = null ? (0.7 + Math.random() * 0.10000000000000009) * (Std.random(2) * 2 - 1) : 0.7 + Math.random() * 0.10000000000000009;
-			p2.rotation = null ? Math.random() * 6.28 * (Std.random(2) * 2 - 1) : Math.random() * 6.28;
-			p2.ds = null ? Math.random() * 0.2 * (Std.random(2) * 2 - 1) : Math.random() * 0.2;
-			p2.dsFrict = 0.9;
-			p2.scaleMul = 0.9;
+			p3.a = null ? (0.4 + Math.random() * 0.19999999999999996) * (Std.random(2) * 2 - 1) : 0.4 + Math.random() * 0.19999999999999996;
+			p3.scaleX = p3.scaleY = null ? (0.7 + Math.random() * 0.10000000000000009) * (Std.random(2) * 2 - 1) : 0.7 + Math.random() * 0.10000000000000009;
+			p3.rotation = null ? Math.random() * 6.28 * (Std.random(2) * 2 - 1) : Math.random() * 6.28;
+			p3.ds = null ? Math.random() * 0.2 * (Std.random(2) * 2 - 1) : Math.random() * 0.2;
+			p3.dsFrict = 0.9;
+			p3.scaleMul = 0.9;
 			var d1 = i1 * 0.5 + Std.random(3) * (Std.random(2) * 2 - 1);
 			d1 = 0 > d1 ? 0 : d1;
-			p2.visible = d1 <= 0;
-			p2.delayF = d1;
-			p2.set_lifeF(this.secToFrames(null ? (0.2 + Math.random() * 0.2) * (Std.random(2) * 2 - 1) : 0.2 + Math.random() * 0.2));
+			p3.visible = d1 <= 0;
+			p3.delayF = d1;
+			p3.set_lifeF(this.secToFrames(null ? (0.2 + Math.random() * 0.2) * (Std.random(2) * 2 - 1) : 0.2 + Math.random() * 0.2));
 		}
 	}
 	,explode: function(x,y) {
@@ -1917,10 +1865,10 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var _g = 0;
 			var _g1 = _this.all;
 			while(_g < _g1.length) {
-				var p11 = _g1[_g];
+				var p2 = _g1[_g];
 				++_g;
-				if(best == null || p11.stamp <= best.stamp) {
-					best = p11;
+				if(best == null || p2.stamp <= best.stamp) {
+					best = p2;
 				}
 			}
 			if(best.onKill != null) {
@@ -1963,40 +1911,40 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var y2 = y + Math.random() * 7 * (Std.random(2) * 2 - 1);
 			var _this1 = this.pool;
 			var sb1 = this.addSb;
-			var p2;
+			var p3;
 			if(_this1.nalloc < _this1.all.length) {
-				var p3 = _this1.all[_this1.nalloc];
-				p3.reset(sb1,t1,x2,y2);
-				p3.poolIdx = _this1.nalloc;
+				var p4 = _this1.all[_this1.nalloc];
+				p4.reset(sb1,t1,x2,y2);
+				p4.poolIdx = _this1.nalloc;
 				_this1.nalloc++;
-				p2 = p3;
+				p3 = p4;
 			} else {
 				var best1 = null;
 				var _g3 = 0;
 				var _g11 = _this1.all;
 				while(_g3 < _g11.length) {
-					var p12 = _g11[_g3];
+					var p5 = _g11[_g3];
 					++_g3;
-					if(best1 == null || p12.stamp <= best1.stamp) {
-						best1 = p12;
+					if(best1 == null || p5.stamp <= best1.stamp) {
+						best1 = p5;
 					}
 				}
 				if(best1.onKill != null) {
 					best1.onKill();
 				}
 				best1.reset(sb1,t1,x2,y2);
-				p2 = best1;
+				p3 = best1;
 			}
-			p2.a = null ? (0.8 + Math.random() * 0.19999999999999996) * (Std.random(2) * 2 - 1) : 0.8 + Math.random() * 0.19999999999999996;
-			p2.scaleX = p2.scaleY = null ? (0.1 + Math.random() * 0.1) * (Std.random(2) * 2 - 1) : 0.1 + Math.random() * 0.1;
-			p2.ds = null ? Math.random() * 0.2 * (Std.random(2) * 2 - 1) : Math.random() * 0.2;
-			p2.dsFrict = 0.7;
-			p2.rotation = null ? Math.random() * 6.28 * (Std.random(2) * 2 - 1) : Math.random() * 6.28;
-			p2.playAnimAndKill(Assets.tiles,"fxHeroExplode",null ? (0.4 + Math.random() * 0.35) * (Std.random(2) * 2 - 1) : 0.4 + Math.random() * 0.35);
+			p3.a = null ? (0.8 + Math.random() * 0.19999999999999996) * (Std.random(2) * 2 - 1) : 0.8 + Math.random() * 0.19999999999999996;
+			p3.scaleX = p3.scaleY = null ? (0.1 + Math.random() * 0.1) * (Std.random(2) * 2 - 1) : 0.1 + Math.random() * 0.1;
+			p3.ds = null ? Math.random() * 0.2 * (Std.random(2) * 2 - 1) : Math.random() * 0.2;
+			p3.dsFrict = 0.7;
+			p3.rotation = null ? Math.random() * 6.28 * (Std.random(2) * 2 - 1) : Math.random() * 6.28;
+			p3.playAnimAndKill(Assets.tiles,"fxHeroExplode",null ? (0.4 + Math.random() * 0.35) * (Std.random(2) * 2 - 1) : 0.4 + Math.random() * 0.35);
 			var d = i <= 3 ? 0 : i + Std.random(3) * (Std.random(2) * 2 - 1);
 			d = 0 > d ? 0 : d;
-			p2.visible = d <= 0;
-			p2.delayF = d;
+			p3.visible = d <= 0;
+			p3.delayF = d;
 		}
 		var _g12 = 0;
 		while(_g12 < 8) {
@@ -2006,41 +1954,41 @@ Fx.prototype = $extend(mt_Process.prototype,{
 			var y3 = y + Math.random() * 2 * (Std.random(2) * 2 - 1);
 			var _this2 = this.pool;
 			var sb2 = this.addSb;
-			var p4;
+			var p6;
 			if(_this2.nalloc < _this2.all.length) {
-				var p5 = _this2.all[_this2.nalloc];
-				p5.reset(sb2,t2,x3,y3);
-				p5.poolIdx = _this2.nalloc;
+				var p7 = _this2.all[_this2.nalloc];
+				p7.reset(sb2,t2,x3,y3);
+				p7.poolIdx = _this2.nalloc;
 				_this2.nalloc++;
-				p4 = p5;
+				p6 = p7;
 			} else {
 				var best2 = null;
 				var _g4 = 0;
 				var _g13 = _this2.all;
 				while(_g4 < _g13.length) {
-					var p13 = _g13[_g4];
+					var p8 = _g13[_g4];
 					++_g4;
-					if(best2 == null || p13.stamp <= best2.stamp) {
-						best2 = p13;
+					if(best2 == null || p8.stamp <= best2.stamp) {
+						best2 = p8;
 					}
 				}
 				if(best2.onKill != null) {
 					best2.onKill();
 				}
 				best2.reset(sb2,t2,x3,y3);
-				p4 = best2;
+				p6 = best2;
 			}
-			p4.a = null ? (0.8 + Math.random() * 0.19999999999999996) * (Std.random(2) * 2 - 1) : 0.8 + Math.random() * 0.19999999999999996;
-			p4.scaleX = p4.scaleY = null ? (1 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 1 + Math.random() * 0.5;
-			p4.rotation = null ? Math.random() * 6.28 * (Std.random(2) * 2 - 1) : Math.random() * 6.28;
-			p4.ds = null ? Math.random() * 0.2 * (Std.random(2) * 2 - 1) : Math.random() * 0.2;
-			p4.dsFrict = 0.9;
-			p4.scaleMul = 0.9;
+			p6.a = null ? (0.8 + Math.random() * 0.19999999999999996) * (Std.random(2) * 2 - 1) : 0.8 + Math.random() * 0.19999999999999996;
+			p6.scaleX = p6.scaleY = null ? (1 + Math.random() * 0.5) * (Std.random(2) * 2 - 1) : 1 + Math.random() * 0.5;
+			p6.rotation = null ? Math.random() * 6.28 * (Std.random(2) * 2 - 1) : Math.random() * 6.28;
+			p6.ds = null ? Math.random() * 0.2 * (Std.random(2) * 2 - 1) : Math.random() * 0.2;
+			p6.dsFrict = 0.9;
+			p6.scaleMul = 0.9;
 			var d1 = i1 * 0.5 + Std.random(3) * (Std.random(2) * 2 - 1);
 			d1 = 0 > d1 ? 0 : d1;
-			p4.visible = d1 <= 0;
-			p4.delayF = d1;
-			p4.set_lifeF(this.secToFrames(null ? (0.2 + Math.random() * 0.2) * (Std.random(2) * 2 - 1) : 0.2 + Math.random() * 0.2));
+			p6.visible = d1 <= 0;
+			p6.delayF = d1;
+			p6.set_lifeF(this.secToFrames(null ? (0.2 + Math.random() * 0.2) * (Std.random(2) * 2 - 1) : 0.2 + Math.random() * 0.2));
 		}
 	}
 	,__class__: Fx
@@ -2051,18 +1999,12 @@ var Game = function() {
 	mt_Process.call(this);
 	Game.ME = this;
 	this.createRoot(Boot.ME.s2d);
-	this.root.set_filter(new h2d_filter_ColorMatrix());
 	this.ctrl = Boot.ME.controller.createAccess("game");
 	this.scroller = new h2d_Layers(this.root);
 	var _this = this.scroller;
-	var v = Const.UPSCALE;
 	_this.posChanged = true;
-	_this.scaleX = v;
-	_this.posChanged = true;
-	_this.scaleY = v;
-	var _this1 = this.scroller;
-	_this1.posChanged = true;
-	_this1.x = 200;
+	_this.x = 200;
+	this.scroller.set_filter(new h2d_filter_ColorMatrix());
 	this.viewport = new Viewport(this.scroller);
 	var actx = new h2d_Object();
 	this.scroller.addChildAt(actx,Const.DP_FX);
@@ -2077,16 +2019,19 @@ var Game = function() {
 	if(p != null) {
 		p.addChild(s);
 	}
-	var _this2 = s.pivot;
-	_this2.centerFactorX = 0.;
-	_this2.centerFactorY = 0.;
-	_this2.usingFactor = true;
-	_this2.isUndefined = false;
+	var _this1 = s.pivot;
+	_this1.centerFactorX = 0.;
+	_this1.centerFactorY = 0.;
+	_this1.usingFactor = true;
+	_this1.isUndefined = false;
 	this.dark = s;
 	this.dark.alpha = 0;
 	this.mask = new h2d_Bitmap(h2d_Tile.fromColor((255. | 0) << 24 | 0,1,1),this.root);
 	this.cm = new mt_deepnight_Cinematic(Const.FPS);
 	this.startLevel();
+	this.delayer.addF(null,function() {
+		Assets.music.playOnGroup(1,true);
+	},1);
 	this.cm.__beginNewQueue();
 	this.cm.__add(function() {
 		_gthis.hero.goto(6,23);
@@ -2109,12 +2054,12 @@ var Game = function() {
 	this.cm.__add(function() {
 		_gthis.hero.setFrozen(false);
 	},0);
-	this.onResize();
 	var _tween = this.tw.create_(function() {
 		return _gthis.mask.alpha;
 	},function(_setV) {
 		_gthis.mask.alpha = _setV;
 	},1,0,null,2000);
+	this.onResize();
 };
 $hxClasses["Game"] = Game;
 Game.__name__ = "Game";
@@ -2294,20 +2239,20 @@ Game.prototype = $extend(mt_Process.prototype,{
 				img.rawTile.dx = -(img.pivot.coordX + fd.realX | 0);
 				img.rawTile.dy = -(img.pivot.coordY + fd.realY | 0);
 			} else {
-				var _this11 = img.pivot;
-				if(!_this11.isUndefined && _this11.usingFactor) {
+				var _this3 = img.pivot;
+				if(!_this3.isUndefined && _this3.usingFactor) {
 					img.rawTile.dx = -(fd.realWid * img.pivot.centerFactorX + fd.realX | 0);
 					img.rawTile.dy = -(fd.realHei * img.pivot.centerFactorY + fd.realY | 0);
 				}
 			}
 		} else {
-			var _this21 = img.pivot;
-			if(!_this21.isUndefined && !_this21.usingFactor) {
+			var _this4 = img.pivot;
+			if(!_this4.isUndefined && !_this4.usingFactor) {
 				img.rawTile.dx = -(img.pivot.coordX | 0);
 				img.rawTile.dy = -(img.pivot.coordY | 0);
 			} else {
-				var _this3 = img.pivot;
-				if(!_this3.isUndefined && _this3.usingFactor) {
+				var _this5 = img.pivot;
+				if(!_this5.isUndefined && _this5.usingFactor) {
 					img.rawTile.dx = -(img.rawTile.width * img.pivot.centerFactorX | 0);
 					img.rawTile.dy = -(img.rawTile.height * img.pivot.centerFactorY | 0);
 				}
@@ -2507,88 +2452,103 @@ Game.prototype = $extend(mt_Process.prototype,{
 	}
 	,onResize: function() {
 		mt_Process.prototype.onResize.call(this);
-		var _this = this.mask;
-		var v = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
+		var x = (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.GUARANTEED_HEI;
+		var x1;
+		if(x >= 0) {
+			x1 = x | 0;
+		} else {
+			var i = x | 0;
+			x1 = x == i ? i : i - 1;
+		}
+		Const.UPSCALE = x1 > 1 ? x1 : 1;
+		var _this = this.scroller;
+		var v = Const.UPSCALE;
 		_this.posChanged = true;
 		_this.scaleX = v;
+		_this.posChanged = true;
+		_this.scaleY = v;
 		var _this1 = this.mask;
-		var v1 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
+		var v1 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
 		_this1.posChanged = true;
-		_this1.scaleY = v1;
-		var _this2 = this.ctrap;
-		var v2 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
+		_this1.scaleX = v1;
+		var _this2 = this.mask;
+		var v2 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
 		_this2.posChanged = true;
-		_this2.scaleX = v2;
+		_this2.scaleY = v2;
 		var _this3 = this.ctrap;
-		var v3 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
+		var v3 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
 		_this3.posChanged = true;
-		_this3.scaleY = v3;
-		var _this4 = this.dark;
-		var v4 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
-		var _this5 = this.dark;
-		if(!_this5.destroyed && _this5.lib != null && _this5.groupName != null) {
-			var fd = _this5.frameData;
-			_this5.rawTile.setPosition(fd.x,fd.y);
-			_this5.rawTile.setSize(fd.wid,fd.hei);
-			var _this6 = _this5.pivot;
-			if(!_this6.isUndefined && !_this6.usingFactor) {
-				_this5.rawTile.dx = -(_this5.pivot.coordX + fd.realX | 0);
-				_this5.rawTile.dy = -(_this5.pivot.coordY + fd.realY | 0);
-			} else {
-				var _this11 = _this5.pivot;
-				if(!_this11.isUndefined && _this11.usingFactor) {
-					_this5.rawTile.dx = -(fd.realWid * _this5.pivot.centerFactorX + fd.realX | 0);
-					_this5.rawTile.dy = -(fd.realHei * _this5.pivot.centerFactorY + fd.realY | 0);
-				}
-			}
-		} else {
-			var _this21 = _this5.pivot;
-			if(!_this21.isUndefined && !_this21.usingFactor) {
-				_this5.rawTile.dx = -(_this5.pivot.coordX | 0);
-				_this5.rawTile.dy = -(_this5.pivot.coordY | 0);
-			} else {
-				var _this31 = _this5.pivot;
-				if(!_this31.isUndefined && _this31.usingFactor) {
-					_this5.rawTile.dx = -(_this5.rawTile.width * _this5.pivot.centerFactorX | 0);
-					_this5.rawTile.dy = -(_this5.rawTile.height * _this5.pivot.centerFactorY | 0);
-				}
-			}
-		}
+		_this3.scaleX = v3;
+		var _this4 = this.ctrap;
+		var v4 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
 		_this4.posChanged = true;
-		_this4.scaleX = v4 / _this5.rawTile.width;
-		var _this7 = this.dark;
-		var v5 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
-		var _this8 = this.dark;
-		if(!_this8.destroyed && _this8.lib != null && _this8.groupName != null) {
-			var fd1 = _this8.frameData;
-			_this8.rawTile.setPosition(fd1.x,fd1.y);
-			_this8.rawTile.setSize(fd1.wid,fd1.hei);
-			var _this9 = _this8.pivot;
-			if(!_this9.isUndefined && !_this9.usingFactor) {
-				_this8.rawTile.dx = -(_this8.pivot.coordX + fd1.realX | 0);
-				_this8.rawTile.dy = -(_this8.pivot.coordY + fd1.realY | 0);
+		_this4.scaleY = v4;
+		var _this5 = this.dark;
+		var v5 = mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width();
+		var _this6 = this.dark;
+		if(!_this6.destroyed && _this6.lib != null && _this6.groupName != null) {
+			var fd = _this6.frameData;
+			_this6.rawTile.setPosition(fd.x,fd.y);
+			_this6.rawTile.setSize(fd.wid,fd.hei);
+			var _this7 = _this6.pivot;
+			if(!_this7.isUndefined && !_this7.usingFactor) {
+				_this6.rawTile.dx = -(_this6.pivot.coordX + fd.realX | 0);
+				_this6.rawTile.dy = -(_this6.pivot.coordY + fd.realY | 0);
 			} else {
-				var _this12 = _this8.pivot;
-				if(!_this12.isUndefined && _this12.usingFactor) {
-					_this8.rawTile.dx = -(fd1.realWid * _this8.pivot.centerFactorX + fd1.realX | 0);
-					_this8.rawTile.dy = -(fd1.realHei * _this8.pivot.centerFactorY + fd1.realY | 0);
+				var _this8 = _this6.pivot;
+				if(!_this8.isUndefined && _this8.usingFactor) {
+					_this6.rawTile.dx = -(fd.realWid * _this6.pivot.centerFactorX + fd.realX | 0);
+					_this6.rawTile.dy = -(fd.realHei * _this6.pivot.centerFactorY + fd.realY | 0);
 				}
 			}
 		} else {
-			var _this22 = _this8.pivot;
-			if(!_this22.isUndefined && !_this22.usingFactor) {
-				_this8.rawTile.dx = -(_this8.pivot.coordX | 0);
-				_this8.rawTile.dy = -(_this8.pivot.coordY | 0);
+			var _this9 = _this6.pivot;
+			if(!_this9.isUndefined && !_this9.usingFactor) {
+				_this6.rawTile.dx = -(_this6.pivot.coordX | 0);
+				_this6.rawTile.dy = -(_this6.pivot.coordY | 0);
 			} else {
-				var _this32 = _this8.pivot;
-				if(!_this32.isUndefined && _this32.usingFactor) {
-					_this8.rawTile.dx = -(_this8.rawTile.width * _this8.pivot.centerFactorX | 0);
-					_this8.rawTile.dy = -(_this8.rawTile.height * _this8.pivot.centerFactorY | 0);
+				var _this10 = _this6.pivot;
+				if(!_this10.isUndefined && _this10.usingFactor) {
+					_this6.rawTile.dx = -(_this6.rawTile.width * _this6.pivot.centerFactorX | 0);
+					_this6.rawTile.dy = -(_this6.rawTile.height * _this6.pivot.centerFactorY | 0);
 				}
 			}
 		}
-		_this7.posChanged = true;
-		_this7.scaleY = v5 / _this8.rawTile.height;
+		_this5.posChanged = true;
+		_this5.scaleX = v5 / _this6.rawTile.width;
+		var _this11 = this.dark;
+		var v6 = mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height();
+		var _this12 = this.dark;
+		if(!_this12.destroyed && _this12.lib != null && _this12.groupName != null) {
+			var fd1 = _this12.frameData;
+			_this12.rawTile.setPosition(fd1.x,fd1.y);
+			_this12.rawTile.setSize(fd1.wid,fd1.hei);
+			var _this13 = _this12.pivot;
+			if(!_this13.isUndefined && !_this13.usingFactor) {
+				_this12.rawTile.dx = -(_this12.pivot.coordX + fd1.realX | 0);
+				_this12.rawTile.dy = -(_this12.pivot.coordY + fd1.realY | 0);
+			} else {
+				var _this14 = _this12.pivot;
+				if(!_this14.isUndefined && _this14.usingFactor) {
+					_this12.rawTile.dx = -(fd1.realWid * _this12.pivot.centerFactorX + fd1.realX | 0);
+					_this12.rawTile.dy = -(fd1.realHei * _this12.pivot.centerFactorY + fd1.realY | 0);
+				}
+			}
+		} else {
+			var _this15 = _this12.pivot;
+			if(!_this15.isUndefined && !_this15.usingFactor) {
+				_this12.rawTile.dx = -(_this12.pivot.coordX | 0);
+				_this12.rawTile.dy = -(_this12.pivot.coordY | 0);
+			} else {
+				var _this16 = _this12.pivot;
+				if(!_this16.isUndefined && _this16.usingFactor) {
+					_this12.rawTile.dx = -(_this12.rawTile.width * _this12.pivot.centerFactorX | 0);
+					_this12.rawTile.dy = -(_this12.rawTile.height * _this12.pivot.centerFactorY | 0);
+				}
+			}
+		}
+		_this11.posChanged = true;
+		_this11.scaleY = v6 / _this12.rawTile.height;
 	}
 	,postUpdate: function() {
 		mt_Process.prototype.postUpdate.call(this);
@@ -2831,11 +2791,11 @@ Game.prototype = $extend(mt_Process.prototype,{
 			if(_this7.fastCheck.h.hasOwnProperty(96468992)) {
 				tmp7 = true;
 			} else {
-				var frames11 = 999999;
-				frames11 = Math.floor(frames11 * 1000) / 1000;
+				var frames3 = 999999;
+				frames3 = Math.floor(frames3 * 1000) / 1000;
 				var cur3 = _this7._getCdObject(96468992);
-				if(!(cur3 != null && frames11 < cur3.frames && false)) {
-					if(frames11 <= 0) {
+				if(!(cur3 != null && frames3 < cur3.frames && false)) {
+					if(frames3 <= 0) {
 						if(cur3 != null) {
 							HxOverrides.remove(_this7.cdList,cur3);
 							cur3.frames = 0;
@@ -2845,9 +2805,9 @@ Game.prototype = $extend(mt_Process.prototype,{
 					} else {
 						_this7.fastCheck.h[96468992] = true;
 						if(cur3 != null) {
-							cur3.frames = frames11;
+							cur3.frames = frames3;
 						} else {
-							_this7.cdList.push(new mt__$Cooldown_CdInst(96468992,frames11));
+							_this7.cdList.push(new mt__$Cooldown_CdInst(96468992,frames3));
 						}
 					}
 				}
@@ -3024,20 +2984,20 @@ var Intro = function() {
 			logo.rawTile.dx = -(logo.pivot.coordX + fd.realX | 0);
 			logo.rawTile.dy = -(logo.pivot.coordY + fd.realY | 0);
 		} else {
-			var _this11 = logo.pivot;
-			if(!_this11.isUndefined && _this11.usingFactor) {
+			var _this2 = logo.pivot;
+			if(!_this2.isUndefined && _this2.usingFactor) {
 				logo.rawTile.dx = -(fd.realWid * logo.pivot.centerFactorX + fd.realX | 0);
 				logo.rawTile.dy = -(fd.realHei * logo.pivot.centerFactorY + fd.realY | 0);
 			}
 		}
 	} else {
-		var _this2 = logo.pivot;
-		if(!_this2.isUndefined && !_this2.usingFactor) {
+		var _this3 = logo.pivot;
+		if(!_this3.isUndefined && !_this3.usingFactor) {
 			logo.rawTile.dx = -(logo.pivot.coordX | 0);
 			logo.rawTile.dy = -(logo.pivot.coordY | 0);
 		} else {
-			var _this3 = logo.pivot;
-			if(!_this3.isUndefined && _this3.usingFactor) {
+			var _this4 = logo.pivot;
+			if(!_this4.isUndefined && _this4.usingFactor) {
 				logo.rawTile.dx = -(logo.rawTile.width * logo.pivot.centerFactorX | 0);
 				logo.rawTile.dy = -(logo.rawTile.height * logo.pivot.centerFactorY | 0);
 			}
@@ -3049,25 +3009,25 @@ var Intro = function() {
 		var fd1 = logo.frameData;
 		logo.rawTile.setPosition(fd1.x,fd1.y);
 		logo.rawTile.setSize(fd1.wid,fd1.hei);
-		var _this4 = logo.pivot;
-		if(!_this4.isUndefined && !_this4.usingFactor) {
+		var _this5 = logo.pivot;
+		if(!_this5.isUndefined && !_this5.usingFactor) {
 			logo.rawTile.dx = -(logo.pivot.coordX + fd1.realX | 0);
 			logo.rawTile.dy = -(logo.pivot.coordY + fd1.realY | 0);
 		} else {
-			var _this12 = logo.pivot;
-			if(!_this12.isUndefined && _this12.usingFactor) {
+			var _this6 = logo.pivot;
+			if(!_this6.isUndefined && _this6.usingFactor) {
 				logo.rawTile.dx = -(fd1.realWid * logo.pivot.centerFactorX + fd1.realX | 0);
 				logo.rawTile.dy = -(fd1.realHei * logo.pivot.centerFactorY + fd1.realY | 0);
 			}
 		}
 	} else {
-		var _this21 = logo.pivot;
-		if(!_this21.isUndefined && !_this21.usingFactor) {
+		var _this7 = logo.pivot;
+		if(!_this7.isUndefined && !_this7.usingFactor) {
 			logo.rawTile.dx = -(logo.pivot.coordX | 0);
 			logo.rawTile.dy = -(logo.pivot.coordY | 0);
 		} else {
-			var _this31 = logo.pivot;
-			if(!_this31.isUndefined && _this31.usingFactor) {
+			var _this8 = logo.pivot;
+			if(!_this8.isUndefined && _this8.usingFactor) {
 				logo.rawTile.dx = -(logo.rawTile.width * logo.pivot.centerFactorX | 0);
 				logo.rawTile.dy = -(logo.rawTile.height * logo.pivot.centerFactorY | 0);
 			}
@@ -3101,7 +3061,6 @@ var Intro = function() {
 			_gthis.destroyed = true;
 		});
 	},3800);
-	Assets.music.playOnGroup(1,true);
 };
 $hxClasses["Intro"] = Intro;
 Intro.__name__ = "Intro";
@@ -3167,9 +3126,9 @@ var Level = function() {
 				case 4379016:
 					var _this4 = Level.SPOTS;
 					if(!(__map_reserved["splasher"] != null ? _this4.existsReserved("splasher") : _this4.h.hasOwnProperty("splasher"))) {
-						var this11 = Level.SPOTS;
+						var this2 = Level.SPOTS;
 						var value1 = [new Point(cx,cy)];
-						var _this5 = this11;
+						var _this5 = this2;
 						if(__map_reserved["splasher"] != null) {
 							_this5.setReserved("splasher",value1);
 						} else {
@@ -3190,9 +3149,9 @@ var Level = function() {
 				case 5354239:
 					var _this8 = Level.SPOTS;
 					if(!(__map_reserved["waterLevel"] != null ? _this8.existsReserved("waterLevel") : _this8.h.hasOwnProperty("waterLevel"))) {
-						var this12 = Level.SPOTS;
+						var this3 = Level.SPOTS;
 						var value2 = [new Point(cx,cy)];
-						var _this9 = this12;
+						var _this9 = this3;
 						if(__map_reserved["waterLevel"] != null) {
 							_this9.setReserved("waterLevel",value2);
 						} else {
@@ -3213,9 +3172,9 @@ var Level = function() {
 				case 6118749:
 					var _this12 = Level.SPOTS;
 					if(!(__map_reserved["check"] != null ? _this12.existsReserved("check") : _this12.h.hasOwnProperty("check"))) {
-						var this13 = Level.SPOTS;
+						var this4 = Level.SPOTS;
 						var value3 = [new Point(cx,cy)];
-						var _this13 = this13;
+						var _this13 = this4;
 						if(__map_reserved["check"] != null) {
 							_this13.setReserved("check",value3);
 						} else {
@@ -3236,9 +3195,9 @@ var Level = function() {
 				case 8413184:
 					var _this16 = Level.SPOTS;
 					if(!(__map_reserved["linerDir"] != null ? _this16.existsReserved("linerDir") : _this16.h.hasOwnProperty("linerDir"))) {
-						var this14 = Level.SPOTS;
+						var this5 = Level.SPOTS;
 						var value4 = [new Point(cx,cy)];
-						var _this17 = this14;
+						var _this17 = this5;
 						if(__map_reserved["linerDir"] != null) {
 							_this17.setReserved("linerDir",value4);
 						} else {
@@ -3259,9 +3218,9 @@ var Level = function() {
 				case 8543548:
 					var _this20 = Level.SPOTS;
 					if(!(__map_reserved["door"] != null ? _this20.existsReserved("door") : _this20.h.hasOwnProperty("door"))) {
-						var this15 = Level.SPOTS;
+						var this6 = Level.SPOTS;
 						var value5 = [new Point(cx,cy)];
-						var _this21 = this15;
+						var _this21 = this6;
 						if(__map_reserved["door"] != null) {
 							_this21.setReserved("door",value5);
 						} else {
@@ -3282,9 +3241,9 @@ var Level = function() {
 				case 16711680:
 					var _this24 = Level.SPOTS;
 					if(!(__map_reserved["turret"] != null ? _this24.existsReserved("turret") : _this24.h.hasOwnProperty("turret"))) {
-						var this16 = Level.SPOTS;
+						var this7 = Level.SPOTS;
 						var value6 = [new Point(cx,cy)];
-						var _this25 = this16;
+						var _this25 = this7;
 						if(__map_reserved["turret"] != null) {
 							_this25.setReserved("turret",value6);
 						} else {
@@ -3305,9 +3264,9 @@ var Level = function() {
 				case 16760832:
 					var _this28 = Level.SPOTS;
 					if(!(__map_reserved["liner"] != null ? _this28.existsReserved("liner") : _this28.h.hasOwnProperty("liner"))) {
-						var this17 = Level.SPOTS;
+						var this8 = Level.SPOTS;
 						var value7 = [new Point(cx,cy)];
-						var _this29 = this17;
+						var _this29 = this8;
 						if(__map_reserved["liner"] != null) {
 							_this29.setReserved("liner",value7);
 						} else {
@@ -3328,9 +3287,9 @@ var Level = function() {
 				case 16777215:
 					var _this32 = Level.SPOTS;
 					if(!(__map_reserved["wall"] != null ? _this32.existsReserved("wall") : _this32.h.hasOwnProperty("wall"))) {
-						var this18 = Level.SPOTS;
+						var this9 = Level.SPOTS;
 						var value8 = [new Point(cx,cy)];
-						var _this33 = this18;
+						var _this33 = this9;
 						if(__map_reserved["wall"] != null) {
 							_this33.setReserved("wall",value8);
 						} else {
@@ -3349,9 +3308,9 @@ var Level = function() {
 					}
 					var _this36 = Level.SPOTS;
 					if(!(__map_reserved["coll"] != null ? _this36.existsReserved("coll") : _this36.h.hasOwnProperty("coll"))) {
-						var this19 = Level.SPOTS;
+						var this10 = Level.SPOTS;
 						var value9 = [new Point(cx,cy)];
-						var _this37 = this19;
+						var _this37 = this10;
 						if(__map_reserved["coll"] != null) {
 							_this37.setReserved("coll",value9);
 						} else {
@@ -3457,11 +3416,11 @@ Level.prototype = $extend(mt_Process.prototype,{
 	onDispose: function() {
 		mt_Process.prototype.onDispose.call(this);
 		var _this = this.sun;
-		if(_this.parent != null) {
+		if(_this != null && _this.parent != null) {
 			_this.parent.removeChild(_this);
 		}
 		var _this1 = this.sun2;
-		if(_this1.parent != null) {
+		if(_this1 != null && _this1.parent != null) {
 			_this1.parent.removeChild(_this1);
 		}
 		var _g = 0;
@@ -3469,7 +3428,7 @@ Level.prototype = $extend(mt_Process.prototype,{
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
-			if(e.parent != null) {
+			if(e != null && e.parent != null) {
 				e.parent.removeChild(e);
 			}
 		}
@@ -3479,7 +3438,7 @@ Level.prototype = $extend(mt_Process.prototype,{
 		while(_g2 < _g3.length) {
 			var e1 = _g3[_g2];
 			++_g2;
-			if(e1.parent != null) {
+			if(e1 != null && e1.parent != null) {
 				e1.parent.removeChild(e1);
 			}
 		}
@@ -3724,10 +3683,10 @@ Level.prototype = $extend(mt_Process.prototype,{
 			var a = _$UInt_UInt_$Impl_$.toFloat(16777215 >>> 16);
 			var x1 = a + (_$UInt_UInt_$Impl_$.toFloat(4077971 >>> 16) - a) * 0.6;
 			var a1 = _$UInt_UInt_$Impl_$.toFloat(16777215 >>> 8 & 255);
-			var x11 = a1 + (_$UInt_UInt_$Impl_$.toFloat(4077971 >>> 8 & 255) - a1) * 0.6;
+			var x2 = a1 + (_$UInt_UInt_$Impl_$.toFloat(4077971 >>> 8 & 255) - a1) * 0.6;
 			var a2 = _$UInt_UInt_$Impl_$.toFloat(16777215 & 255);
-			var x2 = a2 + (_$UInt_UInt_$Impl_$.toFloat(4077971 & 255) - a2) * 0.6;
-			var c = ((x1 > 0 ? x1 + .5 : x1 < 0 ? x1 - .5 : 0) | 0) << 16 | ((x11 > 0 ? x11 + .5 : x11 < 0 ? x11 - .5 : 0) | 0) << 8 | ((x2 > 0 ? x2 + .5 : x2 < 0 ? x2 - .5 : 0) | 0);
+			var x3 = a2 + (_$UInt_UInt_$Impl_$.toFloat(4077971 & 255) - a2) * 0.6;
+			var c = ((x1 > 0 ? x1 + .5 : x1 < 0 ? x1 - .5 : 0) | 0) << 16 | ((x2 > 0 ? x2 + .5 : x2 < 0 ? x2 - .5 : 0) | 0) << 8 | ((x3 > 0 ? x3 + .5 : x3 < 0 ? x3 - .5 : 0) | 0);
 			var c_r = c >> 16;
 			var c_g = c >> 8 & 255;
 			var c_b = c & 255;
@@ -4062,19 +4021,12 @@ var Viewport = function(s) {
 	mt_Process.call(this,Game.ME);
 	this.s = s;
 	this.x = this.y = 0;
-	this.wid = this.hei = 1;
-	this.onResize();
 };
 $hxClasses["Viewport"] = Viewport;
 Viewport.__name__ = "Viewport";
 Viewport.__super__ = mt_Process;
 Viewport.prototype = $extend(mt_Process.prototype,{
-	onResize: function() {
-		mt_Process.prototype.onResize.call(this);
-		this.wid = (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE;
-		this.hei = (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE;
-	}
-	,shake: function(pow,dsec) {
+	shake: function(pow,dsec) {
 		if(dsec == null) {
 			dsec = 1.0;
 		}
@@ -4098,15 +4050,15 @@ Viewport.prototype = $extend(mt_Process.prototype,{
 		this.x = (e.cx + e.xr) * Const.GRID + Math.cos(a) * spd;
 		this.y = (e.cy + e.yr) * Const.GRID + Math.sin(a) * spd;
 		var x = this.x;
-		var min = this.wid * 0.5;
-		var max = Game.ME.level.wid * Const.GRID - this.wid * 0.5;
+		var min = (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE * 0.5;
+		var max = Game.ME.level.wid * Const.GRID - (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE * 0.5;
 		this.x = x < min ? min : x > max ? max : x;
 		var x1 = this.y;
-		var min1 = this.hei * 0.5;
-		var max1 = Game.ME.level.hei * Const.GRID - this.hei * 0.5;
+		var min1 = (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE * 0.5;
+		var max1 = Game.ME.level.hei * Const.GRID - (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE * 0.5;
 		this.y = x1 < min1 ? min1 : x1 > max1 ? max1 : x1;
-		var tx = -(this.x - this.wid * 0.5) * Const.UPSCALE;
-		var ty = -(this.y - this.hei * 0.5) * Const.UPSCALE;
+		var tx = -(this.x - (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE * 0.5) * Const.UPSCALE;
+		var ty = -(this.y - (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE * 0.5) * Const.UPSCALE;
 		var ax = this.s.x;
 		var ay = this.s.y;
 		var spd1 = (ax - tx) * (ax - tx) + (ay - ty) * (ay - ty) >= 160000 ? 0.11 : 0.05;
@@ -4134,12 +4086,12 @@ Viewport.prototype = $extend(mt_Process.prototype,{
 		_this1.y = (x3 > 0 ? x3 + .5 : x3 < 0 ? x3 - .5 : 0) | 0;
 		var _this2 = this.s;
 		var x4 = this.s.x;
-		var min2 = -(Game.ME.level.wid * Const.GRID * Const.UPSCALE) + this.wid * 0.5;
+		var min2 = -(Game.ME.level.wid * Const.GRID * Const.UPSCALE) + (mt_Process.CUSTOM_STAGE_WIDTH > 0 ? mt_Process.CUSTOM_STAGE_WIDTH : hxd_Window.getInstance().get_width()) / Const.UPSCALE * 0.5;
 		_this2.posChanged = true;
 		_this2.x = x4 < min2 ? min2 : x4 > 0 ? 0 : x4;
 		var _this3 = this.s;
 		var x5 = this.s.y;
-		var min3 = -(Game.ME.level.hei * Const.GRID * Const.UPSCALE) + this.hei * 0.5;
+		var min3 = -(Game.ME.level.hei * Const.GRID * Const.UPSCALE) + (mt_Process.CUSTOM_STAGE_HEIGHT > 0 ? mt_Process.CUSTOM_STAGE_HEIGHT : hxd_Window.getInstance().get_height()) / Const.UPSCALE * 0.5;
 		_this3.posChanged = true;
 		_this3.y = x5 < min3 ? min3 : x5 > 0 ? 0 : x5;
 	}
@@ -4415,11 +4367,11 @@ en_Bullet.prototype = $extend(Entity.prototype,{
 		if(_this.fastCheck.h.hasOwnProperty(29360128)) {
 			tmp = true;
 		} else {
-			var frames1 = 2;
-			frames1 = Math.floor(frames1 * 1000) / 1000;
+			var frames = 2;
+			frames = Math.floor(frames * 1000) / 1000;
 			var cur = _this._getCdObject(29360128);
-			if(!(cur != null && frames1 < cur.frames && false)) {
-				if(frames1 <= 0) {
+			if(!(cur != null && frames < cur.frames && false)) {
+				if(frames <= 0) {
 					if(cur != null) {
 						HxOverrides.remove(_this.cdList,cur);
 						cur.frames = 0;
@@ -4429,9 +4381,9 @@ en_Bullet.prototype = $extend(Entity.prototype,{
 				} else {
 					_this.fastCheck.h[29360128] = true;
 					if(cur != null) {
-						cur.frames = frames1;
+						cur.frames = frames;
 					} else {
-						_this.cdList.push(new mt__$Cooldown_CdInst(29360128,frames1));
+						_this.cdList.push(new mt__$Cooldown_CdInst(29360128,frames));
 					}
 				}
 			}
@@ -4502,14 +4454,14 @@ var en_Door = function(x,y,h) {
 		_this.group = tmp;
 		var _this3 = _this.lib;
 		var k1 = _this.groupName;
-		var g1;
+		var g;
 		if(k1 == null) {
-			g1 = _this3.currentGroup;
+			g = _this3.currentGroup;
 		} else {
 			var _this4 = _this3.groups;
-			g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+			g = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
 		}
-		_this.frameData = g1 == null ? null : g1.frames[0];
+		_this.frameData = g == null ? null : g.frames[0];
 		if(_this.frameData == null) {
 			throw new js__$Boot_HaxeError("Unknown frame: " + _this.groupName + "(" + 0 + ")");
 		}
@@ -4571,17 +4523,17 @@ en_Door.prototype = $extend(Entity.prototype,{
 		while(_g < _g1.length) {
 			var e = _g1[_g];
 			++_g;
-			if(e.parent != null) {
+			if(e != null && e.parent != null) {
 				e.parent.removeChild(e);
 			}
 		}
 		this.parts = null;
 		var _this = this.top;
-		if(_this.parent != null) {
+		if(_this != null && _this.parent != null) {
 			_this.parent.removeChild(_this);
 		}
 		var _this1 = this.bot;
-		if(_this1.parent != null) {
+		if(_this1 != null && _this1.parent != null) {
 			_this1.parent.removeChild(_this1);
 		}
 	}
@@ -4655,11 +4607,11 @@ en_Door.prototype = $extend(Entity.prototype,{
 					if(_this1.fastCheck.h.hasOwnProperty(67108864)) {
 						tmp = true;
 					} else {
-						var frames11 = frames1;
-						frames11 = Math.floor(frames11 * 1000) / 1000;
+						var frames2 = frames1;
+						frames2 = Math.floor(frames2 * 1000) / 1000;
 						var cur1 = _this1._getCdObject(67108864);
-						if(!(cur1 != null && frames11 < cur1.frames && false)) {
-							if(frames11 <= 0) {
+						if(!(cur1 != null && frames2 < cur1.frames && false)) {
+							if(frames2 <= 0) {
 								if(cur1 != null) {
 									HxOverrides.remove(_this1.cdList,cur1);
 									cur1.frames = 0;
@@ -4669,9 +4621,9 @@ en_Door.prototype = $extend(Entity.prototype,{
 							} else {
 								_this1.fastCheck.h[67108864] = true;
 								if(cur1 != null) {
-									cur1.frames = frames11;
+									cur1.frames = frames2;
 								} else {
-									_this1.cdList.push(new mt__$Cooldown_CdInst(67108864,frames11));
+									_this1.cdList.push(new mt__$Cooldown_CdInst(67108864,frames2));
 								}
 							}
 						}
@@ -4815,20 +4767,20 @@ en_Ring.prototype = $extend(Entity.prototype,{
 		this.parent = e;
 	}
 	,hitWeakSpot: function(e) {
-		var a1 = Math.atan2((e.cy + e.yr) * Const.GRID - (this.cy + this.yr) * Const.GRID,(e.cx + e.xr) * Const.GRID - (this.cx + this.xr) * Const.GRID);
-		var b1 = this.get_eyeAng();
-		var a2 = a1;
+		var a = Math.atan2((e.cy + e.yr) * Const.GRID - (this.cy + this.yr) * Const.GRID,(e.cx + e.xr) * Const.GRID - (this.cx + this.xr) * Const.GRID);
+		var b = this.get_eyeAng();
+		var a1 = a;
+		while(a1 < -3.1415926535897931) a1 += 6.283185307179586;
+		while(a1 > 3.141592653589793) a1 -= 6.283185307179586;
+		a = a1;
+		var a2 = b;
 		while(a2 < -3.1415926535897931) a2 += 6.283185307179586;
 		while(a2 > 3.141592653589793) a2 -= 6.283185307179586;
-		a1 = a2;
-		var a3 = b1;
+		b = a2;
+		var a3 = a - b;
 		while(a3 < -3.1415926535897931) a3 += 6.283185307179586;
 		while(a3 > 3.141592653589793) a3 -= 6.283185307179586;
-		b1 = a3;
-		var a4 = a1 - b1;
-		while(a4 < -3.1415926535897931) a4 += 6.283185307179586;
-		while(a4 > 3.141592653589793) a4 -= 6.283185307179586;
-		var x = a4;
+		var x = a3;
 		if((x < 0 ? -x : x) <= 1.25) {
 			return this.distCaseSqr(e) <= 36;
 		} else {
@@ -4845,15 +4797,15 @@ en_Ring.prototype = $extend(Entity.prototype,{
 		Entity.prototype.onDispose.call(this);
 		HxOverrides.remove(en_Ring.ALL,this);
 		var _this = this.link;
-		if(_this.parent != null) {
+		if(_this != null && _this.parent != null) {
 			_this.parent.removeChild(_this);
 		}
 		var _this1 = this.shadow;
-		if(_this1.parent != null) {
+		if(_this1 != null && _this1.parent != null) {
 			_this1.parent.removeChild(_this1);
 		}
 		var _this2 = this.phong;
-		if(_this2.parent != null) {
+		if(_this2 != null && _this2.parent != null) {
 			_this2.parent.removeChild(_this2);
 		}
 	}
@@ -4964,11 +4916,11 @@ en_Ring.prototype = $extend(Entity.prototype,{
 		if(_this1.fastCheck.h.hasOwnProperty(0)) {
 			tmp2 = true;
 		} else {
-			var frames11 = frames2;
-			frames11 = Math.floor(frames11 * 1000) / 1000;
+			var frames3 = frames2;
+			frames3 = Math.floor(frames3 * 1000) / 1000;
 			var cur1 = _this1._getCdObject(0);
-			if(!(cur1 != null && frames11 < cur1.frames && false)) {
-				if(frames11 <= 0) {
+			if(!(cur1 != null && frames3 < cur1.frames && false)) {
+				if(frames3 <= 0) {
 					if(cur1 != null) {
 						HxOverrides.remove(_this1.cdList,cur1);
 						cur1.frames = 0;
@@ -4978,9 +4930,9 @@ en_Ring.prototype = $extend(Entity.prototype,{
 				} else {
 					_this1.fastCheck.h[0] = true;
 					if(cur1 != null) {
-						cur1.frames = frames11;
+						cur1.frames = frames3;
 					} else {
-						_this1.cdList.push(new mt__$Cooldown_CdInst(0,frames11));
+						_this1.cdList.push(new mt__$Cooldown_CdInst(0,frames3));
 					}
 				}
 			}
@@ -5065,14 +5017,14 @@ var en_Head = function(x,y) {
 		_this.group = tmp;
 		var _this3 = _this.lib;
 		var k1 = _this.groupName;
-		var g1;
+		var g;
 		if(k1 == null) {
-			g1 = _this3.currentGroup;
+			g = _this3.currentGroup;
 		} else {
 			var _this4 = _this3.groups;
-			g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+			g = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
 		}
-		_this.frameData = g1 == null ? null : g1.frames[0];
+		_this.frameData = g == null ? null : g.frames[0];
 		if(_this.frameData == null) {
 			throw new js__$Boot_HaxeError("Unknown frame: " + _this.groupName + "(" + 0 + ")");
 		}
@@ -5203,14 +5155,14 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 						_this.group = tmp;
 						var _this3 = _this.lib;
 						var k1 = _this.groupName;
-						var g1;
+						var g;
 						if(k1 == null) {
-							g1 = _this3.currentGroup;
+							g = _this3.currentGroup;
 						} else {
 							var _this4 = _this3.groups;
-							g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+							g = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
 						}
-						_this.frameData = g1 == null ? null : g1.frames[0];
+						_this.frameData = g == null ? null : g.frames[0];
 						if(_this.frameData == null) {
 							throw new js__$Boot_HaxeError("Unknown frame: " + _this.groupName + "(" + 0 + ")");
 						}
@@ -5288,20 +5240,20 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 					var da = (ax - bx) * (ax - bx) + (ay - by) * (ay - by);
 					var tmp2;
 					if(da >= 64) {
-						var a11 = ma;
+						var a4 = ma;
 						var b1 = this.ang;
-						var a21 = a11;
-						while(a21 < -3.1415926535897931) a21 += 6.283185307179586;
-						while(a21 > 3.141592653589793) a21 -= 6.283185307179586;
-						a11 = a21;
-						var a31 = b1;
-						while(a31 < -3.1415926535897931) a31 += 6.283185307179586;
-						while(a31 > 3.141592653589793) a31 -= 6.283185307179586;
-						b1 = a31;
-						var a4 = a11 - b1;
-						while(a4 < -3.1415926535897931) a4 += 6.283185307179586;
-						while(a4 > 3.141592653589793) a4 -= 6.283185307179586;
-						var x = a4;
+						var a5 = a4;
+						while(a5 < -3.1415926535897931) a5 += 6.283185307179586;
+						while(a5 > 3.141592653589793) a5 -= 6.283185307179586;
+						a4 = a5;
+						var a6 = b1;
+						while(a6 < -3.1415926535897931) a6 += 6.283185307179586;
+						while(a6 > 3.141592653589793) a6 -= 6.283185307179586;
+						b1 = a6;
+						var a7 = a4 - b1;
+						while(a7 < -3.1415926535897931) a7 += 6.283185307179586;
+						while(a7 > 3.141592653589793) a7 -= 6.283185307179586;
+						var x = a7;
 						tmp2 = (x < 0 ? -x : x) <= 1.8849555921538759;
 					} else {
 						tmp2 = false;
@@ -5309,20 +5261,20 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 					if(tmp2 || da >= 400) {
 						var tmp3 = this;
 						var tmp4 = tmp3.ang;
-						var a5 = ma;
+						var a8 = ma;
 						var b2 = this.ang;
-						var a12 = a5;
-						while(a12 < -3.1415926535897931) a12 += 6.283185307179586;
-						while(a12 > 3.141592653589793) a12 -= 6.283185307179586;
-						a5 = a12;
-						var a22 = b2;
-						while(a22 < -3.1415926535897931) a22 += 6.283185307179586;
-						while(a22 > 3.141592653589793) a22 -= 6.283185307179586;
-						b2 = a22;
-						var a32 = a5 - b2;
-						while(a32 < -3.1415926535897931) a32 += 6.283185307179586;
-						while(a32 > 3.141592653589793) a32 -= 6.283185307179586;
-						tmp3.ang = tmp4 + a32 * sa;
+						var a9 = a8;
+						while(a9 < -3.1415926535897931) a9 += 6.283185307179586;
+						while(a9 > 3.141592653589793) a9 -= 6.283185307179586;
+						a8 = a9;
+						var a10 = b2;
+						while(a10 < -3.1415926535897931) a10 += 6.283185307179586;
+						while(a10 > 3.141592653589793) a10 -= 6.283185307179586;
+						b2 = a10;
+						var a11 = a8 - b2;
+						while(a11 < -3.1415926535897931) a11 += 6.283185307179586;
+						while(a11 > 3.141592653589793) a11 -= 6.283185307179586;
+						tmp3.ang = tmp4 + a11 * sa;
 					}
 					var ax1 = (this.cx + this.xr) * Const.GRID;
 					var ay1 = (this.cy + this.yr) * Const.GRID;
@@ -5363,20 +5315,20 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 					if(tmp5) {
 						var tmp8 = this;
 						var tmp9 = tmp8.ang;
-						var a6 = 3.14;
+						var a12 = 3.14;
 						var b3 = this.ang;
-						var a13 = a6;
+						var a13 = a12;
 						while(a13 < -3.1415926535897931) a13 += 6.283185307179586;
 						while(a13 > 3.141592653589793) a13 -= 6.283185307179586;
-						a6 = a13;
-						var a23 = b3;
-						while(a23 < -3.1415926535897931) a23 += 6.283185307179586;
-						while(a23 > 3.141592653589793) a23 -= 6.283185307179586;
-						b3 = a23;
-						var a33 = a6 - b3;
-						while(a33 < -3.1415926535897931) a33 += 6.283185307179586;
-						while(a33 > 3.141592653589793) a33 -= 6.283185307179586;
-						tmp8.ang = tmp9 + a33 * sa * 1.5;
+						a12 = a13;
+						var a14 = b3;
+						while(a14 < -3.1415926535897931) a14 += 6.283185307179586;
+						while(a14 > 3.141592653589793) a14 -= 6.283185307179586;
+						b3 = a14;
+						var a15 = a12 - b3;
+						while(a15 < -3.1415926535897931) a15 += 6.283185307179586;
+						while(a15 > 3.141592653589793) a15 -= 6.283185307179586;
+						tmp8.ang = tmp9 + a15 * sa * 1.5;
 						trust = 1;
 					} else {
 						var _this3 = this.ca;
@@ -5385,16 +5337,16 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 						if(!(_this3.manualLock || _this3.parent.isLocked || _this3.parent.exclusiveId != null && _this3.parent.exclusiveId != _this3.id || Date.now() / 1000 < _this3.parent.suspendTimer)) {
 							var tmp11;
 							var tmp12;
-							var k11 = _this3.parent.primary.h[k4];
-							if(!(k11 != null && !(_this3.manualLock || _this3.parent.isLocked || _this3.parent.exclusiveId != null && _this3.parent.exclusiveId != _this3.id || Date.now() / 1000 < _this3.parent.suspendTimer) && hxd_Key.isDown(k11))) {
-								var k21 = _this3.parent.secondary.h[k4];
-								tmp12 = k21 != null && !(_this3.manualLock || _this3.parent.isLocked || _this3.parent.exclusiveId != null && _this3.parent.exclusiveId != _this3.id || Date.now() / 1000 < _this3.parent.suspendTimer) && hxd_Key.isDown(k21);
+							var k5 = _this3.parent.primary.h[k4];
+							if(!(k5 != null && !(_this3.manualLock || _this3.parent.isLocked || _this3.parent.exclusiveId != null && _this3.parent.exclusiveId != _this3.id || Date.now() / 1000 < _this3.parent.suspendTimer) && hxd_Key.isDown(k5))) {
+								var k6 = _this3.parent.secondary.h[k4];
+								tmp12 = k6 != null && !(_this3.manualLock || _this3.parent.isLocked || _this3.parent.exclusiveId != null && _this3.parent.exclusiveId != _this3.id || Date.now() / 1000 < _this3.parent.suspendTimer) && hxd_Key.isDown(k6);
 							} else {
 								tmp12 = true;
 							}
 							if(!tmp12) {
-								var k31 = _this3.parent.third.h[k4];
-								tmp11 = k31 != null && !(_this3.manualLock || _this3.parent.isLocked || _this3.parent.exclusiveId != null && _this3.parent.exclusiveId != _this3.id || Date.now() / 1000 < _this3.parent.suspendTimer) && hxd_Key.isDown(k31);
+								var k7 = _this3.parent.third.h[k4];
+								tmp11 = k7 != null && !(_this3.manualLock || _this3.parent.isLocked || _this3.parent.exclusiveId != null && _this3.parent.exclusiveId != _this3.id || Date.now() / 1000 < _this3.parent.suspendTimer) && hxd_Key.isDown(k7);
 							} else {
 								tmp11 = true;
 							}
@@ -5410,45 +5362,45 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 						if(tmp10) {
 							var tmp13 = this;
 							var tmp14 = tmp13.ang;
-							var a7 = 0;
+							var a16 = 0;
 							var b4 = this.ang;
-							var a14 = a7;
-							while(a14 < -3.1415926535897931) a14 += 6.283185307179586;
-							while(a14 > 3.141592653589793) a14 -= 6.283185307179586;
-							a7 = a14;
-							var a24 = b4;
-							while(a24 < -3.1415926535897931) a24 += 6.283185307179586;
-							while(a24 > 3.141592653589793) a24 -= 6.283185307179586;
-							b4 = a24;
-							var a34 = a7 - b4;
-							while(a34 < -3.1415926535897931) a34 += 6.283185307179586;
-							while(a34 > 3.141592653589793) a34 -= 6.283185307179586;
-							tmp13.ang = tmp14 + a34 * sa * 1.5;
+							var a17 = a16;
+							while(a17 < -3.1415926535897931) a17 += 6.283185307179586;
+							while(a17 > 3.141592653589793) a17 -= 6.283185307179586;
+							a16 = a17;
+							var a18 = b4;
+							while(a18 < -3.1415926535897931) a18 += 6.283185307179586;
+							while(a18 > 3.141592653589793) a18 -= 6.283185307179586;
+							b4 = a18;
+							var a19 = a16 - b4;
+							while(a19 < -3.1415926535897931) a19 += 6.283185307179586;
+							while(a19 > 3.141592653589793) a19 -= 6.283185307179586;
+							tmp13.ang = tmp14 + a19 * sa * 1.5;
 							trust = 1;
 						}
 					}
 					var _this5 = this.ca;
-					var k5 = 21;
+					var k8 = 21;
 					var tmp15;
 					if(!(_this5.manualLock || _this5.parent.isLocked || _this5.parent.exclusiveId != null && _this5.parent.exclusiveId != _this5.id || Date.now() / 1000 < _this5.parent.suspendTimer)) {
 						var tmp16;
 						var tmp17;
-						var k12 = _this5.parent.primary.h[k5];
-						if(!(k12 != null && !(_this5.manualLock || _this5.parent.isLocked || _this5.parent.exclusiveId != null && _this5.parent.exclusiveId != _this5.id || Date.now() / 1000 < _this5.parent.suspendTimer) && hxd_Key.isDown(k12))) {
-							var k22 = _this5.parent.secondary.h[k5];
-							tmp17 = k22 != null && !(_this5.manualLock || _this5.parent.isLocked || _this5.parent.exclusiveId != null && _this5.parent.exclusiveId != _this5.id || Date.now() / 1000 < _this5.parent.suspendTimer) && hxd_Key.isDown(k22);
+						var k9 = _this5.parent.primary.h[k8];
+						if(!(k9 != null && !(_this5.manualLock || _this5.parent.isLocked || _this5.parent.exclusiveId != null && _this5.parent.exclusiveId != _this5.id || Date.now() / 1000 < _this5.parent.suspendTimer) && hxd_Key.isDown(k9))) {
+							var k10 = _this5.parent.secondary.h[k8];
+							tmp17 = k10 != null && !(_this5.manualLock || _this5.parent.isLocked || _this5.parent.exclusiveId != null && _this5.parent.exclusiveId != _this5.id || Date.now() / 1000 < _this5.parent.suspendTimer) && hxd_Key.isDown(k10);
 						} else {
 							tmp17 = true;
 						}
 						if(!tmp17) {
-							var k32 = _this5.parent.third.h[k5];
-							tmp16 = k32 != null && !(_this5.manualLock || _this5.parent.isLocked || _this5.parent.exclusiveId != null && _this5.parent.exclusiveId != _this5.id || Date.now() / 1000 < _this5.parent.suspendTimer) && hxd_Key.isDown(k32);
+							var k11 = _this5.parent.third.h[k8];
+							tmp16 = k11 != null && !(_this5.manualLock || _this5.parent.isLocked || _this5.parent.exclusiveId != null && _this5.parent.exclusiveId != _this5.id || Date.now() / 1000 < _this5.parent.suspendTimer) && hxd_Key.isDown(k11);
 						} else {
 							tmp16 = true;
 						}
 						if(!tmp16) {
 							var _this6 = _this5.parent.gc;
-							tmp15 = _this6.device != null && _this6.toggles[k5] > 0;
+							tmp15 = _this6.device != null && _this6.toggles[k8] > 0;
 						} else {
 							tmp15 = true;
 						}
@@ -5458,44 +5410,44 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 					if(tmp15) {
 						var tmp18 = this;
 						var tmp19 = tmp18.ang;
-						var a8 = -1.57;
+						var a20 = -1.57;
 						var b5 = this.ang;
-						var a15 = a8;
-						while(a15 < -3.1415926535897931) a15 += 6.283185307179586;
-						while(a15 > 3.141592653589793) a15 -= 6.283185307179586;
-						a8 = a15;
-						var a25 = b5;
-						while(a25 < -3.1415926535897931) a25 += 6.283185307179586;
-						while(a25 > 3.141592653589793) a25 -= 6.283185307179586;
-						b5 = a25;
-						var a35 = a8 - b5;
-						while(a35 < -3.1415926535897931) a35 += 6.283185307179586;
-						while(a35 > 3.141592653589793) a35 -= 6.283185307179586;
-						tmp18.ang = tmp19 + a35 * sa;
+						var a21 = a20;
+						while(a21 < -3.1415926535897931) a21 += 6.283185307179586;
+						while(a21 > 3.141592653589793) a21 -= 6.283185307179586;
+						a20 = a21;
+						var a22 = b5;
+						while(a22 < -3.1415926535897931) a22 += 6.283185307179586;
+						while(a22 > 3.141592653589793) a22 -= 6.283185307179586;
+						b5 = a22;
+						var a23 = a20 - b5;
+						while(a23 < -3.1415926535897931) a23 += 6.283185307179586;
+						while(a23 > 3.141592653589793) a23 -= 6.283185307179586;
+						tmp18.ang = tmp19 + a23 * sa;
 						trust = 1;
 					} else {
 						var _this7 = this.ca;
-						var k6 = 20;
+						var k12 = 20;
 						var tmp20;
 						if(!(_this7.manualLock || _this7.parent.isLocked || _this7.parent.exclusiveId != null && _this7.parent.exclusiveId != _this7.id || Date.now() / 1000 < _this7.parent.suspendTimer)) {
 							var tmp21;
 							var tmp22;
-							var k13 = _this7.parent.primary.h[k6];
+							var k13 = _this7.parent.primary.h[k12];
 							if(!(k13 != null && !(_this7.manualLock || _this7.parent.isLocked || _this7.parent.exclusiveId != null && _this7.parent.exclusiveId != _this7.id || Date.now() / 1000 < _this7.parent.suspendTimer) && hxd_Key.isDown(k13))) {
-								var k23 = _this7.parent.secondary.h[k6];
-								tmp22 = k23 != null && !(_this7.manualLock || _this7.parent.isLocked || _this7.parent.exclusiveId != null && _this7.parent.exclusiveId != _this7.id || Date.now() / 1000 < _this7.parent.suspendTimer) && hxd_Key.isDown(k23);
+								var k14 = _this7.parent.secondary.h[k12];
+								tmp22 = k14 != null && !(_this7.manualLock || _this7.parent.isLocked || _this7.parent.exclusiveId != null && _this7.parent.exclusiveId != _this7.id || Date.now() / 1000 < _this7.parent.suspendTimer) && hxd_Key.isDown(k14);
 							} else {
 								tmp22 = true;
 							}
 							if(!tmp22) {
-								var k33 = _this7.parent.third.h[k6];
-								tmp21 = k33 != null && !(_this7.manualLock || _this7.parent.isLocked || _this7.parent.exclusiveId != null && _this7.parent.exclusiveId != _this7.id || Date.now() / 1000 < _this7.parent.suspendTimer) && hxd_Key.isDown(k33);
+								var k15 = _this7.parent.third.h[k12];
+								tmp21 = k15 != null && !(_this7.manualLock || _this7.parent.isLocked || _this7.parent.exclusiveId != null && _this7.parent.exclusiveId != _this7.id || Date.now() / 1000 < _this7.parent.suspendTimer) && hxd_Key.isDown(k15);
 							} else {
 								tmp21 = true;
 							}
 							if(!tmp21) {
 								var _this8 = _this7.parent.gc;
-								tmp20 = _this8.device != null && _this8.toggles[k6] > 0;
+								tmp20 = _this8.device != null && _this8.toggles[k12] > 0;
 							} else {
 								tmp20 = true;
 							}
@@ -5505,45 +5457,45 @@ en_Head.prototype = $extend(en_Ring.prototype,{
 						if(tmp20) {
 							var tmp23 = this;
 							var tmp24 = tmp23.ang;
-							var a9 = 1.57;
+							var a24 = 1.57;
 							var b6 = this.ang;
-							var a16 = a9;
-							while(a16 < -3.1415926535897931) a16 += 6.283185307179586;
-							while(a16 > 3.141592653589793) a16 -= 6.283185307179586;
-							a9 = a16;
+							var a25 = a24;
+							while(a25 < -3.1415926535897931) a25 += 6.283185307179586;
+							while(a25 > 3.141592653589793) a25 -= 6.283185307179586;
+							a24 = a25;
 							var a26 = b6;
 							while(a26 < -3.1415926535897931) a26 += 6.283185307179586;
 							while(a26 > 3.141592653589793) a26 -= 6.283185307179586;
 							b6 = a26;
-							var a36 = a9 - b6;
-							while(a36 < -3.1415926535897931) a36 += 6.283185307179586;
-							while(a36 > 3.141592653589793) a36 -= 6.283185307179586;
-							tmp23.ang = tmp24 + a36 * sa;
+							var a27 = a24 - b6;
+							while(a27 < -3.1415926535897931) a27 += 6.283185307179586;
+							while(a27 > 3.141592653589793) a27 -= 6.283185307179586;
+							tmp23.ang = tmp24 + a27 * sa;
 							trust = 1;
 						}
 					}
 					var _this9 = this.ca;
-					var k7 = 0;
+					var k16 = 0;
 					var tmp25;
 					if(!(_this9.manualLock || _this9.parent.isLocked || _this9.parent.exclusiveId != null && _this9.parent.exclusiveId != _this9.id || Date.now() / 1000 < _this9.parent.suspendTimer)) {
 						var tmp26;
 						var tmp27;
-						var k14 = _this9.parent.primary.h[k7];
-						if(!(k14 != null && !(_this9.manualLock || _this9.parent.isLocked || _this9.parent.exclusiveId != null && _this9.parent.exclusiveId != _this9.id || Date.now() / 1000 < _this9.parent.suspendTimer) && hxd_Key.isDown(k14))) {
-							var k24 = _this9.parent.secondary.h[k7];
-							tmp27 = k24 != null && !(_this9.manualLock || _this9.parent.isLocked || _this9.parent.exclusiveId != null && _this9.parent.exclusiveId != _this9.id || Date.now() / 1000 < _this9.parent.suspendTimer) && hxd_Key.isDown(k24);
+						var k17 = _this9.parent.primary.h[k16];
+						if(!(k17 != null && !(_this9.manualLock || _this9.parent.isLocked || _this9.parent.exclusiveId != null && _this9.parent.exclusiveId != _this9.id || Date.now() / 1000 < _this9.parent.suspendTimer) && hxd_Key.isDown(k17))) {
+							var k18 = _this9.parent.secondary.h[k16];
+							tmp27 = k18 != null && !(_this9.manualLock || _this9.parent.isLocked || _this9.parent.exclusiveId != null && _this9.parent.exclusiveId != _this9.id || Date.now() / 1000 < _this9.parent.suspendTimer) && hxd_Key.isDown(k18);
 						} else {
 							tmp27 = true;
 						}
 						if(!tmp27) {
-							var k34 = _this9.parent.third.h[k7];
-							tmp26 = k34 != null && !(_this9.manualLock || _this9.parent.isLocked || _this9.parent.exclusiveId != null && _this9.parent.exclusiveId != _this9.id || Date.now() / 1000 < _this9.parent.suspendTimer) && hxd_Key.isDown(k34);
+							var k19 = _this9.parent.third.h[k16];
+							tmp26 = k19 != null && !(_this9.manualLock || _this9.parent.isLocked || _this9.parent.exclusiveId != null && _this9.parent.exclusiveId != _this9.id || Date.now() / 1000 < _this9.parent.suspendTimer) && hxd_Key.isDown(k19);
 						} else {
 							tmp26 = true;
 						}
 						if(!tmp26) {
 							var _this10 = _this9.parent.gc;
-							tmp25 = _this10.device != null && _this10.toggles[k7] > 0;
+							tmp25 = _this10.device != null && _this10.toggles[k16] > 0;
 						} else {
 							tmp25 = true;
 						}
@@ -5648,14 +5600,14 @@ var en_Mob = function(x,y) {
 		_this.group = tmp;
 		var _this3 = _this.lib;
 		var k1 = _this.groupName;
-		var g1;
+		var g;
 		if(k1 == null) {
-			g1 = _this3.currentGroup;
+			g = _this3.currentGroup;
 		} else {
 			var _this4 = _this3.groups;
-			g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+			g = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
 		}
-		_this.frameData = g1 == null ? null : g1.frames[0];
+		_this.frameData = g == null ? null : g.frames[0];
 		if(_this.frameData == null) {
 			throw new js__$Boot_HaxeError("Unknown frame: " + _this.groupName + "(" + 0 + ")");
 		}
@@ -5777,26 +5729,26 @@ var en_Tail = function(x,y) {
 		_this2.groupName = "ring";
 	}
 	if(!_this2.destroyed && _this2.lib != null && _this2.groupName != null) {
-		var _this11 = _this2.lib;
+		var _this3 = _this2.lib;
 		var k = _this2.groupName;
 		var tmp;
 		if(k == null) {
-			tmp = _this11.currentGroup;
-		} else {
-			var _this21 = _this11.groups;
-			tmp = __map_reserved[k] != null ? _this21.getReserved(k) : _this21.h[k];
-		}
-		_this2.group = tmp;
-		var _this3 = _this2.lib;
-		var k1 = _this2.groupName;
-		var g1;
-		if(k1 == null) {
-			g1 = _this3.currentGroup;
+			tmp = _this3.currentGroup;
 		} else {
 			var _this4 = _this3.groups;
-			g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+			tmp = __map_reserved[k] != null ? _this4.getReserved(k) : _this4.h[k];
 		}
-		_this2.frameData = g1 == null ? null : g1.frames[0];
+		_this2.group = tmp;
+		var _this5 = _this2.lib;
+		var k1 = _this2.groupName;
+		var g;
+		if(k1 == null) {
+			g = _this5.currentGroup;
+		} else {
+			var _this6 = _this5.groups;
+			g = __map_reserved[k1] != null ? _this6.getReserved(k1) : _this6.h[k1];
+		}
+		_this2.frameData = g == null ? null : g.frames[0];
 		if(_this2.frameData == null) {
 			throw new js__$Boot_HaxeError("Unknown frame: " + _this2.groupName + "(" + 0 + ")");
 		}
@@ -5931,20 +5883,20 @@ en_Tail.prototype = $extend(en_Ring.prototype,{
 				++_g;
 				var tmp;
 				if(!e.isDead() && this.distCaseSqr(e) <= range * range) {
-					var a1 = Math.atan2((e.cy + e.yr) * Const.GRID - (this.cy + this.yr) * Const.GRID,(e.cx + e.xr) * Const.GRID - (this.cx + this.xr) * Const.GRID);
-					var b1 = this.get_eyeAng();
-					var a2 = a1;
+					var a = Math.atan2((e.cy + e.yr) * Const.GRID - (this.cy + this.yr) * Const.GRID,(e.cx + e.xr) * Const.GRID - (this.cx + this.xr) * Const.GRID);
+					var b = this.get_eyeAng();
+					var a1 = a;
+					while(a1 < -3.1415926535897931) a1 += 6.283185307179586;
+					while(a1 > 3.141592653589793) a1 -= 6.283185307179586;
+					a = a1;
+					var a2 = b;
 					while(a2 < -3.1415926535897931) a2 += 6.283185307179586;
 					while(a2 > 3.141592653589793) a2 -= 6.283185307179586;
-					a1 = a2;
-					var a3 = b1;
+					b = a2;
+					var a3 = a - b;
 					while(a3 < -3.1415926535897931) a3 += 6.283185307179586;
 					while(a3 > 3.141592653589793) a3 -= 6.283185307179586;
-					b1 = a3;
-					var a4 = a1 - b1;
-					while(a4 < -3.1415926535897931) a4 += 6.283185307179586;
-					while(a4 > 3.141592653589793) a4 -= 6.283185307179586;
-					var x = a4;
+					var x = a3;
 					tmp = (x < 0 ? -x : x) <= this.coneAng * 0.5;
 				} else {
 					tmp = false;
@@ -5991,14 +5943,14 @@ en_Tail.prototype = $extend(en_Ring.prototype,{
 				var e1 = new en_Bullet((this.cx + this.xr) * Const.GRID,(this.cy + this.yr) * Const.GRID,true);
 				var s = 0.45;
 				var e2 = this.target;
-				var a = Math.atan2((e2.cy + e2.yr) * Const.GRID - (this.cy + this.yr) * Const.GRID,(e2.cx + e2.xr) * Const.GRID - (this.cx + this.xr) * Const.GRID);
+				var a4 = Math.atan2((e2.cy + e2.yr) * Const.GRID - (this.cy + this.yr) * Const.GRID,(e2.cx + e2.xr) * Const.GRID - (this.cx + this.xr) * Const.GRID);
 				var v = range * 1.2 * Const.GRID;
 				e1.maxDist2 = v * v;
 				e1.ignoreTouch(this);
 				e1.ignoreTouch(this.parent);
 				e1.ignoreTouch(this.getChild());
-				e1.dx = Math.cos(a) * s;
-				e1.dy = Math.sin(a) * s;
+				e1.dx = Math.cos(a4) * s;
+				e1.dy = Math.sin(a4) * s;
 				var _this1 = this.cd;
 				var frames2 = Game.ME.secToFrames(0.2);
 				frames2 = Math.floor(frames2 * 1000) / 1000;
@@ -6034,11 +5986,11 @@ en_Tail.prototype = $extend(en_Ring.prototype,{
 				if(_this5.fastCheck.h.hasOwnProperty(58720256)) {
 					tmp3 = true;
 				} else {
-					var frames11 = frames3;
-					frames11 = Math.floor(frames11 * 1000) / 1000;
+					var frames4 = frames3;
+					frames4 = Math.floor(frames4 * 1000) / 1000;
 					var cur2 = _this5._getCdObject(58720256);
-					if(!(cur2 != null && frames11 < cur2.frames && false)) {
-						if(frames11 <= 0) {
+					if(!(cur2 != null && frames4 < cur2.frames && false)) {
+						if(frames4 <= 0) {
 							if(cur2 != null) {
 								HxOverrides.remove(_this5.cdList,cur2);
 								cur2.frames = 0;
@@ -6048,9 +6000,9 @@ en_Tail.prototype = $extend(en_Ring.prototype,{
 						} else {
 							_this5.fastCheck.h[58720256] = true;
 							if(cur2 != null) {
-								cur2.frames = frames11;
+								cur2.frames = frames4;
 							} else {
-								_this5.cdList.push(new mt__$Cooldown_CdInst(58720256,frames11));
+								_this5.cdList.push(new mt__$Cooldown_CdInst(58720256,frames4));
 							}
 						}
 					}
@@ -6077,19 +6029,19 @@ en_Tail.prototype = $extend(en_Ring.prototype,{
 				var tmp4 = this;
 				var tmp5 = tmp4.ang;
 				var a5 = ta1;
-				var b = this.ang;
-				var a11 = a5;
-				while(a11 < -3.1415926535897931) a11 += 6.283185307179586;
-				while(a11 > 3.141592653589793) a11 -= 6.283185307179586;
-				a5 = a11;
-				var a21 = b;
-				while(a21 < -3.1415926535897931) a21 += 6.283185307179586;
-				while(a21 > 3.141592653589793) a21 -= 6.283185307179586;
-				b = a21;
-				var a31 = a5 - b;
-				while(a31 < -3.1415926535897931) a31 += 6.283185307179586;
-				while(a31 > 3.141592653589793) a31 -= 6.283185307179586;
-				tmp4.ang = tmp5 + a31 * 0.7;
+				var b1 = this.ang;
+				var a6 = a5;
+				while(a6 < -3.1415926535897931) a6 += 6.283185307179586;
+				while(a6 > 3.141592653589793) a6 -= 6.283185307179586;
+				a5 = a6;
+				var a7 = b1;
+				while(a7 < -3.1415926535897931) a7 += 6.283185307179586;
+				while(a7 > 3.141592653589793) a7 -= 6.283185307179586;
+				b1 = a7;
+				var a8 = a5 - b1;
+				while(a8 < -3.1415926535897931) a8 += 6.283185307179586;
+				while(a8 > 3.141592653589793) a8 -= 6.283185307179586;
+				tmp4.ang = tmp5 + a8 * 0.7;
 				var d1 = (Math.sqrt(this.distSqr(this.parent)) - this.linkDist * 1.2) / Const.GRID;
 				this.dx += Math.cos(this.ang) * d1 * 0.3 * Game.ME.dt;
 				this.dy += Math.sin(this.ang) * d1 * 0.3 * Game.ME.dt;
@@ -6128,14 +6080,14 @@ var en_m_Liner = function(x,y,ang) {
 		_this.group = tmp;
 		var _this3 = _this.lib;
 		var k1 = _this.groupName;
-		var g1;
+		var g;
 		if(k1 == null) {
-			g1 = _this3.currentGroup;
+			g = _this3.currentGroup;
 		} else {
 			var _this4 = _this3.groups;
-			g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+			g = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
 		}
-		_this.frameData = g1 == null ? null : g1.frames[0];
+		_this.frameData = g == null ? null : g.frames[0];
 		if(_this.frameData == null) {
 			throw new js__$Boot_HaxeError("Unknown frame: " + _this.groupName + "(" + 0 + ")");
 		}
@@ -6241,11 +6193,11 @@ en_m_Liner.prototype = $extend(en_Mob.prototype,{
 			if(_this1.fastCheck.h.hasOwnProperty(25165824)) {
 				tmp3 = true;
 			} else {
-				var frames11 = frames2;
-				frames11 = Math.floor(frames11 * 1000) / 1000;
+				var frames3 = frames2;
+				frames3 = Math.floor(frames3 * 1000) / 1000;
 				var cur1 = _this1._getCdObject(25165824);
-				if(!(cur1 != null && frames11 < cur1.frames && false)) {
-					if(frames11 <= 0) {
+				if(!(cur1 != null && frames3 < cur1.frames && false)) {
+					if(frames3 <= 0) {
 						if(cur1 != null) {
 							HxOverrides.remove(_this1.cdList,cur1);
 							cur1.frames = 0;
@@ -6255,9 +6207,9 @@ en_m_Liner.prototype = $extend(en_Mob.prototype,{
 					} else {
 						_this1.fastCheck.h[25165824] = true;
 						if(cur1 != null) {
-							cur1.frames = frames11;
+							cur1.frames = frames3;
 						} else {
-							_this1.cdList.push(new mt__$Cooldown_CdInst(25165824,frames11));
+							_this1.cdList.push(new mt__$Cooldown_CdInst(25165824,frames3));
 						}
 					}
 				}
@@ -6296,14 +6248,14 @@ var en_m_SimpleTurret = function(x,y) {
 		_this.group = tmp;
 		var _this3 = _this.lib;
 		var k1 = _this.groupName;
-		var g1;
+		var g;
 		if(k1 == null) {
-			g1 = _this3.currentGroup;
+			g = _this3.currentGroup;
 		} else {
 			var _this4 = _this3.groups;
-			g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+			g = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
 		}
-		_this.frameData = g1 == null ? null : g1.frames[0];
+		_this.frameData = g == null ? null : g.frames[0];
 		if(_this.frameData == null) {
 			throw new js__$Boot_HaxeError("Unknown frame: " + _this.groupName + "(" + 0 + ")");
 		}
@@ -6388,26 +6340,26 @@ en_m_SimpleTurret.prototype = $extend(en_Mob.prototype,{
 				_this3.groupName = "turretFull";
 			}
 			if(!_this3.destroyed && _this3.lib != null && _this3.groupName != null) {
-				var _this11 = _this3.lib;
+				var _this4 = _this3.lib;
 				var k = _this3.groupName;
 				var tmp;
 				if(k == null) {
-					tmp = _this11.currentGroup;
+					tmp = _this4.currentGroup;
 				} else {
-					var _this21 = _this11.groups;
-					tmp = __map_reserved[k] != null ? _this21.getReserved(k) : _this21.h[k];
+					var _this5 = _this4.groups;
+					tmp = __map_reserved[k] != null ? _this5.getReserved(k) : _this5.h[k];
 				}
 				_this3.group = tmp;
-				var _this31 = _this3.lib;
+				var _this6 = _this3.lib;
 				var k1 = _this3.groupName;
-				var g1;
+				var g;
 				if(k1 == null) {
-					g1 = _this31.currentGroup;
+					g = _this6.currentGroup;
 				} else {
-					var _this4 = _this31.groups;
-					g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+					var _this7 = _this6.groups;
+					g = __map_reserved[k1] != null ? _this7.getReserved(k1) : _this7.h[k1];
 				}
-				_this3.frameData = g1 == null ? null : g1.frames[0];
+				_this3.frameData = g == null ? null : g.frames[0];
 				if(_this3.frameData == null) {
 					throw new js__$Boot_HaxeError("Unknown frame: " + _this3.groupName + "(" + 0 + ")");
 				}
@@ -6422,14 +6374,14 @@ en_m_SimpleTurret.prototype = $extend(en_Mob.prototype,{
 				_this3.setEmptyTexture();
 			}
 		}
-		var _this5 = this.base;
-		_this5.posChanged = true;
-		_this5.x = this.spr.x;
-		_this5.posChanged = true;
-		_this5.y = this.spr.y;
-		var _this6 = this.base;
-		_this6.posChanged = true;
-		_this6.rotation = -this.spr.rotation * 0.5;
+		var _this8 = this.base;
+		_this8.posChanged = true;
+		_this8.x = this.spr.x;
+		_this8.posChanged = true;
+		_this8.y = this.spr.y;
+		var _this9 = this.base;
+		_this9.posChanged = true;
+		_this9.rotation = -this.spr.rotation * 0.5;
 	}
 	,onDie: function() {
 		en_Mob.prototype.onDie.call(this);
@@ -6438,7 +6390,7 @@ en_m_SimpleTurret.prototype = $extend(en_Mob.prototype,{
 	,onDispose: function() {
 		en_Mob.prototype.onDispose.call(this);
 		var _this = this.base;
-		if(_this.parent != null) {
+		if(_this != null && _this.parent != null) {
 			_this.parent.removeChild(_this);
 		}
 	}
@@ -6488,26 +6440,26 @@ en_m_SimpleTurret.prototype = $extend(en_Mob.prototype,{
 					_this1.groupName = "turret";
 				}
 				if(!_this1.destroyed && _this1.lib != null && _this1.groupName != null) {
-					var _this11 = _this1.lib;
+					var _this2 = _this1.lib;
 					var k = _this1.groupName;
 					var tmp2;
 					if(k == null) {
-						tmp2 = _this11.currentGroup;
+						tmp2 = _this2.currentGroup;
 					} else {
-						var _this2 = _this11.groups;
-						tmp2 = __map_reserved[k] != null ? _this2.getReserved(k) : _this2.h[k];
+						var _this3 = _this2.groups;
+						tmp2 = __map_reserved[k] != null ? _this3.getReserved(k) : _this3.h[k];
 					}
 					_this1.group = tmp2;
-					var _this3 = _this1.lib;
+					var _this4 = _this1.lib;
 					var k1 = _this1.groupName;
-					var g1;
+					var g;
 					if(k1 == null) {
-						g1 = _this3.currentGroup;
+						g = _this4.currentGroup;
 					} else {
-						var _this4 = _this3.groups;
-						g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+						var _this5 = _this4.groups;
+						g = __map_reserved[k1] != null ? _this5.getReserved(k1) : _this5.h[k1];
 					}
-					_this1.frameData = g1 == null ? null : g1.frames[0];
+					_this1.frameData = g == null ? null : g.frames[0];
 					if(_this1.frameData == null) {
 						throw new js__$Boot_HaxeError("Unknown frame: " + _this1.groupName + "(" + 0 + ")");
 					}
@@ -6526,29 +6478,29 @@ en_m_SimpleTurret.prototype = $extend(en_Mob.prototype,{
 		}
 		var tmp3;
 		if(this.bullets > 0) {
-			var _this5 = this.cd;
+			var _this6 = this.cd;
 			var frames2 = Game.ME.secToFrames(0.15);
 			var tmp4;
-			if(_this5.fastCheck.h.hasOwnProperty(37748736)) {
+			if(_this6.fastCheck.h.hasOwnProperty(37748736)) {
 				tmp4 = true;
 			} else {
-				var frames11 = frames2;
-				frames11 = Math.floor(frames11 * 1000) / 1000;
-				var cur1 = _this5._getCdObject(37748736);
-				if(!(cur1 != null && frames11 < cur1.frames && false)) {
-					if(frames11 <= 0) {
+				var frames3 = frames2;
+				frames3 = Math.floor(frames3 * 1000) / 1000;
+				var cur1 = _this6._getCdObject(37748736);
+				if(!(cur1 != null && frames3 < cur1.frames && false)) {
+					if(frames3 <= 0) {
 						if(cur1 != null) {
-							HxOverrides.remove(_this5.cdList,cur1);
+							HxOverrides.remove(_this6.cdList,cur1);
 							cur1.frames = 0;
 							cur1.cb = null;
-							_this5.fastCheck.remove(cur1.k);
+							_this6.fastCheck.remove(cur1.k);
 						}
 					} else {
-						_this5.fastCheck.h[37748736] = true;
+						_this6.fastCheck.h[37748736] = true;
 						if(cur1 != null) {
-							cur1.frames = frames11;
+							cur1.frames = frames3;
 						} else {
-							_this5.cdList.push(new mt__$Cooldown_CdInst(37748736,frames11));
+							_this6.cdList.push(new mt__$Cooldown_CdInst(37748736,frames3));
 						}
 					}
 				}
@@ -6559,32 +6511,32 @@ en_m_SimpleTurret.prototype = $extend(en_Mob.prototype,{
 			tmp3 = false;
 		}
 		if(tmp3) {
-			var _this6 = this.cd;
 			var _this7 = this.cd;
+			var _this8 = this.cd;
 			var cd = this.cd._getCdObject(4194304);
-			var frames3 = (cd == null ? 0 : cd.frames) / this.cd.baseFps * 0.5 * _this7.baseFps;
-			frames3 = Math.floor(frames3 * 1000) / 1000;
-			var cur2 = _this6._getCdObject(33554432);
-			if(!(cur2 != null && frames3 < cur2.frames && false)) {
-				if(frames3 <= 0) {
+			var frames4 = (cd == null ? 0 : cd.frames) / this.cd.baseFps * 0.5 * _this8.baseFps;
+			frames4 = Math.floor(frames4 * 1000) / 1000;
+			var cur2 = _this7._getCdObject(33554432);
+			if(!(cur2 != null && frames4 < cur2.frames && false)) {
+				if(frames4 <= 0) {
 					if(cur2 != null) {
-						HxOverrides.remove(_this6.cdList,cur2);
+						HxOverrides.remove(_this7.cdList,cur2);
 						cur2.frames = 0;
 						cur2.cb = null;
-						_this6.fastCheck.remove(cur2.k);
+						_this7.fastCheck.remove(cur2.k);
 					}
 				} else {
-					_this6.fastCheck.h[33554432] = true;
+					_this7.fastCheck.h[33554432] = true;
 					if(cur2 != null) {
-						cur2.frames = frames3;
+						cur2.frames = frames4;
 					} else {
-						_this6.cdList.push(new mt__$Cooldown_CdInst(33554432,frames3));
+						_this7.cdList.push(new mt__$Cooldown_CdInst(33554432,frames4));
 					}
 				}
 			}
 			var e = new en_Bullet((this.cx + this.xr) * Const.GRID,(this.cy + this.yr) * Const.GRID);
 			e.maxDist2 = range * range;
-			var _this8 = Game.ME.hero;
+			var _this9 = Game.ME.hero;
 			var v1 = 0.;
 			var _g = 0;
 			var _g1 = en_Ring.ALL;
@@ -6594,7 +6546,7 @@ en_m_SimpleTurret.prototype = $extend(en_Mob.prototype,{
 				v1 += (e1.cx + e1.xr) * Const.GRID;
 			}
 			var x = v1 / en_Ring.ALL.length;
-			var _this9 = Game.ME.hero;
+			var _this10 = Game.ME.hero;
 			var v2 = 0.;
 			var _g2 = 0;
 			var _g11 = en_Ring.ALL;
@@ -6631,14 +6583,14 @@ var en_m_Splasher = function(x,y) {
 		_this.group = tmp;
 		var _this3 = _this.lib;
 		var k1 = _this.groupName;
-		var g1;
+		var g;
 		if(k1 == null) {
-			g1 = _this3.currentGroup;
+			g = _this3.currentGroup;
 		} else {
 			var _this4 = _this3.groups;
-			g1 = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
+			g = __map_reserved[k1] != null ? _this4.getReserved(k1) : _this4.h[k1];
 		}
-		_this.frameData = g1 == null ? null : g1.frames[0];
+		_this.frameData = g == null ? null : g.frames[0];
 		if(_this.frameData == null) {
 			throw new js__$Boot_HaxeError("Unknown frame: " + _this.groupName + "(" + 0 + ")");
 		}
@@ -6690,7 +6642,7 @@ en_m_Splasher.prototype = $extend(en_Mob.prototype,{
 	onDispose: function() {
 		en_Mob.prototype.onDispose.call(this);
 		var _this = this.dirt;
-		if(_this.parent != null) {
+		if(_this != null && _this.parent != null) {
 			_this.parent.removeChild(_this);
 		}
 	}
@@ -9959,14 +9911,6 @@ var h2d_BlendMode = $hxEnums["h2d.BlendMode"] = { __ename__ : true, __constructs
 	,Min: {_hx_index:10,__enum__:"h2d.BlendMode",toString:$estr}
 };
 h2d_BlendMode.__empty_constructs__ = [h2d_BlendMode.None,h2d_BlendMode.Alpha,h2d_BlendMode.Add,h2d_BlendMode.AlphaAdd,h2d_BlendMode.SoftAdd,h2d_BlendMode.Multiply,h2d_BlendMode.Erase,h2d_BlendMode.Screen,h2d_BlendMode.Sub,h2d_BlendMode.Max,h2d_BlendMode.Min];
-var h2d_ConsoleArg = $hxEnums["h2d.ConsoleArg"] = { __ename__ : true, __constructs__ : ["AInt","AFloat","AString","ABool","AEnum"]
-	,AInt: {_hx_index:0,__enum__:"h2d.ConsoleArg",toString:$estr}
-	,AFloat: {_hx_index:1,__enum__:"h2d.ConsoleArg",toString:$estr}
-	,AString: {_hx_index:2,__enum__:"h2d.ConsoleArg",toString:$estr}
-	,ABool: {_hx_index:3,__enum__:"h2d.ConsoleArg",toString:$estr}
-	,AEnum: ($_=function(values) { return {_hx_index:4,values:values,__enum__:"h2d.ConsoleArg",toString:$estr}; },$_.__params__ = ["values"],$_)
-};
-h2d_ConsoleArg.__empty_constructs__ = [h2d_ConsoleArg.AInt,h2d_ConsoleArg.AFloat,h2d_ConsoleArg.AString,h2d_ConsoleArg.ABool];
 var h2d_Kerning = function(c,o) {
 	this.prevChar = c;
 	this.offset = o;
@@ -23488,6 +23432,9 @@ h3d_shader_VolumeDecal.prototype = $extend(hxsl_Shader.prototype,{
 	}
 	,__class__: h3d_shader_VolumeDecal
 });
+var haxe_IMap = function() { };
+$hxClasses["haxe.IMap"] = haxe_IMap;
+haxe_IMap.__name__ = "haxe.IMap";
 var haxe_EntryPoint = function() { };
 $hxClasses["haxe.EntryPoint"] = haxe_EntryPoint;
 haxe_EntryPoint.__name__ = "haxe.EntryPoint";
@@ -24898,6 +24845,35 @@ haxe_ds_EnumValueMap.prototype = $extend(haxe_ds_BalancedTree.prototype,{
 	}
 	,__class__: haxe_ds_EnumValueMap
 });
+var haxe_ds_IntMap = function() {
+	this.h = { };
+};
+$hxClasses["haxe.ds.IntMap"] = haxe_ds_IntMap;
+haxe_ds_IntMap.__name__ = "haxe.ds.IntMap";
+haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
+haxe_ds_IntMap.prototype = {
+	remove: function(key) {
+		if(!this.h.hasOwnProperty(key)) {
+			return false;
+		}
+		delete(this.h[key]);
+		return true;
+	}
+	,keys: function() {
+		var a = [];
+		for( var key in this.h ) this.h.hasOwnProperty(key) ? a.push(key | 0) : null;
+		return HxOverrides.iter(a);
+	}
+	,iterator: function() {
+		return { ref : this.h, it : this.keys(), hasNext : function() {
+			return this.it.hasNext();
+		}, next : function() {
+			var i = this.it.next();
+			return this.ref[i];
+		}};
+	}
+	,__class__: haxe_ds_IntMap
+};
 var haxe_ds_List = function() {
 	this.length = 0;
 };
@@ -41975,6 +41951,26 @@ hxsl_Splitter.prototype = {
 	}
 	,__class__: hxsl_Splitter
 };
+var js__$Boot_HaxeError = function(val) {
+	Error.call(this);
+	this.val = val;
+	if(Error.captureStackTrace) {
+		Error.captureStackTrace(this,js__$Boot_HaxeError);
+	}
+};
+$hxClasses["js._Boot.HaxeError"] = js__$Boot_HaxeError;
+js__$Boot_HaxeError.__name__ = "js._Boot.HaxeError";
+js__$Boot_HaxeError.wrap = function(val) {
+	if(((val) instanceof Error)) {
+		return val;
+	} else {
+		return new js__$Boot_HaxeError(val);
+	}
+};
+js__$Boot_HaxeError.__super__ = Error;
+js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
+	__class__: js__$Boot_HaxeError
+});
 var js_html__$ArrayBuffer_ArrayBufferCompat = function() { };
 $hxClasses["js.html._ArrayBuffer.ArrayBufferCompat"] = js_html__$ArrayBuffer_ArrayBufferCompat;
 js_html__$ArrayBuffer_ArrayBufferCompat.__name__ = "js.html._ArrayBuffer.ArrayBufferCompat";
@@ -44479,11 +44475,8 @@ mt_heaps_slib_assets_Atlas.convertToSlib = function(atlas,notZeroBaseds,properti
 function $getIterator(o) { if( o instanceof Array ) return HxOverrides.iter(o); else return o.iterator(); }
 var $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
-if( String.fromCodePoint == null ) String.fromCodePoint = function(c) { return c < 0x10000 ? String.fromCharCode(c) : String.fromCharCode((c>>10)+0xD7C0)+String.fromCharCode((c&0x3FF)+0xDC00); }
-Object.defineProperty(js__$Boot_HaxeError.prototype,"message",{ get : function() {
-	return String(this.val);
-}});
 $hxClasses["Math"] = Math;
+if( String.fromCodePoint == null ) String.fromCodePoint = function(c) { return c < 0x10000 ? String.fromCharCode(c) : String.fromCharCode((c>>10)+0xD7C0)+String.fromCharCode((c&0x3FF)+0xDC00); }
 String.prototype.__class__ = $hxClasses["String"] = String;
 String.__name__ = "String";
 $hxClasses["Array"] = Array;
@@ -44500,6 +44493,9 @@ haxe_Resource.content = [{ name : "R_level_png", data : "iVBORw0KGgoAAAANSUhEUgA
 haxe_ds_ObjectMap.count = 0;
 var __map_reserved = {};
 haxe_MainLoop.add(hxd_System.updateCursor,-1);
+Object.defineProperty(js__$Boot_HaxeError.prototype,"message",{ get : function() {
+	return String(this.val);
+}});
 if(ArrayBuffer.prototype.slice == null) {
 	ArrayBuffer.prototype.slice = js_html__$ArrayBuffer_ArrayBufferCompat.sliceImpl;
 }
@@ -44662,7 +44658,8 @@ Assets.SBANK = (function($this) {
 	return $r;
 }(this));
 Const.FPS = 30;
-Const.UPSCALE = 2;
+Const.UPSCALE = 1;
+Const.GUARANTEED_HEI = 320;
 Const.GRID = 16;
 Const.uniq = 0;
 Const.DP_BG = Const.uniq++;

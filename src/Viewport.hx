@@ -6,8 +6,8 @@ class Viewport extends mt.Process {
 	var s : h2d.Object;
 	public var x : Float;
 	public var y : Float;
-	public var wid : Float;
-	public var hei : Float;
+	public var wid(get,never) : Float; inline function get_wid() return w()/Const.UPSCALE;
+	public var hei(get,never) : Float; inline function get_hei() return h()/Const.UPSCALE;
 
 	var level(get,never) : Level; inline function get_level() return Game.ME.level;
 
@@ -15,14 +15,6 @@ class Viewport extends mt.Process {
 		super(Game.ME);
 		this.s = s;
 		x= y = 0;
-		wid = hei = 1;
-		onResize();
-	}
-
-	override public function onResize() {
-		super.onResize();
-		wid = w() / Const.UPSCALE;
-		hei = h() / Const.UPSCALE;
 	}
 
 	var shakePow = 0.;

@@ -20,7 +20,5 @@ class Intro extends mt.Process {
 				destroy();
 			});
 		}, 3800);
-
-		Assets.music.playOnGroup(1,true);
 	}
 }
