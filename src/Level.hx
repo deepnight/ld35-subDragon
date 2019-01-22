@@ -25,15 +25,12 @@ class Level extends mt.Process {
 		spots = new Map();
 		fastSpots = new Map();
 
-		var t = Assets.tiles.getTile("level", 0);
-		t.getTexture();
-		var tex = Assets.tiles.getBitmapData("level",0);
-		tex.lock();
-		wid = tex.width;
-		hei = tex.height;
+		var bd = hxd.Res.level.toBitmap();
+		wid = bd.width;
+		hei = bd.height;
 		for(cx in 0...wid)
 		for(cy in 0...hei) {
-			var c = tex.getPixel(cx,cy) & 0x00FFFFFF;
+			var c = bd.getPixel(cx,cy) & 0x00FFFFFF;
 			switch( c ) {
 				case 0xFFFFFF : addSpot("wall",cx,cy); addSpot("coll",cx,cy);
 				case 0xff0000 : addSpot("turret",cx,cy);
@@ -46,7 +43,7 @@ class Level extends mt.Process {
 				case 0x51b2ff : waterY = cy;
 			}
 		}
-		tex.dispose();
+		bd.dispose();
 
 		// Waves
 		waves = [];
