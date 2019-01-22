@@ -24,7 +24,7 @@ class Mob extends Entity {
 	var prepareCb : Void->Void;
 	function prepare(d:Float, cb:Void->Void) {
 		prepareCb = cb;
-		cd.set("preparing", d);
+		cd.setF("preparing", d);
 	}
 
 	override function onDie() {

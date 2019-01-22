@@ -1,4 +1,3 @@
-import mt.flash.Controller;
 import hxd.Key;
 import mt.MLib;
 import mt.heaps.slib.*;
@@ -6,7 +5,7 @@ import mt.heaps.slib.*;
 class Game extends mt.Process {
 	public static var ME : Game;
 
-	var ctrl : Controller;
+	var ctrl : mt.heaps.Controller.ControllerAccess;
 	public var hero : en.Head;
 	public var level : Level;
 	public var scroller : h2d.Layers;
@@ -25,7 +24,8 @@ class Game extends mt.Process {
 
 		ME = this;
 		createRoot(Boot.ME.s2d);
-		ctrl = new mt.flash.Controller("main");
+		root.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
+		ctrl = Boot.ME.controller.createAccess("game");
 
 		scroller = new h2d.Layers(root);
 		scroller.setScale(Const.UPSCALE);
@@ -33,9 +33,9 @@ class Game extends mt.Process {
 		scroller.x = 200;
 		viewport = new Viewport(scroller);
 
-		var actx = new h2d.Sprite();
+		var actx = new h2d.Object();
 		scroller.add(actx, Const.DP_FX);
-		var nctx = new h2d.Sprite();
+		var nctx = new h2d.Object();
 		scroller.add(nctx, Const.DP_FX);
 		fx = new Fx(this, actx, nctx);
 
@@ -46,7 +46,7 @@ class Game extends mt.Process {
 		dark = Assets.tiles.h_get("dark", root);
 		dark.alpha = 0;
 
-		mask = new h2d.Bitmap( h2d.Tile.fromColor(alpha(0x0),1,1), root);
+		mask = new h2d.Bitmap( h2d.Tile.fromColor(addAlpha(0x0),1,1), root);
 
 		cm = new mt.deepnight.Cinematic(Const.FPS);
 
@@ -64,7 +64,7 @@ class Game extends mt.Process {
 
 		onResize();
 
-		tw.create(mask.alpha, 1>0, 2000);
+		tw.createMs(mask.alpha, 1>0, 2000);
 	}
 
 	function showHelp(complete:Bool) {
@@ -83,11 +83,11 @@ class Game extends mt.Process {
 		});
 	}
 
-	var curMsg : Null<h2d.Sprite>;
+	var curMsg : Null<h2d.Object>;
 	public function message(str:String, ?col=0x151B3C) {
 		clearMessage();
 
-		var wrapper = new h2d.Sprite(root);
+		var wrapper = new h2d.Object(root);
 		curMsg = wrapper;
 
 		var out = new h2d.Graphics(wrapper);
@@ -107,13 +107,13 @@ class Game extends mt.Process {
 
 		var tip = new h2d.Text(Assets.font, wrapper);
 		tip.text = "Press SPACE to skip";
-		tip.setPos(t.textWidth-tip.textWidth, t.textHeight+p);
-		tw.create(tip.alpha, 500|0>1, 1000);
+		tip.setPosition(t.textWidth-tip.textWidth, t.textHeight+p);
+		tw.createMs(tip.alpha, 500|0>1, 1000);
 
 		wrapper.scale(Const.UPSCALE);
 		var b = wrapper.getBounds();
 		wrapper.y = h()*0.5 - b.height*0.5 + rnd(0,30,true);
-		tw.create(wrapper.x, -b.width>100, 800);
+		tw.createMs(wrapper.x, -b.width>100, 800);
 	}
 
 
@@ -123,13 +123,13 @@ class Game extends mt.Process {
 		t.dropShadow = { dx:0, dy:1, color:0x0, alpha:0.5 }
 		t.scale(Const.UPSCALE);
 		t.x = w()*0.5 - t.textWidth*t.scaleX*0.5;
-		tw.create(t.y, h()>h()-t.textHeight*t.scaleY-5, 700);
+		tw.createMs(t.y, h()>h()-t.textHeight*t.scaleY-5, 700);
 
 		var time = secToFrames(2);
 		createChildProcess(function(p) {
 			if( --time<=0 ) {
 				p.destroy();
-				tw.create(t.y, h(), 400).end( t.remove );
+				tw.createMs(t.y, h(), 400).end( t.remove );
 			}
 		});
 	}
@@ -137,7 +137,7 @@ class Game extends mt.Process {
 	public function imageMessage(k:String, ?f=0) {
 		clearMessage();
 
-		var wrapper = new h2d.Sprite(root);
+		var wrapper = new h2d.Object(root);
 		curMsg = wrapper;
 
 		var bg = new h2d.Graphics(wrapper);
@@ -146,22 +146,22 @@ class Game extends mt.Process {
 
 		var img = Assets.tiles.h_get(k,f, wrapper);
 		img.setCenterRatio(0.5,0.5);
-		img.setPos( w()*0.5/Const.UPSCALE, h()*0.5/Const.UPSCALE );
+		img.setPosition( w()*0.5/Const.UPSCALE, h()*0.5/Const.UPSCALE );
 
 		var tip = new h2d.Text(Assets.font, wrapper);
 		tip.text = "Press SPACE to skip";
-		tip.setPos(img.x-tip.textWidth*0.5, img.y+img.tile.height*0.5 + 20);
-		tw.create(tip.alpha, 1000|0>1, 1000);
+		tip.setPosition(img.x-tip.textWidth*0.5, img.y+img.tile.height*0.5 + 20);
+		tw.createMs(tip.alpha, 1000|0>1, 1000);
 
 		wrapper.scale(Const.UPSCALE);
-		tw.create(wrapper.alpha, 0>1, 600);
+		tw.createMs(wrapper.alpha, 0>1, 600);
 	}
 
 	function clearMessage() {
 		if( curMsg!=null ) {
 			var e = curMsg;
 			curMsg = null;
-			tw.create(e.alpha, 0).end( e.remove );
+			tw.createMs(e.alpha, 0).end( e.remove );
 		}
 	}
 
@@ -175,7 +175,7 @@ class Game extends mt.Process {
 			dtf = new h2d.Text(Assets.font, root);
 		dtf.text = Std.string(str);
 		dtf.textColor = col;
-		dtf.setPos( w()-dtf.textWidth-10, 5 );
+		dtf.setPosition( w()-dtf.textWidth-10, 5 );
 	}
 
 	function startLevel() {
@@ -271,12 +271,12 @@ class Game extends mt.Process {
 
 	override public function postUpdate() {
 		super.postUpdate();
-		Assets.tiles.updateChildren(dt);
+		// Assets.tiles.updateChildren(dt);
 	}
 
 	public function getMouse() {
-		var gx = hxd.Stage.getInstance().mouseX;
-		var gy = hxd.Stage.getInstance().mouseY;
+		var gx = hxd.Window.getInstance().mouseX;
+		var gy = hxd.Window.getInstance().mouseY;
 		return {
 			gx : gx,
 			gy : gy,
@@ -295,7 +295,7 @@ class Game extends mt.Process {
 
 		mask.visible = mask.alpha>0;
 
-		cm.update();
+		cm.update(dt);
 
 		for( e in Entity.ALL )
 			if( !e.destroyed )
@@ -314,12 +314,12 @@ class Game extends mt.Process {
 		if( !hero.isDead() && ctrl.isKeyboardPressed(hxd.Key.R) )
 			hero.hit(1000);
 
-		if( !hero.isDead() && ctrl.isKeyboardPressed(hxd.Key.I) ) {
-			if( mt.flash.Controller.toggleInvert(AXIS_LEFT_Y) )
-				notify("Vertical gamepad inversion: ON");
-			else
-				notify("Vertical gamepad inversion: off");
-		}
+		// if( !hero.isDead() && ctrl.isKeyboardPressed(hxd.Key.I) ) {
+		// 	if( mt.heaps.Controller.toggleInvert(AXIS_LEFT_Y) )
+		// 		notify("Vertical gamepad inversion: ON");
+		// 	else
+		// 		notify("Vertical gamepad inversion: off");
+		// }
 
 		#if debug
 		if( !hero.isDead() && ctrl.isKeyboardPressed(hxd.Key.K) ) {
@@ -329,7 +329,7 @@ class Game extends mt.Process {
 		#end
 
 		if( ctrl.aPressed() && curMsg!=null ) {
-			cd.set("lock", secToFrames(0.2));
+			cd.setF("lock", secToFrames(0.2));
 			clearMessage();
 			cm.signal();
 		}
@@ -339,7 +339,7 @@ class Game extends mt.Process {
 		}
 
 		if( ctrl.isKeyboardPressed(hxd.Key.M) ) {
-			if( mt.flash.Sfx.toggleMuteChannel(1) )
+			if( mt.deepnight.Sfx.toggleMuteGroup(1) )
 				notify("Music ON");
 			else
 				notify("Music OFF... oh rly? :(");
@@ -356,9 +356,9 @@ class Game extends mt.Process {
 			for(e in en.Ring.ALL)
 				fx.ringExplode(e.centerX, e.centerY);
 			deathTimer = -9999;
-			tw.create(mask.alpha, 0>1, 800).end( function() {
+			tw.createMs(mask.alpha, 0>1, 800).end( function() {
 				startLevel();
-				tw.create(mask.alpha, 0, 1000);
+				tw.createMs(mask.alpha, 0, 1000);
 			});
 		}
 
@@ -368,7 +368,7 @@ class Game extends mt.Process {
 			dark.alpha += (0-dark.alpha)*0.03;
 
 		// Tuto
-		if( hero.cx>=32 && !cd.hasSet("frozenTuto", 999999) ) {
+		if( hero.cx>=32 && !cd.hasSetF("frozenTuto", 999999) ) {
 			cm.create({
 				hero.setFrozen(true);
 				imageMessage("tutoFreeze")>end;
@@ -383,7 +383,7 @@ class Game extends mt.Process {
 					break;
 				}
 			if( !any ) {
-				cd.set("warnContact", 999999);
+				cd.setF("warnContact", 999999);
 				cm.create({
 					hero.setFrozen(true);
 					message("Also, don't touch enemies or you will explode.") > end;
@@ -391,7 +391,7 @@ class Game extends mt.Process {
 				});
 			}
 		}
-		if( hero.cx>=238 && !cd.hasSet("ending", 999999) ) {
+		if( hero.cx>=238 && !cd.hasSetF("ending", 999999) ) {
 			cm.create({
 				hero.setFrozen(true);
 				message("Thank you for playing!") > end;

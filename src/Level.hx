@@ -60,7 +60,7 @@ class Level extends mt.Process {
 			Game.ME.scroller.add(e, i<=1 ? Const.DP_BG : Const.DP_WAVE_FRONT);
 			waves.push(e);
 			e.tileWrap = true;
-			e.tile.setPos( i*17 + irnd(0,30,true), 0 );
+			e.tile.setPosition( i*17 + irnd(0,30,true), 0 );
 			e.alpha = 0.45 + i*0.2;
 		}
 
@@ -74,7 +74,7 @@ class Level extends mt.Process {
 			circles.push(e);
 			e.scaleY = 2-i*0.25;
 			e.tileWrap = true;
-			e.tile.setPos( i*17 + irnd(0,10,true), 0 );
+			e.tile.setPosition( i*17 + irnd(0,10,true), 0 );
 			e.alpha = 0.04;
 		}
 

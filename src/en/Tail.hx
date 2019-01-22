@@ -47,7 +47,7 @@ class Tail extends Ring {
 	override function onTouch(e:Entity) {
 		super.onTouch(e);
 
-		if( e.is(en.Mob) && !cd.hasSet("contactHit",secToFrames(0.3)) ) {
+		if( e.is(en.Mob) && !cd.hasSetF("contactHit",secToFrames(0.3)) ) {
 			e.hit(1000, this);
 			hit(1, e);
 		}
@@ -61,16 +61,20 @@ class Tail extends Ring {
 			spr.y+=rnd(0,1);
 		}
 
-		shootSpr.setPos(spr.x, spr.y);
+		shootSpr.setPosition(spr.x, spr.y);
 		shootSpr.rotation = spr.rotation;
 
-		frozenSpr.setPos(spr.x, spr.y);
+		frozenSpr.setPosition(spr.x, spr.y);
 		frozenSpr.rotation = spr.rotation;
 		frozenSpr.visible = frozen;
 	}
 
 	override public function onDispose() {
 		super.onDispose();
+	}
+
+	function playRandomSfx( randList:Array<?Float->mt.deepnight.Sfx>, ?volume=1.0) {
+		return randList[ Std.random(randList.length) ]().play(volume);
 	}
 
 	override public function update() {
@@ -84,7 +88,7 @@ class Tail extends Ring {
 				if( !e.isDead() && distCaseSqr(e)<=range*range && Lib.angularDistanceRad(angTo(e), eyeAng)<=coneAng*0.5 && ( target==null || distCaseSqr(e)<=distCaseSqr(target) ) )
 					target = e;
 
-			if( target!=null && !cd.hasSet("shoot", secToFrames(0.15)) ) {
+			if( target!=null && !cd.hasSetF("shoot", secToFrames(0.15)) ) {
 				var e = new en.Bullet(centerX, centerY, true);
 				var s = 0.45;
 				var a = angTo(target);
@@ -95,15 +99,16 @@ class Tail extends Ring {
 				e.dx = Math.cos(a)*s;
 				e.dy = Math.sin(a)*s;
 				//target.hit(1, this);
-				cd.set("shake", secToFrames(0.2));
+				cd.setF("shake", secToFrames(0.2));
 				fx.shoot(centerX, centerY, target.centerX, target.centerY);
 				shootSpr.visible = true;
 				shootSpr.alpha = 1;
 				shootSpr.scaleX = 1;
-				if( !hero.cd.hasSet("shootSfx", secToFrames(0.1)) )
-					mt.flash.Sfx.playOne([ Assets.SBANK.shoot1,Assets.SBANK.shoot2,Assets.SBANK.shoot3 ], rnd(0.03, 0.07));
+				if( !hero.cd.hasSetF("shootSfx", secToFrames(0.1)) )
+					playRandomSfx([ Assets.SBANK.shoot1,Assets.SBANK.shoot2,Assets.SBANK.shoot3 ], rnd(0.03, 0.07));
 			}
 		}
+
 
 		if( parent!=null && !hero.isDead() )
 			if( frozen ) {

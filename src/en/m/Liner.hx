@@ -12,7 +12,7 @@ class Liner extends en.Mob {
 		this.ang = ang;
 		spr.set("liner");
 		initLife(8);
-		cd.setSeconds("shoot", 0.5);
+		cd.setS("shoot", 0.5);
 	}
 
 	override public function onDispose() {
@@ -35,13 +35,13 @@ class Liner extends en.Mob {
 
 		var range = Const.GRID*13;
 
-		if( distSqr(hero)<=range*range*1.1*1.1 && !cd.hasSet("shoot", secToFrames(1.5)) ) {
+		if( distSqr(hero)<=range*range*1.1*1.1 && !cd.hasSetF("shoot", secToFrames(1.5)) ) {
 			prepare( secToFrames(0.5), function() {
 				bullets = 10;
 			});
 		}
 
-		if( bullets>0 && !cd.hasSet("subShoot", secToFrames(0.05)) ) {
+		if( bullets>0 && !cd.hasSetF("subShoot", secToFrames(0.05)) ) {
 			var d = rnd(0,5,true);
 			var e = new en.Oscillo(centerX+Math.cos(ang)*10+Math.cos(ang+1.57)*d, centerY+Math.sin(ang)*10+Math.sin(ang+1.57)*d, ang, 0.3);
 			e.setRange(range);

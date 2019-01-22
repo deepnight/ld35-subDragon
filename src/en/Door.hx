@@ -44,24 +44,24 @@ class Door extends Entity {
 	override public function postUpdate() {
 		super.postUpdate();
 		var i = 0;
-		top.setPos(cx*Const.GRID, (cy-1)*Const.GRID);
-		bot.setPos(cx*Const.GRID, (cy+hei)*Const.GRID);
+		top.setPosition(cx*Const.GRID, (cy-1)*Const.GRID);
+		bot.setPosition(cx*Const.GRID, (cy+hei)*Const.GRID);
 		for(e in parts) {
-			e.setPos(cx*Const.GRID, (cy+i)*Const.GRID);
+			e.setPosition(cx*Const.GRID, (cy+i)*Const.GRID);
 			i++;
 		}
 	}
 
 	public function open() {
-		cd.set("open",99999);
+		cd.setS("open",99999);
 
 		for(d in 0...hei) {
 			parts[d].x += rnd(1,3,true);
 			parts[d].y += rnd(1,3,true);
-			Game.ME.delayer.add( function() {
+			Game.ME.delayer.addMs( function() {
 				parts[d].visible = false;
 				fx.explode(centerX, (cy+d)*Const.GRID);
-				if( !cd.hasSet("sfx", secToFrames(0.1)) )
+				if( !cd.hasSetF("sfx", secToFrames(0.1)) )
 					Assets.SBANK.explosion4(0.2);
 			}, d*200);
 		}

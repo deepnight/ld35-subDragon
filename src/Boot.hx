@@ -1,9 +1,10 @@
-import mt.flash.Controller;
-import mt.flash.GamePad;
+import mt.heaps.Controller;
 
 class Boot extends hxd.App {
 	public static var ME : Boot;
-	public var buffer : h2d.CachedBitmap;
+
+	public var controller : Controller;
+	public var ca : ControllerAccess;
 
 	// Boot
 	static function main() {
@@ -18,26 +19,29 @@ class Boot extends hxd.App {
 
 		engine.backgroundColor = 0xff<<24|0x0;
 
-		Controller.bind(A, hxd.Key.SPACE, hxd.Key.F);
-		Controller.bind(AXIS_LEFT_X_NEG, hxd.Key.A, hxd.Key.LEFT, hxd.Key.Q);
-		Controller.bind(AXIS_LEFT_X_POS, hxd.Key.D, hxd.Key.RIGHT);
-		Controller.bind(AXIS_LEFT_Y_POS, hxd.Key.W, hxd.Key.UP, hxd.Key.Z);
-		Controller.bind(AXIS_LEFT_Y_NEG, hxd.Key.S, hxd.Key.DOWN);
+		controller = new mt.heaps.Controller(s2d);
+		ca = controller.createAccess("main");
+
+		controller.bind(A, hxd.Key.SPACE, hxd.Key.F);
+		controller.bind(AXIS_LEFT_X_NEG, hxd.Key.A, hxd.Key.LEFT, hxd.Key.Q);
+		controller.bind(AXIS_LEFT_X_POS, hxd.Key.D, hxd.Key.RIGHT);
+		controller.bind(AXIS_LEFT_Y_POS, hxd.Key.W, hxd.Key.UP, hxd.Key.Z);
+		controller.bind(AXIS_LEFT_Y_NEG, hxd.Key.S, hxd.Key.DOWN);
 
 		Assets.init();
 
-		if( mt.deepnight.Lib.ludumProtection(true) ) {
+		// if( mt.deepnight.Lib.ludumProtection(true) ) {
 			#if debug
 			new Game();
 			#else
 			new Intro();
 			#end
-		}
-		else {
-			var t = new h2d.Text(Assets.font, s2d);
-			t.text = "Couldn't load data. Sorry.";
-			t.scale(2);
-		}
+		// }
+		// else {
+		// 	var t = new h2d.Text(Assets.font, s2d);
+		// 	t.text = "Couldn't load data. Sorry.";
+		// 	t.scale(2);
+		// }
 
 		onResize();
 	}
@@ -52,18 +56,15 @@ class Boot extends hxd.App {
 		suspend = d;
 	}
 
-	override function update(dt:Float) {
-		mt.flash.Controller.beforeUpdate();
+	override function update(delta:Float) {
+		mt.heaps.Controller.beforeUpdate();
 
-		super.update(dt);
-		if( suspend>0 ) {
-			mt.flash.Controller.lockGlobal();
+		super.update(delta);
+
+		if( suspend>0 )
 			suspend--;
-		}
-		else {
-			mt.flash.Controller.unlockGlobal();
-			mt.Process.updateAll(dt);
-		}
+		else
+			mt.Process.updateAll(hxd.Timer.tmod);
 	}
 }
 

@@ -1,9 +1,9 @@
 import mt.heaps.slib.*;
 import mt.heaps.slib.assets.*;
-import mt.flash.Sfx;
+import mt.deepnight.Sfx;
 
 class Assets {
-	public static var SBANK = mt.flash.Sfx.importDirectory("res/sfx");
+	public static var SBANK = mt.deepnight.Sfx.importDirectory("res/sfx");
 
 	public static var music : Sfx;
 	public static var font : h2d.Font;
@@ -13,8 +13,10 @@ class Assets {
 		font = hxd.Res.minecraftiaOutline.toFont();
 
 		music = SBANK.music();
-		music.setChannel(1);
-		Sfx.setChannelVolume(0, 1);
-		Sfx.setChannelVolume(1, 1);
+		Sfx.setGroupVolume(0, 1.0);
+		Sfx.setGroupVolume(1, 1.0);
+		// music.setChannel(1);
+		// Sfx.setChannelVolume(0, 1);
+		// Sfx.setChannelVolume(1, 1);
 	}
 }

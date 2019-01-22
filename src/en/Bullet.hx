@@ -68,7 +68,7 @@ class Bullet extends Entity {
 	override public function update() {
 		super.update();
 
-		if( !cd.hasSet("tail",2) )
+		if( !cd.hasSetF("tail",2) )
 			fx.tail(centerX, centerY, getMoveAng());
 
 		if( level.hasCollision(cx,cy) ) {

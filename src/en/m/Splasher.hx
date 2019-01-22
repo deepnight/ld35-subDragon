@@ -11,7 +11,7 @@ class Splasher extends en.Mob {
 		super(x,y);
 		spr.set("splasher");
 		initLife(8);
-		cd.setSeconds("shoot", 2);
+		cd.setS("shoot", 2);
 
 		dirt = Assets.tiles.h_get("splasherDirt",0, 0.5,0.5);
 		Game.ME.scroller.add(dirt, Const.DP_ENTITY);
@@ -33,7 +33,7 @@ class Splasher extends en.Mob {
 		spr.scaleY = 0.9 + 0.06*Math.cos(1.9+utime*0.08);
 		spr.rotation = 0.1*Math.sin(utime*0.02);
 
-		dirt.setPos(spr.x, spr.y);
+		dirt.setPosition(spr.x, spr.y);
 		//dirt.alpha = 0.9 + 0.05 * Math.cos(utime*0.1);
 		dirt.rotation = spr.rotation;
 		dirt.scaleX = spr.scaleX + 0.05*Math.cos(utime*0.06);
@@ -47,9 +47,9 @@ class Splasher extends en.Mob {
 
 		dirt.visible = !cd.has("shootRecent");
 
-		if( distSqr(hero)<=range*range*1.2*1.2 && !cd.hasSet("shoot", secToFrames(5)) ) {
+		if( distSqr(hero)<=range*range*1.2*1.2 && !cd.hasSetF("shoot", secToFrames(5)) ) {
 			prepare( secToFrames(1), function() {
-				cd.set("shootRecent", cd.get("shoot")*0.5);
+				cd.setS("shootRecent", cd.getS("shoot")*0.5);
 				var n = 20;
 				for(i in 0...n) {
 					var e = new en.Bullet(centerX, centerY);

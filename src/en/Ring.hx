@@ -28,7 +28,7 @@ class Ring extends Entity {
 		da = 0;
 		frozenAng = 0;
 		order = ALL.length-1;
-		cd.set("bubble", rndSeconds(0, 1));
+		cd.setF("bubble", rndSeconds(0, 1));
 		circColRadius = Const.GRID*0.3;
 		radius = Const.GRID*0.5;
 		linkDist = Const.GRID*0.5;
@@ -114,26 +114,26 @@ class Ring extends Entity {
 		spr.y = Std.int(spr.y);
 		if( !hero.isDead() )
 			spr.rotation += Lib.angularSubstractionRad( eyeAng, spr.rotation )*0.3;
-		shadow.setPos(spr.x, spr.y);
-		phong.setPos(spr.x, spr.y);
+		shadow.setPosition(spr.x, spr.y);
+		phong.setPosition(spr.x, spr.y);
 
 		link.visible = parent!=null && !parent.isDead();
 		if( parent!=null ) {
-			link.setPos( (spr.x+parent.spr.x)*0.5, (spr.y+parent.spr.y)*0.5 );
+			link.setPosition( (spr.x+parent.spr.x)*0.5, (spr.y+parent.spr.y)*0.5 );
 			link.rotation = Math.atan2(parent.spr.y-spr.y, parent.spr.x-spr.x);
 		}
 
 		linkBg.visible = link.visible;
 		linkBg.rotation = link.rotation + rnd(0,0.05,true);
-		linkBg.setPos(link.x, link.y);
+		linkBg.setPosition(link.x, link.y);
 	}
 
 	override public function update() {
 		super.update();
-		if( centerY>(level.waterY-0.3)*Const.GRID && centerY<(level.waterY+0.3)*Const.GRID && !cd.hasSetSeconds("softSplash",0.3) )
+		if( centerY>(level.waterY-0.3)*Const.GRID && centerY<(level.waterY+0.3)*Const.GRID && !cd.hasSetS("softSplash",0.3) )
 			fx.splash(centerX, true);
 
-		if( !cd.hasSetSeconds("bubble", rnd(1.5,2.5)) )
+		if( !cd.hasSetS("bubble", rnd(1.5,2.5)) )
 			fx.bubble(centerX, centerY);
 
 		if( hero.isDead() ) {
@@ -152,7 +152,7 @@ class Ring extends Entity {
 				//if( !Game.ME.cd.hasSet("hitSuspend", secToFrames(5)) )
 					//Boot.ME.suspendFor( secToFrames(0.2) );
 				fx.hit(e.centerX, e.centerY, e.angTo(this));
-				Game.ME.delayer.add( function() {
+				Game.ME.delayer.addF( function() {
 					hit(2, e);
 					e.destroy();
 				}, 1);

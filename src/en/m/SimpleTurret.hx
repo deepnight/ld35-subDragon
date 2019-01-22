@@ -12,7 +12,7 @@ class SimpleTurret extends en.Mob {
 		super(x,y);
 		spr.set("turretFull");
 		initLife(8);
-		cd.set("shoot", rndSeconds(2,3));
+		cd.setF("shoot", rndSeconds(2,3));
 
 		base = Assets.tiles.h_get("turretBase",0, 0.5,0.5);
 		Game.ME.scroller.add(base, Const.DP_BG);
@@ -27,7 +27,7 @@ class SimpleTurret extends en.Mob {
 		if( spr.is("turret") && !cd.has("empty") )
 			spr.set("turretFull");
 
-		base.setPos(spr.x, spr.y);
+		base.setPosition(spr.x, spr.y);
 		base.rotation = -spr.rotation*0.5;
 	}
 
@@ -46,15 +46,15 @@ class SimpleTurret extends en.Mob {
 
 		var range = Const.GRID*9;
 
-		if( !hero.isDead() && distSqr(hero)<=range*range*1.5*1.5 && !cd.hasSet("shoot", rndSeconds(4.5, 5)) ) {
+		if( !hero.isDead() && distSqr(hero)<=range*range*1.5*1.5 && !cd.hasSetF("shoot", rndSeconds(4.5, 5)) ) {
 			prepare(secToFrames(1.3), function() {
 				spr.set("turret");
 				bullets+=4;
 			});
 		}
 
-		if( bullets>0 && !cd.hasSet("shootingSub",secToFrames(0.15)) ) {
-			cd.set("empty", cd.get("shoot")*0.5 );
+		if( bullets>0 && !cd.hasSetF("shootingSub",secToFrames(0.15)) ) {
+			cd.setS("empty", cd.getS("shoot")*0.5 );
 			var e = new en.Bullet(centerX, centerY);
 			e.setRange(range);
 			var a = angToFree( hero.getBodyCenterX(), hero.getBodyCenterY() );

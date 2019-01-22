@@ -3,7 +3,7 @@ import mt.deepnight.Tweenie;
 
 class Viewport extends mt.Process {
 
-	var s : h2d.Sprite;
+	var s : h2d.Object;
 	public var x : Float;
 	public var y : Float;
 	public var wid : Float;
@@ -11,7 +11,7 @@ class Viewport extends mt.Process {
 
 	var level(get,never) : Level; inline function get_level() return Game.ME.level;
 
-	public function new(s:h2d.Sprite) {
+	public function new(s:h2d.Object) {
 		super(Game.ME);
 		this.s = s;
 		x= y = 0;
@@ -31,7 +31,7 @@ class Viewport extends mt.Process {
 			return;
 
 		shakePow = pow;
-		tw.create(shakePow, 200|pow>0, dsec*1000, TEaseIn);
+		tw.createMs(shakePow, 200|pow>0, dsec*1000, TEaseIn);
 	}
 
 	override public function update() {

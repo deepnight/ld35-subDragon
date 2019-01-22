@@ -118,7 +118,7 @@ class Entity {
 		color = c;
 		colorPow = pow;
 		spr.colorMatrix = mt.deepnight.Color.getColorizeMatrixH2d(c, pow);
-		cd.set("rgbRestore", d);
+		cd.setF("rgbRestore", d);
 	}
 
 
@@ -128,7 +128,7 @@ class Entity {
 	}
 
 	public function postUpdate() {
-		spr.setPos(centerX,centerY);
+		spr.setPosition(centerX,centerY);
 
 		if( floating && cy>=level.waterY ) {
 			spr.x += Math.cos(utime*0.052)*2;
@@ -189,13 +189,13 @@ class Entity {
 	public function ignoreTouch(e:Entity, ?d=99999) {
 		if( e==null )
 			return;
-		cd.set("ignore"+e.uid, d);
-		e.cd.set("ignore"+uid, d);
+		cd.setF("ignore"+e.uid, d);
+		e.cd.setF("ignore"+uid, d);
 	}
 
 	public function update() {
 		var oldY = centerY;
-		cd.update();
+		cd.update(Game.ME.tmod);
 
 		// Circular collisions
 		if( weight>0 )

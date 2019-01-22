@@ -4,7 +4,7 @@ import mt.MLib;
 import mt.deepnight.Lib;
 
 class Head extends Ring {
-	public var ctrl : mt.flash.Controller;
+	public var ca : mt.heaps.Controller.ControllerAccess;
 	var speed : Float;
 
 	public var mouseControl = false;
@@ -13,7 +13,7 @@ class Head extends Ring {
 		super(x,y);
 		spr.set("head");
 		weight = 10;
-		ctrl = new mt.flash.Controller("hero");
+		ca = Boot.ME.controller.createAccess("head");
 		frict = 0.7;
 		speed = 0;
 		initLife(1);
@@ -53,7 +53,7 @@ class Head extends Ring {
 
 	override public function hit(dmg, ?from:Entity) {
 		if( !cd.has("shield") ) {
-			cd.set("shield", secToFrames(0.1));
+			cd.setF("shield", secToFrames(0.1));
 			super.hit(dmg, from);
 		}
 	}
@@ -64,7 +64,7 @@ class Head extends Ring {
 		Assets.SBANK.explosion0(0.5);
 		var i = 0;
 		for(e in Ring.ALL) {
-			Game.ME.delayer.add( function() {
+			Game.ME.delayer.addMs( function() {
 				fx.ringExplode(e.centerX, e.centerY);
 				e.spr.set("ringDamaged");
 			}, i*450);
@@ -84,7 +84,7 @@ class Head extends Ring {
 
 	override public function onDispose() {
 		super.onDispose();
-		ctrl.dispose();
+		ca.dispose();
 	}
 
 	public inline function getBodyCenterX() {
@@ -134,19 +134,19 @@ class Head extends Ring {
 			else {
 				// Keyboard/pad controls
 				trust = 0.15;
-				if( ctrl.leftDown() ) {
+				if( ca.leftDown() ) {
 					ang += Lib.angularSubstractionRad(3.14,ang)*sa*1.5;
 					trust = 1;
 				}
-				else if( ctrl.rightDown() ) {
+				else if( ca.rightDown() ) {
 					ang += Lib.angularSubstractionRad(0,ang)*sa*1.5;
 					trust = 1;
 				}
-				if( ctrl.upDown() ) {
+				if( ca.upDown() ) {
 					ang += Lib.angularSubstractionRad(-1.57,ang)*sa;
 					trust = 1;
 				}
-				else if( ctrl.downDown() ) {
+				else if( ca.downDown() ) {
 					ang += Lib.angularSubstractionRad(1.57,ang)*sa;
 					trust = 1;
 				}
@@ -154,7 +154,7 @@ class Head extends Ring {
 				//trace("left="+ctrl.leftDown()+" right="+ctrl.rightDown()+" up="+ctrl.upDown()+" down="+ctrl.downDown());
 
 				//fx.markerFree(centerX+rnd(0,10,true), centerY+rnd(0,10,true), 100);
-				if( ctrl.aDown() )
+				if( ca.aDown() )
 					setFrozen(true);
 				else
 					setFrozen(false);
@@ -165,7 +165,7 @@ class Head extends Ring {
 		dx+=Math.cos(ang)*speed;
 		dy+=Math.sin(ang)*speed;
 		speed*=0.5;
-		if( trust>=0.9 && !cd.hasSet("bubTrust",secToFrames(0.2)) )
+		if( trust>=0.9 && !cd.hasSetF("bubTrust",secToFrames(0.2)) )
 			for(i in 0...2)
 				fx.bubble(centerX, centerY);
 
