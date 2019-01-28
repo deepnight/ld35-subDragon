@@ -30,6 +30,7 @@ class Boot extends hxd.App {
 		controller.bind(AXIS_LEFT_Y_NEG, hxd.Key.S, hxd.Key.DOWN);
 
 		Assets.init();
+		new mt.deepnight.GameFocusHelper(s2d, Assets.font);
 
 		// if( mt.deepnight.Lib.ludumProtection(true) ) {
 			#if debug
