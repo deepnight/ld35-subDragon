@@ -18,7 +18,7 @@ class Intro extends mt.Process {
 				new Game();
 				destroy();
 			});
-		}, 380000);
+		}, 3800);
 
 		onResize();
 	}
