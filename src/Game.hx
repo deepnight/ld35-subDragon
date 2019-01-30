@@ -23,13 +23,11 @@ class Game extends mt.Process {
 		super();
 
 		ME = this;
-		createRoot(Boot.ME.s2d);
-		ctrl = Boot.ME.controller.createAccess("game");
+		createRoot(Main.ME.root);
+		ctrl = Main.ME.controller.createAccess("game");
 
 		scroller = new h2d.Layers(root);
-		//scroller.filters.push( new h2d.filter.Displacement(h2d.Tile.fromColor(0x8080ff, 2,2)) );
 		scroller.x = 200;
-		scroller.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
 		viewport = new Viewport(scroller);
 
 		var actx = new h2d.Object();
@@ -114,9 +112,8 @@ class Game extends mt.Process {
 		tip.setPosition(t.textWidth-tip.textWidth, t.textHeight+p);
 		tw.createMs(tip.alpha, 500|0>1, 1000);
 
-		wrapper.scale(Const.UPSCALE);
 		var b = wrapper.getBounds();
-		wrapper.y = h()*0.5 - b.height*0.5 + rnd(0,30,true);
+		wrapper.y = viewport.hei*0.5 - b.height*0.5 + rnd(0,30,true);
 		tw.createMs(wrapper.x, -b.width>100, 800);
 	}
 
@@ -125,15 +122,14 @@ class Game extends mt.Process {
 		var t = new h2d.Text(Assets.font, root);
 		t.text = str;
 		t.dropShadow = { dx:0, dy:1, color:0x0, alpha:0.5 }
-		t.scale(Const.UPSCALE);
-		t.x = w()*0.5 - t.textWidth*t.scaleX*0.5;
-		tw.createMs(t.y, h()>h()-t.textHeight*t.scaleY-5, 700);
+		t.x = viewport.wid*0.5 - t.textWidth*t.scaleX*0.5;
+		tw.createMs(t.y, viewport.hei>viewport.hei-t.textHeight*t.scaleY-30, 150);
 
 		var time = secToFrames(2);
 		createChildProcess(function(p) {
 			if( --time<=0 ) {
 				p.destroy();
-				tw.createMs(t.y, h(), 400).end( t.remove );
+				tw.createMs(t.y, viewport.hei, 400).end( t.remove );
 			}
 		});
 	}
@@ -146,18 +142,17 @@ class Game extends mt.Process {
 
 		var bg = new h2d.Graphics(wrapper);
 		bg.beginFill(0x0, 0.7);
-		bg.drawRect(0,0,w()/Const.UPSCALE,h()/Const.UPSCALE);
+		bg.drawRect(0,0,viewport.wid, viewport.hei);
 
 		var img = Assets.tiles.h_get(k,f, wrapper);
 		img.setCenterRatio(0.5,0.5);
-		img.setPosition( w()*0.5/Const.UPSCALE, h()*0.5/Const.UPSCALE );
+		img.setPosition( viewport.wid*0.5, viewport.hei*0.5 );
 
 		var tip = new h2d.Text(Assets.font, wrapper);
 		tip.text = "Press SPACE to skip";
 		tip.setPosition(img.x-tip.textWidth*0.5, img.y+img.tile.height*0.5 + 20);
 		tw.createMs(tip.alpha, 1000|0>1, 1000);
 
-		wrapper.scale(Const.UPSCALE);
 		tw.createMs(wrapper.alpha, 0>1, 600);
 	}
 
@@ -179,7 +174,7 @@ class Game extends mt.Process {
 			dtf = new h2d.Text(Assets.font, root);
 		dtf.text = Std.string(str);
 		dtf.textColor = col;
-		dtf.setPosition( w()-dtf.textWidth-10, 5 );
+		dtf.setPosition( viewport.wid-dtf.textWidth-10, 5 );
 	}
 
 	function startLevel() {
@@ -254,25 +249,23 @@ class Game extends mt.Process {
 	}
 
 	function onMouseDown(e:hxd.Event) {
-		//if( !hero.isDead() && hero.mouseControl )
-			//hero.setFrozen(true);
+		if( !hero.isDead() && hero.mouseControl )
+			hero.setFrozen(true);
 	}
 
 	function onMouseUp(e:hxd.Event) {
-		//if( hero.mouseControl )
-			//hero.setFrozen(false);
+		if( hero.mouseControl )
+			hero.setFrozen(false);
 	}
 
 	override function onResize() {
 		super.onResize();
-		Const.UPSCALE = MLib.max( MLib.floor( h()/Const.GUARANTEED_HEI ), 1);
-		scroller.setScale(Const.UPSCALE);
-		mask.scaleX = w();
-		mask.scaleY = h();
-		ctrap.scaleX = w();
-		ctrap.scaleY = h();
-		dark.scaleX = w() / dark.tile.width;
-		dark.scaleY = h() / dark.tile.height;
+		mask.scaleX = viewport.wid;
+		mask.scaleY = viewport.hei;
+		ctrap.scaleX = viewport.wid;
+		ctrap.scaleY = viewport.hei;
+		dark.scaleX = viewport.wid / dark.tile.width;
+		dark.scaleY = viewport.hei / dark.tile.height;
 	}
 
 	override public function postUpdate() {
@@ -299,6 +292,7 @@ class Game extends mt.Process {
 	override function update() {
 		super.update();
 
+		ctrap.visible = hero.mouseControl;
 		mask.visible = mask.alpha>0;
 
 		cm.update(dt);
@@ -346,9 +340,9 @@ class Game extends mt.Process {
 
 		if( ctrl.isKeyboardPressed(hxd.Key.M) ) {
 			if( mt.deepnight.Sfx.toggleMuteGroup(1) )
-				notify("Music ON");
-			else
 				notify("Music OFF... oh rly? :(");
+			else
+				notify("Music ON");
 		}
 
 		#if debug

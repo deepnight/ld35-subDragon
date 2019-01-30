@@ -11,7 +11,9 @@ class Entity {
 	var cd : mt.Cooldown;
 	public var uid : Int;
 
-	public var tmod(get,never) : Float; inline function get_tmod() return Game.ME.tmod;
+	// public var gpTmod(get,never) : Float; inline function get_tmod() return Game.ME.gpTmod*0.5;
+	public var gpTmod(get,never) : Float; inline function get_gpTmod() return Game.ME.tmod * Const.GP_FPS/Const.FPS;
+	public var realTmod(get,never) : Float; inline function get_realTmod() return Game.ME.tmod;
 
 	public var cx : Int;
 	public var cy : Int;
@@ -149,15 +151,15 @@ class Entity {
 
 
 	function physX() {
-		xr+=dx*tmod;
+		xr+=dx*gpTmod;
 
 		if( lCollisions ) {
 			if( xr<0.25 && level.hasCollision(cx-1,cy) ) {
-				dx *= Math.pow(0.6,tmod);
+				dx *= Math.pow(0.6,gpTmod);
 				xr = 0.25;
 			}
 			if( xr>0.75 && level.hasCollision(cx+1,cy) ) {
-				dx *= Math.pow(0.6,tmod);
+				dx *= Math.pow(0.6,gpTmod);
 				xr = 0.75;
 			}
 		}
@@ -165,11 +167,11 @@ class Entity {
 
 
 	function physY() {
-		yr+=dy*tmod;
+		yr+=dy*gpTmod;
 
 		if( lCollisions ) {
 			if( yr<0.5 && level.hasCollision(cx,cy-1) ) {
-				dy *= Math.pow(0.8,tmod);
+				dy *= Math.pow(0.8,gpTmod);
 				yr = 0.5;
 			}
 			if( yr>1 && level.hasCollision(cx,cy+1) ) {
@@ -197,7 +199,7 @@ class Entity {
 
 	public function update() {
 		var oldY = centerY;
-		cd.update(tmod);
+		cd.update(realTmod);
 
 		// Circular collisions
 		if( weight>0 )
@@ -214,14 +216,14 @@ class Entity {
 				var wr = e.weight / (e.weight+weight);
 				if( wr>0.9 ) wr = 1;
 				if( wr<0.1 ) wr = 0;
-				dx-=Math.cos(a)*pow*wr*tmod;
-				dy-=Math.sin(a)*pow*wr*tmod;
+				dx-=Math.cos(a)*pow*wr*gpTmod;
+				dy-=Math.sin(a)*pow*wr*gpTmod;
 
 				var wr = weight / (e.weight+weight);
 				if( wr>0.9 ) wr = 1;
 				if( wr<0.1 ) wr = 0;
-				e.dx+=Math.cos(a)*pow*wr*tmod;
-				e.dy+=Math.sin(a)*pow*wr*tmod;
+				e.dx+=Math.cos(a)*pow*wr*gpTmod;
+				e.dy+=Math.sin(a)*pow*wr*gpTmod;
 			}
 
 		// Touch detection
@@ -234,8 +236,8 @@ class Entity {
 		// X
 		physX();
 
-		dx*=Math.pow(frict,tmod);
-		if( MLib.fabs(dx)<=0.0001*tmod ) dx = 0;
+		dx*=Math.pow(frict,gpTmod);
+		if( MLib.fabs(dx)<=0.0001*gpTmod ) dx = 0;
 
 		while(xr>1) { xr--; cx++; }
 		while(xr<0) { xr++; cx--; }
@@ -243,8 +245,8 @@ class Entity {
 		// Y
 		physY();
 
-		dy*=Math.pow(frict,tmod);
-		if( MLib.fabs(dy)<=0.0001*tmod ) dy = 0;
+		dy*=Math.pow(frict,gpTmod);
+		if( MLib.fabs(dy)<=0.0001*gpTmod ) dy = 0;
 
 		while(yr>1) { yr--; cy++; }
 		while(yr<0) { yr++; cy--; }

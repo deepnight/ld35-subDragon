@@ -1,7 +1,8 @@
 class Const {
-	public static var FPS = 30;
-	public static var UPSCALE = 1; // auto-set in Game.onResize()
-	public static var GUARANTEED_HEI = 320; // auto-set in Game.onResize()
+	public static var FPS = 40;
+	public static var GP_FPS = 30;
+	public static var UPSCALE = 4; // auto-set in Game.onResize()
+	public static var GUARANTEED_HEI = 280; // auto-set in Game.onResize()
 	public static var GRID = 16;
 
 	static var uniq=0;

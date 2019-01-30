@@ -38,8 +38,8 @@ class Viewport extends mt.Process {
 		x = MLib.fclamp(x, wid*0.5, level.wid*Const.GRID-wid*0.5);
 		y = MLib.fclamp(y, hei*0.5, level.hei*Const.GRID-hei*0.5);
 
-		var tx = -(x-wid*0.5)*Const.UPSCALE;
-		var ty = -(y-hei*0.5)*Const.UPSCALE;
+		var tx = -(x-wid*0.5);
+		var ty = -(y-hei*0.5);
 		var spd = mt.deepnight.Lib.distanceSqr(s.x, s.y, tx, ty)>=400*400 ? 0.11 : 0.05;
 		s.x += ( tx - s.x ) * spd;
 		s.y += ( ty - s.y ) * spd;
@@ -49,8 +49,8 @@ class Viewport extends mt.Process {
 
 		s.x = mt.MLib.round(s.x);
 		s.y = mt.MLib.round(s.y);
-		s.x = MLib.fclamp(s.x, -(level.wid*Const.GRID*Const.UPSCALE)+wid*0.5, 0);
-		s.y = MLib.fclamp(s.y, -(level.hei*Const.GRID*Const.UPSCALE)+hei*0.5, 0);
+		s.x = MLib.fclamp(s.x, -(level.wid*Const.GRID)+wid*0.5, 0);
+		s.y = MLib.fclamp(s.y, -(level.hei*Const.GRID)+hei*0.5, 0);
 	}
 
 }

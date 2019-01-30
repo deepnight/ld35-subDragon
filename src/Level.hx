@@ -313,9 +313,9 @@ class Level extends mt.Process {
 			e.y = waterY*Const.GRID;
 			i++;
 		}
-		sun.x = 370 - 0.5*Game.ME.scroller.x/Const.UPSCALE;
-		sun2.x = 2000 - 0.5*Game.ME.scroller.x/Const.UPSCALE;
+		sun.x = 370 - 0.5*Game.ME.scroller.x;
+		sun2.x = 2000 - 0.5*Game.ME.scroller.x;
 
-		clouds.x = -0.3*Game.ME.scroller.x/Const.UPSCALE;
+		clouds.x = -0.3*Game.ME.scroller.x;
 	}
 }
