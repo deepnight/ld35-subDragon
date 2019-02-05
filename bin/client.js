@@ -42194,6 +42194,7 @@ var mt_deepnight_GameFocusHelper = function(s,font) {
 	this.root.set_visible(false);
 	this.showIntro = true;
 	this.suspendGame();
+	hxd_snd_NativeChannel.stopInput(null);
 };
 $hxClasses["mt.deepnight.GameFocusHelper"] = mt_deepnight_GameFocusHelper;
 mt_deepnight_GameFocusHelper.__name__ = "mt.deepnight.GameFocusHelper";
