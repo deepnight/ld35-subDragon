@@ -25,11 +25,8 @@ class Intro extends dn.Process {
 
 		var wid = w()/Const.UPSCALE;
 		var hei = h()/Const.UPSCALE;
-		// var sy = hei / 300;
 
-		// logo.setScale( 1 + M.floor(Const.UPSCALE*0.5) );
 		logo.setScale(Const.UPSCALE<4 ? 2 : 1);
 		logo.setPosition(wid*0.5, hei*0.5);
-		trace(Const.UPSCALE);
 	}
 }
