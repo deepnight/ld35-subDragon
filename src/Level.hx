@@ -1,8 +1,6 @@
-import mt.MLib;
 import h2d.SpriteBatch;
-import mt.heaps.slib.*;
 
-class Level extends mt.Process {
+class Level extends dn.Process {
 	public var wid : Int;
 	public var hei : Int;
 	// var spots : Map<String,Array<Point>>;
@@ -281,7 +279,7 @@ class Level extends mt.Process {
 		e.x = x;
 		e.y = y;
 		if( e.y>=waterY*Const.GRID ) {
-			var c = mt.deepnight.Color.intToRgb( mt.deepnight.Color.interpolateInt(0xFFFFFF, 0x3E3993, 0.6) );
+			var c = dn.Color.intToRgb( dn.Color.interpolateInt(0xFFFFFF, 0x3E3993, 0.6) );
 			e.r = c.r/255;
 			e.g = c.g/255;
 			e.b = c.b/255;

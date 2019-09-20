@@ -1,8 +1,5 @@
 package en;
 
-import mt.deepnight.Lib;
-import mt.MLib;
-
 class Bullet extends Entity {
 	var maxDist2 : Float;
 	var ox : Float;

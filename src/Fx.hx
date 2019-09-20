@@ -1,7 +1,5 @@
 import h2d.SpriteBatch;
-import mt.heaps.HParticle;
-import mt.deepnight.Lib;
-import mt.MLib;
+import dn.heaps.HParticle;
 
 enum Col {
 	@str("Red") Red;
@@ -11,12 +9,12 @@ enum Col {
 	@str("Pink") Pink;
 }
 
-class Fx extends mt.Process {
+class Fx extends dn.Process {
 	var pool : ParticlePool;
 	public var addSb : h2d.SpriteBatch;
 	public var normalSb : h2d.SpriteBatch;
 
-	public function new(p:mt.Process, addCtx:h2d.Object, normalCtx:h2d.Object) {
+	public function new(p:dn.Process, addCtx:h2d.Object, normalCtx:h2d.Object) {
 		super(p);
 
 		pool = new ParticlePool(Assets.tiles.tile, 2048, Const.FPS);
@@ -132,7 +130,7 @@ class Fx extends mt.Process {
 
 	public function prepare(x:Float,y:Float, r:Float) {
 		var p = alloc(getTile("warning"), x,y);
-		p.alpha = MLib.fmin(r*1.5, 1);
+		p.alpha = M.fmin(r*1.5, 1);
 		p.setScale( 1-r*0.7 );
 		p.lifeF = 0;
 		p.fadeOutSpeed = 0.3;

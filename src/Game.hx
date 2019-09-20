@@ -1,11 +1,9 @@
 import hxd.Key;
-import mt.MLib;
-import mt.heaps.slib.*;
 
-class Game extends mt.Process {
+class Game extends dn.Process {
 	public static var ME : Game;
 
-	var ctrl : mt.heaps.Controller.ControllerAccess;
+	var ctrl : dn.heaps.Controller.ControllerAccess;
 	public var hero : en.Head;
 	public var level : Level;
 	public var scroller : h2d.Layers;
@@ -16,7 +14,7 @@ class Game extends mt.Process {
 
 	public var curCheckPoint : Null<Point>;
 
-	public var cm : mt.deepnight.Cinematic;
+	public var cm : dn.Cinematic;
 	var mask : h2d.Bitmap;
 
 	public function new() {
@@ -45,7 +43,7 @@ class Game extends mt.Process {
 
 		mask = new h2d.Bitmap( h2d.Tile.fromColor(addAlpha(0x0),1,1), root);
 
-		cm = new mt.deepnight.Cinematic(Const.FPS);
+		cm = new dn.Cinematic(Const.FPS);
 
 		startLevel();
 		delayer.addF(function() {
@@ -339,7 +337,7 @@ class Game extends mt.Process {
 		}
 
 		if( ctrl.isKeyboardPressed(hxd.Key.M) ) {
-			if( mt.deepnight.Sfx.toggleMuteGroup(1) )
+			if( dn.heaps.Sfx.toggleMuteGroup(1) )
 				notify("Music OFF... oh rly? :(");
 			else
 				notify("Music ON");
@@ -375,7 +373,7 @@ class Game extends mt.Process {
 				hero.setFrozen(false);
 			});
 		}
-		if( !cd.has("warnContact") && hero.distSqrFree(32*Const.GRID, 28*Const.GRID)<=MLib.pow(Const.GRID*3,2) ) {
+		if( !cd.has("warnContact") && hero.distSqrFree(32*Const.GRID, 28*Const.GRID)<=M.pow(Const.GRID*3,2) ) {
 			var any = false;
 			for(e in en.Mob.ALL)
 				if( e.cx<=41 && !e.isDead() ) {

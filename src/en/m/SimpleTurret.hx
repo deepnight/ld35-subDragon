@@ -1,9 +1,5 @@
 package en.m;
 
-import mt.heaps.slib.*;
-import mt.deepnight.Lib;
-import mt.MLib;
-
 class SimpleTurret extends en.Mob {
 	var bullets = 0;
 	var base : HSprite;
@@ -22,7 +18,7 @@ class SimpleTurret extends en.Mob {
 		super.postUpdate();
 		spr.scaleX = 0.9 + 0.06*Math.cos(utime*0.07);
 		spr.scaleY = 0.9 + 0.06*Math.cos(1.9+utime*0.09);
-		spr.rotation += Lib.angularSubstractionRad(angTo(hero), spr.rotation) * 0.2;
+		spr.rotation += M.radSubstract(angTo(hero), spr.rotation) * 0.2;
 
 		if( spr.is("turret") && !cd.has("empty") )
 			spr.set("turretFull");

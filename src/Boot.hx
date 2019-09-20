@@ -18,7 +18,7 @@ class Boot extends hxd.App {
 
 	override function onResize() {
 		super.onResize();
-		mt.Process.resizeAll();
+		dn.Process.resizeAll();
 	}
 
 	var suspend = 0.;
@@ -27,14 +27,14 @@ class Boot extends hxd.App {
 	}
 
 	override function update(delta:Float) {
-		mt.heaps.Controller.beforeUpdate();
+		dn.heaps.Controller.beforeUpdate();
 
 		super.update(delta);
 
 		if( suspend>0 )
 			suspend--;
 		else
-			mt.Process.updateAll(hxd.Timer.tmod);
+			dn.Process.updateAll(hxd.Timer.tmod);
 	}
 }
 

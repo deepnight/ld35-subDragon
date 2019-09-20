@@ -1,9 +1,5 @@
 package en;
 
-import mt.heaps.slib.*;
-import mt.deepnight.Lib;
-import mt.MLib;
-
 class Ring extends Entity {
 	public static var ALL : Array<Ring> = [];
 	public var order : Int;
@@ -72,9 +68,9 @@ class Ring extends Entity {
 	public function linkTo(e:Ring) parent = e;
 
 	public function hitWeakSpot(e:Bullet) {
-		return Lib.angularDistanceRad(angTo(e), eyeAng)<=1.25
+		return M.radDistance(angTo(e), eyeAng)<=1.25
 			&& distCaseSqr(e)<=6*6;
-		//return Lib.angularDistanceRad(eyeAng+3.14, bulletAng) <= 1.57;
+		//return M.radDistance(eyeAng+3.14, bulletAng) <= 1.57;
 	}
 
 	var delayedBullets : Array<Bullet> = [];
@@ -113,7 +109,7 @@ class Ring extends Entity {
 		spr.x = Std.int(spr.x);
 		spr.y = Std.int(spr.y);
 		if( !hero.isDead() )
-			spr.rotation += Lib.angularSubstractionRad( eyeAng, spr.rotation )*0.3;
+			spr.rotation += M.radSubstract( eyeAng, spr.rotation )*0.3;
 		shadow.setPosition(spr.x, spr.y);
 		phong.setPosition(spr.x, spr.y);
 

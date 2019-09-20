@@ -1,9 +1,5 @@
 package en;
 
-import mt.deepnight.Lib;
-import mt.MLib;
-import mt.heaps.slib.*;
-
 class Tail extends Ring {
 	var target : Null<en.Mob>;
 	var coneAng = 1.5;
@@ -73,7 +69,7 @@ class Tail extends Ring {
 		super.onDispose();
 	}
 
-	function playRandomSfx( randList:Array<?Float->mt.deepnight.Sfx>, ?volume=1.0) {
+	function playRandomSfx( randList:Array<?Float->dn.heaps.Sfx>, ?volume=1.0) {
 		return randList[ Std.random(randList.length) ]().play(volume);
 	}
 
@@ -85,7 +81,7 @@ class Tail extends Ring {
 			target = null;
 			var range = 8;
 			for(e in en.Mob.ALL)
-				if( !e.isDead() && distCaseSqr(e)<=range*range && Lib.angularDistanceRad(angTo(e), eyeAng)<=coneAng*0.5 && ( target==null || distCaseSqr(e)<=distCaseSqr(target) ) )
+				if( !e.isDead() && distCaseSqr(e)<=range*range && M.radDistance(angTo(e), eyeAng)<=coneAng*0.5 && ( target==null || distCaseSqr(e)<=distCaseSqr(target) ) )
 					target = e;
 
 			if( target!=null && !cd.hasSetF("shoot", secToFrames(0.15)) ) {
@@ -123,7 +119,7 @@ class Tail extends Ring {
 			else {
 				// Follow parent
 				var ta = angTo(parent);
-				ang += Lib.angularSubstractionRad(ta, ang)*0.7;
+				ang += M.radSubstract(ta, ang)*0.7;
 				var d = (Math.sqrt( distSqr(parent) ) - linkDist*1.2) / Const.GRID;
 				dx += Math.cos(ang)*d*0.3*gpTmod;
 				dy += Math.sin(ang)*d*0.3*gpTmod;

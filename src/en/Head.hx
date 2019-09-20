@@ -1,10 +1,7 @@
 package en;
 
-import mt.MLib;
-import mt.deepnight.Lib;
-
 class Head extends Ring {
-	public var ca : mt.heaps.Controller.ControllerAccess;
+	public var ca : dn.heaps.Controller.ControllerAccess;
 	var speed : Float;
 
 	public var mouseControl = false;
@@ -47,8 +44,8 @@ class Head extends Ring {
 		super.postUpdate();
 		var e = getChild();
 		if( e!=null )
-			spr.rotation = ang + Lib.angularSubstractionRad(e.ang,ang)*0.7;
-			//spr.rotation += Lib.angularSubstractionRad( ang + Lib.angularSubstractionRad(e.ang,ang)*0.7, spr.rotation ) * 0.3;
+			spr.rotation = ang + M.radSubstract(e.ang,ang)*0.7;
+			//spr.rotation += M.radSubstract( ang + M.radSubstract(e.ang,ang)*0.7, spr.rotation ) * 0.3;
 	}
 
 	override public function hit(dmg, ?from:Entity) {
@@ -114,8 +111,8 @@ class Head extends Ring {
 		if( target!=null ) {
 			// Auto pilot
 			var ta = Math.atan2(target.centerY-centerY, target.centerX-centerX) + Math.cos(ftime*0.1)*0.2;
-			ang += Lib.angularSubstractionRad(ta,ang)*sa*1.5;
-			if( distSqrFree(target.centerX, target.centerY)<=MLib.pow(Const.GRID*1,2) ) {
+			ang += M.radSubstract(ta,ang)*sa*1.5;
+			if( distSqrFree(target.centerX, target.centerY)<=M.pow(Const.GRID*1,2) ) {
 				target = null;
 				Game.ME.cm.signal();
 			}
@@ -127,27 +124,27 @@ class Head extends Ring {
 				var m = Game.ME.getMouse();
 				var ma = angToFree(m.sx, m.sy);
 				var da = Lib.distanceSqr(centerX, centerY, m.sx,m.sy);
-				if( da>=8*8 && Lib.angularDistanceRad(ma,ang)<=MLib.PI*0.6 || da>=20*20 )
-					ang+=Lib.angularSubstractionRad(ma, ang)*sa;
-				trust = 0.5 + 0.5 * MLib.fmin( Lib.distance(centerX, centerY, m.sx, m.sy)/(Const.GRID*5), 1);
+				if( da>=8*8 && M.radDistance(ma,ang)<=M.PI*0.6 || da>=20*20 )
+					ang+=M.radSubstract(ma, ang)*sa;
+				trust = 0.5 + 0.5 * M.fmin( Lib.distance(centerX, centerY, m.sx, m.sy)/(Const.GRID*5), 1);
 			}
 			else {
 				// Keyboard/pad controls
 				trust = 0.15;
 				if( ca.leftDown() ) {
-					ang += Lib.angularSubstractionRad(3.14,ang)*sa*1.5;
+					ang += M.radSubstract(3.14,ang)*sa*1.5;
 					trust = 1;
 				}
 				else if( ca.rightDown() ) {
-					ang += Lib.angularSubstractionRad(0,ang)*sa*1.5;
+					ang += M.radSubstract(0,ang)*sa*1.5;
 					trust = 1;
 				}
 				if( ca.upDown() ) {
-					ang += Lib.angularSubstractionRad(-1.57,ang)*sa;
+					ang += M.radSubstract(-1.57,ang)*sa;
 					trust = 1;
 				}
 				else if( ca.downDown() ) {
-					ang += Lib.angularSubstractionRad(1.57,ang)*sa;
+					ang += M.radSubstract(1.57,ang)*sa;
 					trust = 1;
 				}
 

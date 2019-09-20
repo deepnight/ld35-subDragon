@@ -1,9 +1,5 @@
 package en.m;
 
-import mt.heaps.slib.*;
-import mt.deepnight.Lib;
-import mt.MLib;
-
 class Liner extends en.Mob {
 	var ang : Float;
 	var bullets = 0;
@@ -22,7 +18,7 @@ class Liner extends en.Mob {
 	override public function postUpdate() {
 		super.postUpdate();
 		spr.rotation = ang + Math.cos(utime*0.1)*0.1;
-		//spr.rotation += Lib.angularSubstractionRad(angTo(hero), spr.rotation)*0.1;
+		//spr.rotation += M.radSubstract(angTo(hero), spr.rotation)*0.1;
 	}
 
 	override function onDie() {

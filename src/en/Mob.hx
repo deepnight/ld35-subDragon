@@ -1,8 +1,5 @@
 package en;
 
-import mt.deepnight.Lib;
-import mt.MLib;
-
 class Mob extends Entity {
 	public static var ALL : Array<Mob> = [];
 

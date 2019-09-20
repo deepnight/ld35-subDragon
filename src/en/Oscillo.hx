@@ -1,8 +1,5 @@
 package en;
 
-import mt.deepnight.Lib;
-import mt.MLib;
-
 class Oscillo extends en.Bullet {
 	var ang : Float;
 	var spd : Float;

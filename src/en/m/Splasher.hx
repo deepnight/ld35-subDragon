@@ -1,9 +1,5 @@
 package en.m;
 
-import mt.heaps.slib.*;
-import mt.deepnight.Lib;
-import mt.MLib;
-
 class Splasher extends en.Mob {
 	var dirt : HSprite;
 

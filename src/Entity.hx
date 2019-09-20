@@ -1,14 +1,10 @@
-import mt.MLib;
-import mt.heaps.slib.*;
-import mt.deepnight.Lib;
-
 class Entity {
 	public static var GC : Array<Entity> = [];
 	public static var ALL : Array<Entity> = [];
 	static var UNIQ = 0;
 
 	var spr : HSprite;
-	var cd : mt.Cooldown;
+	var cd : dn.Cooldown;
 	public var uid : Int;
 
 	// public var gpTmod(get,never) : Float; inline function get_tmod() return Game.ME.gpTmod*0.5;
@@ -50,7 +46,7 @@ class Entity {
 	public function new(x:Int,y:Int) {
 		uid = UNIQ++;
 		ALL.push(this);
-		cd = new mt.Cooldown(Const.FPS);
+		cd = new dn.Cooldown(Const.FPS);
 		setPoseCase(x,y);
 		dx = dy = 0;
 		frict = 0.85;
@@ -59,7 +55,7 @@ class Entity {
 		radius = Const.GRID*0.5;
 		initLife(1);
 
-		spr = new mt.heaps.slib.HSprite(Assets.tiles);
+		spr = new HSprite(Assets.tiles);
 		spr.setCenterRatio(0.5,0.5);
 		spr.set("level");
 		Game.ME.scroller.add(spr, Const.DP_ENTITY);
@@ -80,16 +76,16 @@ class Entity {
 		destroy();
 	}
 
-	public function distCaseSqr(e:Entity) return mt.deepnight.Lib.distanceSqr(cx,cy, e.cx, e.cy);
-	public function distSqr(e:Entity) return mt.deepnight.Lib.distanceSqr(centerX, centerY, e.centerX, e.centerY);
-	public function distSqrFree(x:Float, y:Float) return mt.deepnight.Lib.distanceSqr(centerX, centerY, x, y);
+	public function distCaseSqr(e:Entity) return Lib.distanceSqr(cx,cy, e.cx, e.cy);
+	public function distSqr(e:Entity) return Lib.distanceSqr(centerX, centerY, e.centerX, e.centerY);
+	public function distSqrFree(x:Float, y:Float) return Lib.distanceSqr(centerX, centerY, x, y);
 	public inline function angTo(e:Entity) return Math.atan2(e.centerY-centerY, e.centerX-centerX);
 	public inline function getMoveAng() return Math.atan2(dy,dx);
 	public inline function angToFree(x:Float, y:Float) return Math.atan2(y-centerY, x-centerX);
 	public inline function secToFrames(v:Float) return Game.ME.secToFrames(v);
 	inline function rnd(min,max,?sign) return Lib.rnd(min,max,sign);
 	inline function irnd(min,max,?sign) return Lib.irnd(min,max,sign);
-	inline function pretty(v:Float, ?precision=2) return Lib.prettyFloat(v, precision);
+	inline function pretty(v:Float, ?precision=2) return M.pretty(v, precision);
 	inline function rndSeconds(min,max,?sign) return secToFrames( Lib.rnd(min,max,sign) );
 	inline function irndSeconds(min,max,?sign) return secToFrames( Lib.rnd(min,max,sign) );
 
@@ -121,7 +117,7 @@ class Entity {
 	public function colorBlink(c:UInt, d:Float, ?pow=1.0) {
 		color = c;
 		colorPow = pow;
-		spr.colorMatrix = mt.deepnight.Color.getColorizeMatrixH2d(c, pow);
+		spr.colorMatrix = dn.Color.getColorizeMatrixH2d(c, pow);
 		cd.setF("rgbRestore", d);
 	}
 
@@ -141,11 +137,11 @@ class Entity {
 
 		// Color blink
 		if( !cd.has("rgbRestore") && colorPow>0 ) {
-			colorPow = MLib.fmax(colorPow-0.22, 0);
+			colorPow = M.fmax(colorPow-0.22, 0);
 			if( colorPow<=0 )
 				spr.colorMatrix = null;
 			else
-				spr.colorMatrix = mt.deepnight.Color.getColorizeMatrixH2d(color, colorPow);
+				spr.colorMatrix = dn.Color.getColorizeMatrixH2d(color, colorPow);
 		}
 	}
 
@@ -237,7 +233,7 @@ class Entity {
 		physX();
 
 		dx*=Math.pow(frict,gpTmod);
-		if( MLib.fabs(dx)<=0.0001*gpTmod ) dx = 0;
+		if( M.fabs(dx)<=0.0001*gpTmod ) dx = 0;
 
 		while(xr>1) { xr--; cx++; }
 		while(xr<0) { xr++; cx--; }
@@ -246,14 +242,14 @@ class Entity {
 		physY();
 
 		dy*=Math.pow(frict,gpTmod);
-		if( MLib.fabs(dy)<=0.0001*gpTmod ) dy = 0;
+		if( M.fabs(dy)<=0.0001*gpTmod ) dy = 0;
 
 		while(yr>1) { yr--; cy++; }
 		while(yr<0) { yr++; cy--; }
 
 
 		// Water splash
-		if( MLib.sign(level.waterY*Const.GRID-oldY) != MLib.sign(level.waterY*Const.GRID-centerY) )
+		if( M.sign(level.waterY*Const.GRID-oldY) != M.sign(level.waterY*Const.GRID-centerY) )
 			fx.splash(centerX);
 	}
 }

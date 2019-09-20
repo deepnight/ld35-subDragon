@@ -1,9 +1,5 @@
 package en;
 
-import mt.heaps.slib.*;
-import mt.deepnight.Lib;
-import mt.MLib;
-
 class Door extends Entity {
 	var parts : Array<HSprite> = [];
 	var top : HSprite;

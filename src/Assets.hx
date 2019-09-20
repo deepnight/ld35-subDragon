@@ -1,9 +1,8 @@
-import mt.heaps.slib.*;
-import mt.heaps.slib.assets.*;
-import mt.deepnight.Sfx;
+import dn.heaps.slib.assets.*;
+import dn.heaps.Sfx;
 
 class Assets {
-	public static var SBANK = mt.deepnight.Sfx.importDirectory("sfx");
+	public static var SBANK = Sfx.importDirectory("sfx");
 
 	public static var music : Sfx;
 	public static var font : h2d.Font;

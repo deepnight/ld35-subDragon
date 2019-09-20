@@ -1,7 +1,6 @@
-import mt.MLib;
-import mt.heaps.Controller;
+import dn.heaps.Controller;
 
-class Main extends mt.Process {
+class Main extends dn.Process {
 	public static var ME : Main;
 	public var controller : Controller;
 	public var ca : ControllerAccess;
@@ -16,7 +15,7 @@ class Main extends mt.Process {
 		engine.backgroundColor = 0xff<<24|0x0;
 		hxd.Timer.wantedFPS = Const.FPS;
 
-		controller = new mt.heaps.Controller(Boot.ME.s2d);
+		controller = new dn.heaps.Controller(Boot.ME.s2d);
 		ca = controller.createAccess("main");
 		controller.bind(A, hxd.Key.SPACE, hxd.Key.F);
 		controller.bind(AXIS_LEFT_X_NEG, hxd.Key.A, hxd.Key.LEFT, hxd.Key.Q);
@@ -26,7 +25,7 @@ class Main extends mt.Process {
 
 		Assets.init();
 
-		new mt.deepnight.GameFocusHelper(Boot.ME.s2d, Assets.font);
+		new dn.heaps.GameFocusHelper(Boot.ME.s2d, Assets.font);
 
 		delayer.addF( function() {
             onResize();
@@ -37,16 +36,16 @@ class Main extends mt.Process {
 			// #end
 			#if hl
 				var c = new h2d.Console(Assets.font, Boot.ME.s2d);
-				mt.deepnight.Lib.redirectTracesToH2dConsole(c);
+				Lib.redirectTracesToH2dConsole(c);
 			#end
-			mt.Process.resizeAll();
+			dn.Process.resizeAll();
 		}, 100);
 
     }
 
     override function onResize() {
         super.onResize();
-        Const.UPSCALE = MLib.max( MLib.floor( h()/Const.GUARANTEED_HEI ), 1);
+        Const.UPSCALE = M.imax( M.floor( h()/Const.GUARANTEED_HEI ), 1);
 		root.setScale(Const.UPSCALE);
     }
 
