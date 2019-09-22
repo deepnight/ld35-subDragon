@@ -37,7 +37,7 @@ class Viewport extends dn.Process {
 
 		var tx = -(x-wid*0.5);
 		var ty = -(y-hei*0.5);
-		var spd = Lib.distanceSqr(s.x, s.y, tx, ty)>=400*400 ? 0.11 : 0.05;
+		var spd = M.distSqr(s.x, s.y, tx, ty)>=400*400 ? 0.11 : 0.05;
 		s.x += ( tx - s.x ) * spd;
 		s.y += ( ty - s.y ) * spd;
 

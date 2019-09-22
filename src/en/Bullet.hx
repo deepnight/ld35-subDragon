@@ -73,7 +73,7 @@ class Bullet extends Entity {
 			destroy();
 		}
 
-		if( Lib.distanceSqr(centerX, centerY, ox, oy)>=maxDist2 )
+		if( M.distSqr(centerX, centerY, ox, oy)>=maxDist2 )
 			destroy();
 	}
 }

@@ -76,9 +76,9 @@ class Entity {
 		destroy();
 	}
 
-	public function distCaseSqr(e:Entity) return Lib.distanceSqr(cx,cy, e.cx, e.cy);
-	public function distSqr(e:Entity) return Lib.distanceSqr(centerX, centerY, e.centerX, e.centerY);
-	public function distSqrFree(x:Float, y:Float) return Lib.distanceSqr(centerX, centerY, x, y);
+	public function distCaseSqr(e:Entity) return M.distSqr(cx,cy, e.cx, e.cy);
+	public function distSqr(e:Entity) return M.distSqr(centerX, centerY, e.centerX, e.centerY);
+	public function distSqrFree(x:Float, y:Float) return M.distSqr(centerX, centerY, x, y);
 	public inline function angTo(e:Entity) return Math.atan2(e.centerY-centerY, e.centerX-centerX);
 	public inline function getMoveAng() return Math.atan2(dy,dx);
 	public inline function angToFree(x:Float, y:Float) return Math.atan2(y-centerY, x-centerX);

@@ -123,10 +123,10 @@ class Head extends Ring {
 				// Mouse controls
 				var m = Game.ME.getMouse();
 				var ma = angToFree(m.sx, m.sy);
-				var da = Lib.distanceSqr(centerX, centerY, m.sx,m.sy);
+				var da = M.distSqr(centerX, centerY, m.sx,m.sy);
 				if( da>=8*8 && M.radDistance(ma,ang)<=M.PI*0.6 || da>=20*20 )
 					ang+=M.radSubstract(ma, ang)*sa;
-				trust = 0.5 + 0.5 * M.fmin( Lib.distance(centerX, centerY, m.sx, m.sy)/(Const.GRID*5), 1);
+				trust = 0.5 + 0.5 * M.fmin( M.dist(centerX, centerY, m.sx, m.sy)/(Const.GRID*5), 1);
 			}
 			else {
 				// Keyboard/pad controls
