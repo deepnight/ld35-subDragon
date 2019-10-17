@@ -3,7 +3,7 @@ class Boot extends hxd.App {
 
 	// Boot
 	static function main() {
-		hxd.Res.initEmbed({compressSounds:true});
+		hxd.Res.initEmbed();
 
 		new Boot();
 	}
