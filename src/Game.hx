@@ -343,6 +343,15 @@ class Game extends dn.Process {
 				notify("Music ON");
 		}
 
+		#if !js
+		// Exit
+		if( ctrl.isKeyboardPressed(Key.ESCAPE) )
+			if( !cd.hasSetS("exitWarn",3) )
+				notify("Press ESCAPE again to exit.");
+			else
+				hxd.System.exit();
+		#end
+
 		#if debug
 		if( ctrl.isKeyboardPressed(hxd.Key.C) ) {
 			var m = getMouse();
