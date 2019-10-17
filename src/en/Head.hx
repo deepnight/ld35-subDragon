@@ -130,27 +130,14 @@ class Head extends Ring {
 			}
 			else {
 				// Keyboard/pad controls
+				var leftDist = M.fmax( M.fabs(ca.lxValue()), M.fabs(ca.lyValue()) );
+				var leftAng = Math.atan2(-ca.lyValue() * (ca.isKeyboard()?-1:1), ca.lxValue());
 				trust = 0.15;
-				if( ca.leftDown() ) {
-					ang += M.radSubstract(3.14,ang)*sa*1.5;
-					trust = 1;
-				}
-				else if( ca.rightDown() ) {
-					ang += M.radSubstract(0,ang)*sa*1.5;
-					trust = 1;
-				}
-				if( ca.upDown() ) {
-					ang += M.radSubstract(-1.57,ang)*sa;
-					trust = 1;
-				}
-				else if( ca.downDown() ) {
-					ang += M.radSubstract(1.57,ang)*sa;
+				if( leftDist>=0.5 ) {
+					ang += M.radSubstract(leftAng,ang)*sa*1.5;
 					trust = 1;
 				}
 
-				//trace("left="+ctrl.leftDown()+" right="+ctrl.rightDown()+" up="+ctrl.upDown()+" down="+ctrl.downDown());
-
-				//fx.markerFree(centerX+rnd(0,10,true), centerY+rnd(0,10,true), 100);
 				if( ca.aDown() )
 					setFrozen(true);
 				else
