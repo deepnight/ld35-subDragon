@@ -4,6 +4,7 @@ class Main extends dn.Process {
 	public static var ME : Main;
 	public var controller : Controller;
 	public var ca : ControllerAccess;
+	var overlay : dn.heaps.OverlayTextureFilter;
 
     public function new(wrapper:h2d.Object) {
         super();
@@ -14,6 +15,10 @@ class Main extends dn.Process {
 
 		engine.backgroundColor = 0xff<<24|0x0;
 		hxd.Timer.wantedFPS = Const.FPS;
+
+		overlay = new dn.heaps.OverlayTextureFilter(Soft);
+		Boot.ME.s2d.filter = overlay;
+		overlay.alpha = 0.2;
 
 		controller = new dn.heaps.Controller(Boot.ME.s2d);
 		ca = controller.createAccess("main");
@@ -47,6 +52,7 @@ class Main extends dn.Process {
         super.onResize();
         Const.UPSCALE = M.imax( M.floor( h()/Const.GUARANTEED_HEI ), 1);
 		root.setScale(Const.UPSCALE);
+		overlay.bevelSize = Std.int( Const.UPSCALE );
     }
 
 }
