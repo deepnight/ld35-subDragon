@@ -29,11 +29,11 @@ class Main extends dn.Process {
 
 		delayer.addF( function() {
             onResize();
-			// #if debug
-			// 	new Game();
-			// #else
+			#if debug
+				new Game();
+			#else
 				new Intro();
-			// #end
+			#end
 			#if hl
 				var c = new h2d.Console(Assets.font, Boot.ME.s2d);
 				Lib.redirectTracesToH2dConsole(c);
