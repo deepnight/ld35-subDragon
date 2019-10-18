@@ -337,10 +337,10 @@ class Game extends dn.Process {
 		}
 
 		if( ctrl.isKeyboardPressed(hxd.Key.M) ) {
-			if( dn.heaps.Sfx.toggleMuteGroup(1) )
-				notify("Music OFF... oh rly? :(");
-			else
+			if( Assets.music.togglePlay(true) )
 				notify("Music ON");
+			else
+				notify("Music OFF... oh rly? :(");
 		}
 
 		#if !js
