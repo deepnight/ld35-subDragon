@@ -33,15 +33,17 @@ class Main extends dn.Process {
 		Assets.init();
 		hxd.snd.Manager.get();
 
+		#if js
 		new dn.heaps.GameFocusHelper(Boot.ME.s2d, Assets.font);
+		#end
 
 		delayer.addF( function() {
             onResize();
-			// #if debug
+			#if debug
 				new Game(); // HACK
-			// #else
-			// 	new Intro();
-			// #end
+			#else
+				new Intro();
+			#end
 			#if hl
 				var c = new h2d.Console(Assets.font, Boot.ME.s2d);
 				Lib.redirectTracesToH2dConsole(c);
