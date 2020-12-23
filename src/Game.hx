@@ -66,9 +66,10 @@ class Game extends dn.Process {
 
 		onResize();
 
-		// #if debug
-		new dn.heaps.StatsBox(this);
-		// #end
+		var s = new dn.heaps.StatsBox(this);
+		#if !debug
+		s.hide();
+		#end
 	}
 
 	function showHelp(complete:Bool) {
@@ -82,7 +83,7 @@ class Game extends dn.Process {
 				message("Don't touch enemies or you will die.") > end;
 			}
 			else
-				message("Press H at any time to view this help again.") > end;
+				notify("Press H at any time to view this help again.");
 			cm.signal("help");
 		});
 	}
@@ -128,7 +129,7 @@ class Game extends dn.Process {
 		t.x = viewport.wid*0.5 - t.textWidth*t.scaleX*0.5;
 		tw.createMs(t.y, viewport.hei>viewport.hei-t.textHeight*t.scaleY-30, 150);
 
-		var time = secToFrames(2);
+		var time = secToFrames(2+str.length*0.03);
 		createChildProcess(function(p) {
 			if( --time<=0 ) {
 				p.destroy();
@@ -343,9 +344,8 @@ class Game extends dn.Process {
 			cm.signal();
 		}
 
-		if( ctrl.isKeyboardPressed(hxd.Key.H) && !isLocked() ) {
+		if( ctrl.isKeyboardPressed(hxd.Key.H) && !isLocked() )
 			showHelp(true);
-		}
 
 		if( ctrl.isKeyboardPressed(hxd.Key.M) ) {
 			if( Assets.music.togglePlayPause() )
