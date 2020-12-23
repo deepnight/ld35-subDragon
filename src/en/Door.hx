@@ -5,6 +5,7 @@ class Door extends Entity {
 	var top : HSprite;
 	var bot : HSprite;
 	var hei : Int;
+
 	public function new(x,y, h) {
 		super(x,y);
 		lCollisions = false;
@@ -41,8 +42,6 @@ class Door extends Entity {
 		super.outOfScreenUpdate();
 		top.visible = false;
 		bot.visible = false;
-		for(p in parts)
-			p.visible = false;
 	}
 
 	override public function postUpdate() {
@@ -56,7 +55,6 @@ class Door extends Entity {
 
 		var i = 0;
 		for(e in parts) {
-			e.visible = spr.visible;
 			e.setPosition(cx*Const.GRID, (cy+i)*Const.GRID);
 			i++;
 		}
