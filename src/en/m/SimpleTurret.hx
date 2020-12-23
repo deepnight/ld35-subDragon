@@ -14,19 +14,6 @@ class SimpleTurret extends en.Mob {
 		Game.ME.scroller.add(base, Const.DP_BG);
 	}
 
-	override public function postUpdate() {
-		super.postUpdate();
-		spr.scaleX = 0.9 + 0.06*Math.cos(utime*0.07);
-		spr.scaleY = 0.9 + 0.06*Math.cos(1.9+utime*0.09);
-		spr.rotation += M.radSubstract(angTo(hero), spr.rotation) * 0.2;
-
-		if( spr.is("turret") && !cd.has("empty") )
-			spr.set("turretFull");
-
-		base.setPosition(spr.x, spr.y);
-		base.rotation = -spr.rotation*0.5;
-	}
-
 	override function onDie() {
 		super.onDie();
 		Assets.SBANK.explosion3(0.7);
@@ -37,12 +24,33 @@ class SimpleTurret extends en.Mob {
 		base.remove();
 	}
 
+	override function outOfScreenUpdate() {
+		super.outOfScreenUpdate();
+		base.visible = false;
+	}
+
+
+	override public function postUpdate() {
+		super.postUpdate();
+
+		spr.scaleX = 0.9 + 0.06*Math.cos(utime*0.07);
+		spr.scaleY = 0.9 + 0.06*Math.cos(1.9+utime*0.09);
+		spr.rotation += M.radSubstract(angTo(hero), spr.rotation) * 0.2;
+
+		if( spr.is("turret") && !cd.has("empty") )
+			spr.set("turretFull");
+
+		base.visible = spr.visible;
+		base.setPosition(spr.x, spr.y);
+		base.rotation = -spr.rotation*0.5;
+	}
+
 	override public function update() {
 		super.update();
 
 		var range = Const.GRID*9;
 
-		if( !hero.isDead() && distSqr(hero)<=range*range*1.5*1.5 && !cd.hasSetF("shoot", rndSeconds(4.5, 5)) ) {
+		if( isOnScreen() && !hero.isDead() && distSqr(hero)<=range*range*1.5*1.5 && !cd.hasSetF("shoot", rndSeconds(4.5, 5)) ) {
 			prepare(secToFrames(1.3), function() {
 				spr.set("turret");
 				bullets+=4;

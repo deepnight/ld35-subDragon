@@ -65,6 +65,10 @@ class Game extends dn.Process {
 		tw.createMs(mask.alpha, 1>0, 2000);
 
 		onResize();
+
+		// #if debug
+		new dn.heaps.StatsBox(this);
+		// #end
 	}
 
 	function showHelp(complete:Bool) {
@@ -295,13 +299,19 @@ class Game extends dn.Process {
 
 		cm.update(tmod);
 
-		for( e in Entity.ALL )
+		for( e in Entity.ALL ) {
+			if( !e.destroyed )
+				e.updateOnScreenStatus();
 			if( !e.destroyed )
 				e.update();
+		}
 
 		for( e in Entity.ALL )
 			if( !e.destroyed )
-				e.postUpdate();
+				if( e.isOnScreen() )
+					e.postUpdate();
+				else
+					e.outOfScreenUpdate();
 
 		if( Entity.GC.length>0 ) {
 			for( e in Entity.GC )

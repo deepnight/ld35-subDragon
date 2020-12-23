@@ -4,6 +4,7 @@ class Const {
 	public static var UPSCALE = 4; // auto-set in Game.onResize()
 	public static var GUARANTEED_HEI = 280; // auto-set in Game.onResize()
 	public static var GRID = 16;
+	public static var INFINITE = 9999999;
 
 	static var uniq=0;
 	public static var DP_FAR = uniq++;

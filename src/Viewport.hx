@@ -23,6 +23,11 @@ class Viewport extends dn.Process {
 		tw.createMs(shakePow, 200|pow>0, dsec*1000, TEaseIn);
 	}
 
+	public inline function isOnScreen(x:Float, y:Float, pad=64) {
+		return x>=-s.x-pad && x<-s.x+wid+pad
+			&& y>=-s.y-pad && y<-s.y+hei+pad;
+	}
+
 	override public function update() {
 		super.update();
 

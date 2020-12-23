@@ -31,7 +31,7 @@ class Liner extends en.Mob {
 
 		var range = Const.GRID*13;
 
-		if( distSqr(hero)<=range*range*1.1*1.1 && !cd.hasSetF("shoot", secToFrames(1.5)) ) {
+		if( isOnScreen() && distSqr(hero)<=range*range*1.1*1.1 && !cd.hasSetF("shoot", secToFrames(1.5)) ) {
 			prepare( secToFrames(0.5), function() {
 				bullets = 10;
 			});

@@ -127,7 +127,25 @@ class Entity {
 		spr.remove();
 	}
 
+	public inline function isOnScreen() {
+		return Game.ME.viewport.isOnScreen(centerX, centerY) || cd.has("recentlyOnScreen");
+	}
+
+	public function outOfScreenUpdate() {
+		spr.visible = false;
+	}
+
+	public function updateOnScreenStatus() {
+		if( Game.ME.viewport.isOnScreen(centerX, centerY) )
+			cd.setS("recentlyOnScreen", 1, false);
+	}
+
+	public inline function alwaysOnScreen() {
+		cd.setS("recentlyOnScreen", Const.INFINITE);
+	}
+
 	public function postUpdate() {
+		spr.visible = true;
 		spr.setPosition(centerX,centerY);
 
 		if( floating && cy>=level.waterY ) {
@@ -143,6 +161,8 @@ class Entity {
 			else
 				spr.colorMatrix = dn.Color.getColorizeMatrixH2d(color, colorPow);
 		}
+
+		spr.alpha = isOnScreen() ? 1 : 0.2; // HACK
 	}
 
 

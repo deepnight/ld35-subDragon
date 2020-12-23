@@ -29,6 +29,7 @@ class Ring extends Entity {
 		radius = Const.GRID*0.5;
 		linkDist = Const.GRID*0.5;
 		frozen = false;
+		alwaysOnScreen();
 
 		//spr.filter = true;
 

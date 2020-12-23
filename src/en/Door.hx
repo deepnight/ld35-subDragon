@@ -37,12 +37,26 @@ class Door extends Entity {
 		bot.remove();
 	}
 
+	override function outOfScreenUpdate() {
+		super.outOfScreenUpdate();
+		top.visible = false;
+		bot.visible = false;
+		for(p in parts)
+			p.visible = false;
+	}
+
 	override public function postUpdate() {
 		super.postUpdate();
-		var i = 0;
+
+		top.visible = spr.visible;
 		top.setPosition(cx*Const.GRID, (cy-1)*Const.GRID);
+
+		bot.visible = spr.visible;
 		bot.setPosition(cx*Const.GRID, (cy+hei)*Const.GRID);
+
+		var i = 0;
 		for(e in parts) {
+			e.visible = spr.visible;
 			e.setPosition(cx*Const.GRID, (cy+i)*Const.GRID);
 			i++;
 		}

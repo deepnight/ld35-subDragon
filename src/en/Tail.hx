@@ -10,6 +10,7 @@ class Tail extends Ring {
 		super(x,y);
 		lCollisions = false;
 		frict = 0.55;
+		alwaysOnScreen();
 
 		weight = 1;
 

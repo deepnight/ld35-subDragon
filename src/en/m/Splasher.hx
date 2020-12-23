@@ -41,9 +41,9 @@ class Splasher extends en.Mob {
 
 		var range = Const.GRID*11;
 
-		dirt.visible = !cd.has("shootRecent");
+		dirt.visible = spr.visible && !cd.has("shootRecent");
 
-		if( distSqr(hero)<=range*range*1.2*1.2 && !cd.hasSetF("shoot", secToFrames(5)) ) {
+		if( isOnScreen() && distSqr(hero)<=range*range*1.2*1.2 && !cd.hasSetF("shoot", secToFrames(5)) ) {
 			prepare( secToFrames(1), function() {
 				cd.setS("shootRecent", cd.getS("shoot")*0.5);
 				var n = 20;
