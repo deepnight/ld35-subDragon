@@ -29,6 +29,7 @@ class Main extends dn.Process {
 		controller.bind(AXIS_LEFT_Y_NEG, hxd.Key.S, hxd.Key.DOWN);
 
 		Assets.init();
+		hxd.snd.Manager.get();
 
 		new dn.heaps.GameFocusHelper(Boot.ME.s2d, Assets.font);
 
