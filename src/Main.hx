@@ -52,10 +52,9 @@ class Main extends dn.Process {
     }
 
     override function onResize() {
-        super.onResize();
-        Const.UPSCALE = M.imax( M.floor( h()/Const.GUARANTEED_HEI ), 1);
+		super.onResize();
+		Const.UPSCALE = dn.heaps.Scaler.bestFit_i(350,260);
 		root.setScale(Const.UPSCALE);
-		// overlay.bevelSize = Std.int( Const.UPSCALE );
     }
 
 }
