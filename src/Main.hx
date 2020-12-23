@@ -4,21 +4,21 @@ class Main extends dn.Process {
 	public static var ME : Main;
 	public var controller : Controller;
 	public var ca : ControllerAccess;
-	// var overlay : dn.heaps.OverlayTextureFilter;
 
     public function new(wrapper:h2d.Object) {
         super();
 
         ME = this;
         createRoot(wrapper);
-		root.filter = new h2d.filter.ColorMatrix(); // force rendering for pixel perfect
+		root.filter = new h2d.filter.Nothing(); // force rendering for pixel perfect
 
 		engine.backgroundColor = 0xff<<24|0x0;
 		hxd.Timer.wantedFPS = Const.FPS;
 
-		// overlay = new dn.heaps.OverlayTextureFilter(Soft);
-		// Boot.ME.s2d.filter = overlay;
-		// overlay.alpha = 0.2;
+		var f = new dn.heaps.filter.OverlayTexture(Soft);
+		f.alpha = 0.2;
+		f.autoUpdateSize = ()->Const.UPSCALE;
+		Boot.ME.s2d.filter = f;
 
 		controller = new dn.heaps.Controller(Boot.ME.s2d);
 		ca = controller.createAccess("main");
