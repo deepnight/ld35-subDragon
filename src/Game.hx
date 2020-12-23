@@ -293,7 +293,7 @@ class Game extends dn.Process {
 		ctrap.visible = hero.mouseControl;
 		mask.visible = mask.alpha>0;
 
-		cm.update(dt);
+		cm.update(tmod);
 
 		for( e in Entity.ALL )
 			if( !e.destroyed )
@@ -337,7 +337,7 @@ class Game extends dn.Process {
 		}
 
 		if( ctrl.isKeyboardPressed(hxd.Key.M) ) {
-			if( Assets.music.togglePlay(true) )
+			if( Assets.music.togglePlayPause() )
 				notify("Music ON");
 			else
 				notify("Music OFF... oh rly? :(");
