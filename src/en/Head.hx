@@ -15,8 +15,9 @@ class Head extends Ring {
 		speed = 0;
 		initLife(1);
 		#if debug
-		initLife(100);
+		initLife(1000);
 		#end
+		alwaysOnScreen();
 
 		for(i in 0...6) addRing();
 

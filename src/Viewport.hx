@@ -23,9 +23,16 @@ class Viewport extends dn.Process {
 		tw.createMs(shakePow, 200|pow>0, dsec*1000, TEaseIn);
 	}
 
+	public inline function isOnScreenX(x:Float, pad:Int) {
+		return x>=-s.x-pad && x<-s.x+wid+pad;
+	}
+
+	public inline function isOnScreenY(y:Float, pad:Int) {
+		return y>=-s.y-pad && y<-s.y+hei+pad;
+	}
+
 	public inline function isOnScreen(x:Float, y:Float, pad=64) {
-		return x>=-s.x-pad && x<-s.x+wid+pad
-			&& y>=-s.y-pad && y<-s.y+hei+pad;
+		return isOnScreenX(x,pad) && isOnScreenY(y,pad);
 	}
 
 	override public function update() {

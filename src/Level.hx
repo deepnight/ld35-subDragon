@@ -1,13 +1,21 @@
-import h2d.SpriteBatch;
 
+import h2d.SpriteBatch;
 class Level extends dn.Process {
+	static final CHUNK_WID = 400;
+
 	public var wid : Int;
 	public var hei : Int;
 
 	var lights : h2d.SpriteBatch;
-	var far : h2d.TileGroup;
 	var clouds : h2d.SpriteBatch;
-	var bg : h2d.TileGroup;
+
+	var farSky : h2d.TileGroup;
+	var farWrapper : h2d.Object;
+	var farChunks : Array<h2d.TileGroup> = [];
+
+	var bgWrapper : h2d.Object;
+	var bgChunks : Array<h2d.TileGroup> = [];
+
 	public var waterY : Int;
 	var waves : Array<h2d.Bitmap>;
 	var circles : Array<h2d.Bitmap>;
@@ -148,7 +156,14 @@ class Level extends dn.Process {
 	public function render() {
 		root.removeChildren();
 
-		far = new h2d.TileGroup(Assets.tiles.tile, root);
+		for(c in farChunks) c.remove();
+		farChunks = [];
+
+		for(c in bgChunks) c.remove();
+		bgChunks = [];
+
+		farSky = new h2d.TileGroup(Assets.tiles.tile, root);
+		farWrapper = new h2d.Object(root);
 
 		sun = Assets.tiles.h_get("sun", 0.5, 0.85, root);
 		sun.blendMode = Add;
@@ -161,18 +176,20 @@ class Level extends dn.Process {
 		clouds = new h2d.SpriteBatch(Assets.tiles.tile, root);
 		clouds.hasRotationScale = true;
 
+		bgWrapper = new h2d.Object(root);
+
 		lights = new h2d.SpriteBatch(Assets.tiles.tile, root);
 		lights.hasRotationScale = true;
 		lights.blendMode = Add;
 
-		bg = new h2d.TileGroup(Assets.tiles.tile, root);
+		// bg = new h2d.TileGroup(Assets.tiles.tile, root);
 
 		var g = Const.GRID;
 
-		addTg(far, "farSky", 0,0, 0,0, wid, waterY);
-		addTg(far, "skyGrad", 0, (waterY-8)*Const.GRID, 0,0, wid);
-		addTg(far, "far", 0,waterY*Const.GRID, 0,0, wid, hei-waterY);
-		addTg(far, "waterGrad", 0,waterY*Const.GRID, 0,0, wid);
+		addTg(farSky, "farSky", 0,0, 0,0, wid, waterY);
+		addTg(farSky, "skyGrad", 0, (waterY-8)*Const.GRID, 0,0, wid);
+		addTg(farSky, "far", 0,waterY*Const.GRID, 0,0, wid, hei-waterY);
+		addTg(farSky, "waterGrad", 0,waterY*Const.GRID, 0,0, wid);
 
 		for(cx in 0...wid)
 		for(cy in 0...hei) {
@@ -199,47 +216,62 @@ class Level extends dn.Process {
 				if( cx>=213 ) {
 					for(i in 0...2 ) {
 						var s = rnd(1, 1.5);
-						addTg(bg, "rockSand", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s, rnd(0,0.2,true));
+						addToChunks(bgChunks, "rockSand", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s, rnd(0,0.2,true));
 					}
 				}
 				else if( cx>=150 ) {
 					for(i in 0...2 ) {
 						var s = rnd(1, 1.5);
-						addTg(bg, "rockRed", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s, rnd(0,0.5,true));
+						addToChunks(bgChunks, "rockRed", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s, rnd(0,0.5,true));
 					}
 				}
 				else  {
 					if( cy>=waterY+1 ) {
-						addTg(far, "fatDirt", x+g*0.5, y+g*0.5, 0.5,0.5, 1,1, rnd(0,M.PI2));
+						addToChunks(farChunks, "fatDirt", x+g*0.5, y+g*0.5, 0.5,0.5, 1,1, rnd(0,M.PI2));
 					}
-					addTg(bg, "dirt", x,y);
+					addToChunks(bgChunks, "dirt", x,y);
 
 					if( cy<=waterY ) {
 						for(i in 0...2 ) {
 							var s = rnd(1, 1.5);
-							addTg(bg, "rockOut", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s);
+							addToChunks(bgChunks, "rockOut", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s);
 						}
 						if( Std.random(100)<20 )
-							addTg(bg, "bush", x+rnd(0,5,true), y+rnd(0,5,true));
+							addToChunks(bgChunks, "bush", x+rnd(0,5,true), y+rnd(0,5,true));
 					}
 					else if( Std.random(100)<20 )
 						for(i in 0...2 )
-							addTg(bg, "coral", x+rnd(0,3,true), y+rnd(0,3,true));
+							addToChunks(bgChunks, "coral", x+rnd(0,3,true), y+rnd(0,3,true));
 					else
 						for(i in 0...2 ) {
 							var s = rnd(1, 1.5);
-							addTg(bg, "rock", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s, rnd(0,0.5,true));
+							addToChunks(bgChunks, "rock", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s, rnd(0,0.5,true));
 						}
 				}
 
 				if( cy>=waterY+5 && Std.random(100)<30 && ( !hasSpot("wall", cx+1, cy) || !hasSpot("wall", cx-1,cy) ) ) {
 					var s = rnd(0.25, 1);
-					addTg(bg, "fatBubble", x+rnd(0,5,true), y+rnd(0,5,true), 0.5,0.5, s,s, 0, rnd(0.4,1));
+					addToChunks(bgChunks, "fatBubble", x+rnd(0,5,true), y+rnd(0,5,true), 0.5,0.5, s,s, 0, rnd(0.4,1));
 				}
 			}
 		}
 
-		addTg(bg, "ending", 234*Const.GRID, 10*Const.GRID, 0.5,0.8);
+		addToChunks(bgChunks, "ending", 234*Const.GRID, 10*Const.GRID, 0.5,0.8);
+	}
+
+	inline function addToChunks(chunks:Array<h2d.TileGroup>, k:String, x:Float, y:Float, xr=0., yr=0., sx=1.0, sy=1.0, r=0., a=1.0) {
+		var id = Std.int( x / CHUNK_WID );
+		if( chunks[id]==null )
+			chunks[id] = new h2d.TileGroup( Assets.tiles.tile, chunks==farChunks ? farWrapper : bgWrapper );
+
+		var chunkX = id*CHUNK_WID;
+		chunks[id].x = chunkX;
+		chunks[id].setDefaultColor(0xffffff, a);
+		chunks[id].addTransform(
+			x-chunkX, y,
+			sx, sy, r,
+			Assets.tiles.getTileRandom(k, xr,yr)
+		);
 	}
 
 	inline function addTg(tg:h2d.TileGroup, k:String, x:Float, y:Float, xr=0., yr=0., sx=1.0, sy=1.0, r=0., a=1.0) {
@@ -266,6 +298,16 @@ class Level extends dn.Process {
 		return e;
 	}
 
+
+	override function postUpdate() {
+		super.postUpdate();
+		var pad = 32;
+		for(c in bgChunks)
+			c.visible = Game.ME.viewport.isOnScreenX(c.x, pad) || Game.ME.viewport.isOnScreenX(c.x+CHUNK_WID,pad);
+
+		for(c in farChunks)
+			c.visible = Game.ME.viewport.isOnScreenX(c.x, pad) || Game.ME.viewport.isOnScreenX(c.x+CHUNK_WID,pad);
+	}
 
 	override public function update() {
 		super.update();
