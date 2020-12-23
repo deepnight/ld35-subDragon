@@ -120,9 +120,10 @@ class Game extends dn.Process {
 	}
 
 
-	public function notify(str:String) {
+	public function notify(str:String, c=0xffffff) {
 		var t = new h2d.Text(Assets.font, root);
 		t.text = str;
+		t.textColor = c;
 		t.dropShadow = { dx:0, dy:1, color:0x0, alpha:0.5 }
 		t.x = viewport.wid*0.5 - t.textWidth*t.scaleX*0.5;
 		tw.createMs(t.y, viewport.hei>viewport.hei-t.textHeight*t.scaleY-30, 150);

@@ -66,6 +66,8 @@ class Door extends Entity {
 			}, d*200);
 		}
 
+		Game.ME.notify("DOOR OPENED!", 0x88ff22);
+
 		if( !level.destroyed )
 			for(d in 0...hei)
 				level.removeDoorColl(cx,cy+d);
