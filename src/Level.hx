@@ -7,9 +7,9 @@ class Level extends dn.Process {
 	// var fastSpots : Map<String,Bool>;
 
 	var lights : h2d.SpriteBatch;
-	var far : h2d.SpriteBatch;
+	var far : h2d.TileGroup;
 	var clouds : h2d.SpriteBatch;
-	var bg : h2d.SpriteBatch;
+	var bg : h2d.TileGroup;
 	public var waterY : Int;
 	var waves : Array<h2d.Bitmap>;
 	var circles : Array<h2d.Bitmap>;
@@ -150,9 +150,7 @@ class Level extends dn.Process {
 	public function render() {
 		root.removeChildren();
 
-		far = new h2d.SpriteBatch(Assets.tiles.tile, root);
-		far.hasRotationScale = true;
-
+		far = new h2d.TileGroup(Assets.tiles.tile, root);
 
 		sun = Assets.tiles.h_get("sun", 0.5, 0.85, root);
 		sun.blendMode = Add;
@@ -170,25 +168,14 @@ class Level extends dn.Process {
 		lights.blendMode = Add;
 		//far.filters.push( new h2d.filter.Displacement(hxd.Res.disp.toTile()) );
 
-		bg = new h2d.SpriteBatch(Assets.tiles.tile, root);
-		bg.hasRotationScale = true;
+		bg = new h2d.TileGroup(Assets.tiles.tile, root);
 
 		var g = Const.GRID;
 
-		var e = add(far, "farSky", 0,0);
-		e.scaleX = wid;
-		e.scaleY = waterY;
-
-		var e = add(far, "skyGrad", 0, (waterY-8)*Const.GRID);
-		e.scaleX = wid;
-
-		var e = add(far, "far", 0,waterY*Const.GRID);
-		e.scaleX = wid;
-		e.scaleY = hei-waterY;
-
-		var e = add(far, "waterGrad", 0,waterY*Const.GRID);
-		e.scaleX = wid;
-
+		addTg(far, "farSky", 0,0, 0,0, wid, waterY);
+		addTg(far, "skyGrad", 0, (waterY-8)*Const.GRID, 0,0, wid);
+		addTg(far, "far", 0,waterY*Const.GRID, 0,0, wid, hei-waterY);
+		addTg(far, "waterGrad", 0,waterY*Const.GRID, 0,0, wid);
 
 		for(cx in 0...wid)
 		for(cy in 0...hei) {
@@ -196,14 +183,14 @@ class Level extends dn.Process {
 			var y = cy*Const.GRID;
 
 			if( cx%3==0 && cy==waterY && Std.random(100)<80 ) {
-				var e = add(clouds, "cloud", x,y-rnd(5,20), 0.5, 1);
+				var e = addBatch(clouds, "cloud", x,y-rnd(5,20), 0.5, 1);
 				e.scale = rnd(1,1.5);
 				//e.alpha = rnd(0.4, 0.7);
 			}
 
 			if( cy==waterY && Std.random(100)<60 ) {
 				for(i in 0...irnd(1,3)) {
-					var e = add(lights, "godLight", x+rnd(0,12,true),y);
+					var e = addBatch(lights, "godLight", x+rnd(0,12,true),y);
 					e.scaleX = rnd(0.6, 1);
 					e.scaleY = rnd(0.6, 1);
 					e.rotation = 0.1;
@@ -212,68 +199,63 @@ class Level extends dn.Process {
 			}
 
 
-			//if( cy==hei-1 ) {
-				//for(i in 0...3) {
-					//var e = add(bg, "bgWeed", x+rnd(0,Const.GRID*0.5,true), y, 0, 0.9);
-					//e.alpha = rnd(0.2, 0.5);
-				//}
-			//}
-
-
 			if( hasSpot("wall",cx,cy) ) {
 				if( cx>=213 ) {
 					for(i in 0...2 ) {
-						var e = add(bg, "rockSand", x+rnd(0,3,true), y+i*3+rnd(0,3,true));
-						e.rotation = rnd(0,0.2,true);
-						e.scale = rnd(1, 1.5);
+						var s = rnd(1, 1.5);
+						addTg(bg, "rockSand", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s, rnd(0,0.2,true));
 					}
 				}
 				else if( cx>=150 ) {
 					for(i in 0...2 ) {
-						var e = add(bg, "rockRed", x+rnd(0,3,true), y+i*3+rnd(0,3,true));
-						e.rotation = rnd(0,0.5,true);
-						e.scale = rnd(1, 1.5);
+						var s = rnd(1, 1.5);
+						addTg(bg, "rockRed", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s, rnd(0,0.5,true));
 					}
 				}
 				else  {
 					if( cy>=waterY+1 ) {
-						var e = add(far, "fatDirt", x+g*0.5,y+g*0.5, 0.5,0.5);
-						e.rotation = rnd(0,6.28);
-						//e.alpha = rnd(0.4, 0.6);
+						addTg(far, "fatDirt", x+g*0.5, y+g*0.5, 0.5,0.5, 1,1, rnd(0,M.PI2));
 					}
-					add(bg, "dirt", x,y);
+					addTg(bg, "dirt", x,y);
 
 					if( cy<=waterY ) {
 						for(i in 0...2 ) {
-							var e = add(bg, "rockOut", x+rnd(0,3,true), y+i*3+rnd(0,3,true));
-							e.scale = rnd(1, 1.5);
+							var s = rnd(1, 1.5);
+							addTg(bg, "rockOut", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s);
 						}
 						if( Std.random(100)<20 )
-							add(bg, "bush", x+rnd(0,5,true), y+rnd(0,5,true));
+							addTg(bg, "bush", x+rnd(0,5,true), y+rnd(0,5,true));
 					}
 					else if( Std.random(100)<20 )
 						for(i in 0...2 )
-							add(bg, "coral", x+rnd(0,3,true), y+rnd(0,3,true));
+							addTg(bg, "coral", x+rnd(0,3,true), y+rnd(0,3,true));
 					else
 						for(i in 0...2 ) {
-							var e = add(bg, "rock", x+rnd(0,3,true), y+i*3+rnd(0,3,true));
-							e.rotation = rnd(0,0.5,true);
-							e.scale = rnd(1, 1.5);
+							var s = rnd(1, 1.5);
+							addTg(bg, "rock", x+rnd(0,3,true), y+i*3+rnd(0,3,true), 0,0, s,s, rnd(0,0.5,true));
 						}
 				}
 
 				if( cy>=waterY+5 && Std.random(100)<30 && ( !hasSpot("wall", cx+1, cy) || !hasSpot("wall", cx-1,cy) ) ) {
-					var e = add(bg, "fatBubble", x+rnd(0,5,true), y+rnd(0,5,true), 0.5,0.5);
-					e.scale = rnd(0.25, 1);
-					e.alpha = rnd(0.4, 1);
+					var s = rnd(0.25, 1);
+					addTg(bg, "fatBubble", x+rnd(0,5,true), y+rnd(0,5,true), 0.5,0.5, s,s, 0, rnd(0.4,1));
 				}
 			}
 		}
 
-		var e = add(bg, "ending", 234*Const.GRID, 10*Const.GRID, 0.5,0.8);
+		addTg(bg, "ending", 234*Const.GRID, 10*Const.GRID, 0.5,0.8);
 	}
 
-	function add(sb:h2d.SpriteBatch, k:String, x:Float, y:Float, ?xr=0., ?yr=0.) : BatchElement {
+	inline function addTg(tg:h2d.TileGroup, k:String, x:Float, y:Float, xr=0., yr=0., sx=1.0, sy=1.0, r=0., a=1.0) {
+		tg.setDefaultColor(0xffffff, a);
+		tg.addTransform(
+			x,y,
+			sx, sy, r,
+			Assets.tiles.getTileRandom(k, xr,yr)
+		);
+	}
+
+	inline function addBatch(sb:h2d.SpriteBatch, k:String, x:Float, y:Float, ?xr=0., ?yr=0.) : BatchElement {
 		var e = new h2d.SpriteBatch.BatchElement( Assets.tiles.getTileRandom(k) );
 		e.t.setCenterRatio(xr,yr);
 		e.x = x;
@@ -284,8 +266,6 @@ class Level extends dn.Process {
 			e.g = c.g/255;
 			e.b = c.b/255;
 		}
-		//e.x = x - e.t.width*xr;
-		//e.y = y - e.t.height*yr;
 		sb.add(e);
 		return e;
 	}
