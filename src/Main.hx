@@ -15,10 +15,12 @@ class Main extends dn.Process {
 		engine.backgroundColor = 0xff<<24|0x0;
 		hxd.Timer.wantedFPS = Const.FPS;
 
+		#if !js
 		var f = new dn.heaps.filter.OverlayTexture(Soft);
 		f.alpha = 0.2;
 		f.autoUpdateSize = ()->Const.UPSCALE;
 		Boot.ME.s2d.filter = f;
+		#end
 
 		controller = new dn.heaps.Controller(Boot.ME.s2d);
 		ca = controller.createAccess("main");
@@ -35,11 +37,11 @@ class Main extends dn.Process {
 
 		delayer.addF( function() {
             onResize();
-			#if debug
-				new Game();
-			#else
-				new Intro();
-			#end
+			// #if debug
+				new Game(); // HACK
+			// #else
+			// 	new Intro();
+			// #end
 			#if hl
 				var c = new h2d.Console(Assets.font, Boot.ME.s2d);
 				Lib.redirectTracesToH2dConsole(c);
