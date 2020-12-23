@@ -27,7 +27,7 @@ class Mob extends Entity {
 	override function onDie() {
 		super.onDie();
 		fx.explode(centerX, centerY);
-		viewport.shake(rnd(3,4), 1);
+		viewport.shake(rnd(2,3), 0.3);
 	}
 
 	override public function onDispose() {
