@@ -1,49 +1,44 @@
 {
-    "skipTerminateQuickPick": true,
-    "skipSwitchToOutput": false,
-    "skipErrorMessage": true,
-    "commands": [
-      {
-        "text": "Redist",
-        "color": "lightgreen",
-        "command": "haxelib run redistHelper hl.hxml js.hxml -p SubDragon -zip",
-        "alignment": "right",
-        "skipTerminateQuickPick": false,
-        "priority": 10
-      },
-      {
-        "text": "✪ Build HL",
-        "color": "orange",
-        "commandType":"palette",
-        "command": "workbench.action.tasks.runTask|HL release",
-        "alignment": "right",
-        "skipTerminateQuickPick": false,
-        "priority": 5
-      },
-      {
-        "text": "(Run HL)",
-        "color": "orange",
-        "command": "hl bin/client.hl",
-        "alignment": "right",
-        "skipTerminateQuickPick": false,
-        "priority": 4
-      },
-      {
-        "text": "⛴ Build JS",
-        "color": "yellow",
-        "commandType":"palette",
-        "command": "workbench.action.tasks.runTask|JS release",
-        "alignment": "right",
-        "skipTerminateQuickPick": false,
-        "priority": 3
-      },
-      {
-        "text": "(Run JS)",
-        "color": "yellow",
-        "command": "start js.html",
-        "alignment": "right",
-        "skipTerminateQuickPick": false,
-        "priority": 2
-      }
-    ]
-  }
+	"skipTerminateQuickPick": true,
+	"skipSwitchToOutput": false,
+	"skipErrorMessage": true,
+	"commands": [
+		{
+			"text": "Redist",
+			"color": "lightgreen",
+			"command": "haxelib run redistHelper hl.hxml js.hxml -p SubDragon -zip",
+			"alignment": "right",
+			"skipTerminateQuickPick": false
+		},
+		{
+			"text": "Run JS",
+			"color": "yellow",
+			"command": "start js.html",
+			"alignment": "right",
+			"skipTerminateQuickPick": false
+		},
+		{
+			"text": "⛴ JS",
+			"color": "yellow",
+			"commandType":"palette",
+			"command": "workbench.action.tasks.runTask|JS release",
+			"alignment": "right",
+			"skipTerminateQuickPick": false
+		},
+		{
+			"text": "Run HL",
+			"color": "orange",
+			"command": "hl bin/client.hl",
+			"alignment": "right",
+			"skipTerminateQuickPick": false
+		},
+		{
+			"text": "✪ HL",
+			"color": "orange",
+			"commandType":"palette",
+			"command": "workbench.action.tasks.runTask|HL release",
+			"alignment": "right",
+			"skipTerminateQuickPick": false
+		}
+	]
+}
