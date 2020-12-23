@@ -6,12 +6,12 @@ class Level extends dn.Process {
 	public var wid : Int;
 	public var hei : Int;
 
-	var lights : h2d.SpriteBatch;
 	var clouds : h2d.SpriteBatch;
 
 	var farSky : h2d.TileGroup;
 	var farWrapper : h2d.Object;
 	var farChunks : Array<h2d.TileGroup> = [];
+	var lightChunks : Array<h2d.TileGroup> = [];
 
 	var bgWrapper : h2d.Object;
 	var bgChunks : Array<h2d.TileGroup> = [];
@@ -162,6 +162,9 @@ class Level extends dn.Process {
 		for(c in bgChunks) c.remove();
 		bgChunks = [];
 
+		for(c in lightChunks) c.remove();
+		lightChunks = [];
+
 		farSky = new h2d.TileGroup(Assets.tiles.tile, root);
 		farWrapper = new h2d.Object(root);
 
@@ -177,10 +180,6 @@ class Level extends dn.Process {
 		clouds.hasRotationScale = true;
 
 		bgWrapper = new h2d.Object(root);
-
-		lights = new h2d.SpriteBatch(Assets.tiles.tile, root);
-		lights.hasRotationScale = true;
-		lights.blendMode = Add;
 
 		// bg = new h2d.TileGroup(Assets.tiles.tile, root);
 
@@ -203,11 +202,14 @@ class Level extends dn.Process {
 
 			if( cy==waterY && Std.random(100)<60 ) {
 				for(i in 0...irnd(1,3)) {
-					var e = addBatch(lights, "godLight", x+rnd(0,12,true),y);
-					e.scaleX = rnd(0.6, 1);
-					e.scaleY = rnd(0.6, 1);
-					e.rotation = 0.1;
-					e.alpha = rnd(0.05, 0.10);
+					addToChunks(
+						lightChunks, "godLight",
+						x+rnd(0,12,true), y,
+						0,0,
+						rnd(0.6, 1), rnd(0.6, 1),
+						0.1,
+						rnd(0.07, 0.20)
+					);
 				}
 			}
 
@@ -261,8 +263,12 @@ class Level extends dn.Process {
 
 	inline function addToChunks(chunks:Array<h2d.TileGroup>, k:String, x:Float, y:Float, xr=0., yr=0., sx=1.0, sy=1.0, r=0., a=1.0) {
 		var id = Std.int( x / CHUNK_WID );
-		if( chunks[id]==null )
-			chunks[id] = new h2d.TileGroup( Assets.tiles.tile, chunks==farChunks ? farWrapper : bgWrapper );
+		if( chunks[id]==null ) {
+			var p = chunks==farChunks ? farWrapper : bgWrapper;
+			var tg = new h2d.TileGroup( Assets.tiles.tile, chunks==farChunks ? farWrapper : bgWrapper );
+			tg.blendMode = chunks==lightChunks ? Add : Alpha;
+			chunks[id] = tg;
+		}
 
 		var chunkX = id*CHUNK_WID;
 		chunks[id].x = chunkX;
@@ -306,6 +312,9 @@ class Level extends dn.Process {
 			c.visible = Game.ME.viewport.isOnScreenX(c.x, pad) || Game.ME.viewport.isOnScreenX(c.x+CHUNK_WID,pad);
 
 		for(c in farChunks)
+			c.visible = Game.ME.viewport.isOnScreenX(c.x, pad) || Game.ME.viewport.isOnScreenX(c.x+CHUNK_WID,pad);
+
+		for(c in lightChunks)
 			c.visible = Game.ME.viewport.isOnScreenX(c.x, pad) || Game.ME.viewport.isOnScreenX(c.x+CHUNK_WID,pad);
 	}
 
