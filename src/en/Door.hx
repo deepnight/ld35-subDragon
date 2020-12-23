@@ -14,6 +14,7 @@ class Door extends Entity {
 		spr.set("empty");
 		spr.setCenterRatio(0,0);
 		//spr.scaleY = hei;
+		alwaysOnScreen();
 
 		top = Assets.tiles.h_get("doorTop");
 		Game.ME.scroller.add(top, Const.DP_BG);
@@ -38,19 +39,10 @@ class Door extends Entity {
 		bot.remove();
 	}
 
-	override function outOfScreenUpdate() {
-		super.outOfScreenUpdate();
-		top.visible = false;
-		bot.visible = false;
-	}
-
 	override public function postUpdate() {
 		super.postUpdate();
 
-		top.visible = spr.visible;
 		top.setPosition(cx*Const.GRID, (cy-1)*Const.GRID);
-
-		bot.visible = spr.visible;
 		bot.setPosition(cx*Const.GRID, (cy+hei)*Const.GRID);
 
 		var i = 0;
