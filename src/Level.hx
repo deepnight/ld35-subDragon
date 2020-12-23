@@ -3,8 +3,6 @@ import h2d.SpriteBatch;
 class Level extends dn.Process {
 	public var wid : Int;
 	public var hei : Int;
-	// var spots : Map<String,Array<Point>>;
-	// var fastSpots : Map<String,Bool>;
 
 	var lights : h2d.SpriteBatch;
 	var far : h2d.TileGroup;
@@ -166,7 +164,6 @@ class Level extends dn.Process {
 		lights = new h2d.SpriteBatch(Assets.tiles.tile, root);
 		lights.hasRotationScale = true;
 		lights.blendMode = Add;
-		//far.filters.push( new h2d.filter.Displacement(hxd.Res.disp.toTile()) );
 
 		bg = new h2d.TileGroup(Assets.tiles.tile, root);
 
@@ -185,7 +182,6 @@ class Level extends dn.Process {
 			if( cx%3==0 && cy==waterY && Std.random(100)<80 ) {
 				var e = addBatch(clouds, "cloud", x,y-rnd(5,20), 0.5, 1);
 				e.scale = rnd(1,1.5);
-				//e.alpha = rnd(0.4, 0.7);
 			}
 
 			if( cy==waterY && Std.random(100)<60 ) {
