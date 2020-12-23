@@ -6,7 +6,7 @@ class Level extends dn.Process {
 	public var wid : Int;
 	public var hei : Int;
 
-	var clouds : h2d.SpriteBatch;
+	var clouds : h2d.TileGroup;
 
 	var farSky : h2d.TileGroup;
 	var farWrapper : h2d.Object;
@@ -176,8 +176,7 @@ class Level extends dn.Process {
 		sun2.blendMode = Add;
 		sun2.y = waterY*Const.GRID;
 
-		clouds = new h2d.SpriteBatch(Assets.tiles.tile, root);
-		clouds.hasRotationScale = true;
+		clouds = new h2d.TileGroup(Assets.tiles.tile, root);
 
 		bgWrapper = new h2d.Object(root);
 
@@ -196,8 +195,8 @@ class Level extends dn.Process {
 			var y = cy*Const.GRID;
 
 			if( cx%3==0 && cy==waterY && Std.random(100)<80 ) {
-				var e = addBatch(clouds, "cloud", x,y-rnd(5,20), 0.5, 1);
-				e.scale = rnd(1,1.5);
+				var s = rnd(1,1.5);
+				addTg(clouds, "cloud", x,y-rnd(5,20), 0.5,1, s,s);
 			}
 
 			if( cy==waterY && Std.random(100)<60 ) {
