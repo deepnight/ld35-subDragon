@@ -15,7 +15,7 @@ class Head extends Ring {
 		speed = 0;
 		initLife(1);
 		#if debug
-		initLife(1000);
+		initLife(5000);
 		#end
 		alwaysOnScreen();
 

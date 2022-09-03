@@ -41,7 +41,7 @@ class Entity {
 	var utime(get,never) : Float; inline function get_utime() return Game.ME.ftime+uid*10;
 	var onGround(get,never) : Bool; inline function get_onGround() return yr==1 && level.hasCollision(cx,cy+1);
 	var life : Int;
-	var maxLife : Int;
+	public var maxLife : Int;
 
 	public function new(x:Int,y:Int) {
 		uid = UNIQ++;

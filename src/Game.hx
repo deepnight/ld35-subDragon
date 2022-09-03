@@ -338,6 +338,17 @@ class Game extends dn.Process {
 		}
 		#end
 
+		if( ctrl.isKeyboardPressed(Key.G) ) {
+			if( hero.maxLife>10 ) {
+				notify("Disabled god mode");
+				hero.initLife(1);
+			}
+			else {
+				notify("Enabled god mode");
+				hero.initLife(5000);
+			}
+		}
+
 		if( ctrl.aPressed() && curMsg!=null ) {
 			cd.setF("lock", secToFrames(0.2));
 			clearMessage();
