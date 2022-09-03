@@ -27,7 +27,7 @@ class Boot extends hxd.App {
 	}
 
 	override function update(delta:Float) {
-		dn.heaps.Controller.beforeUpdate();
+		Controller.beforeUpdate();
 
 		super.update(delta);
 

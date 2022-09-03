@@ -89,7 +89,7 @@ class Entity {
 	inline function rndSeconds(min,max,?sign) return secToFrames( Lib.rnd(min,max,sign) );
 	inline function irndSeconds(min,max,?sign) return secToFrames( Lib.rnd(min,max,sign) );
 
-	public inline function is(c:Class<Entity>) return Std.is(this,c);
+	public inline function is(c:Class<Entity>) return Std.isOfType(this,c);
 
 	public function setPoseCase(x,y) {
 		cx = x;
@@ -117,7 +117,7 @@ class Entity {
 	public function colorBlink(c:UInt, d:Float, ?pow=1.0) {
 		color = c;
 		colorPow = pow;
-		spr.colorMatrix = dn.Color.getColorizeMatrixH2d(c, pow);
+		spr.colorMatrix = Color.getColorizeMatrixH2d(c, pow);
 		cd.setF("rgbRestore", d);
 	}
 
@@ -159,7 +159,7 @@ class Entity {
 			if( colorPow<=0 )
 				spr.colorMatrix = null;
 			else
-				spr.colorMatrix = dn.Color.getColorizeMatrixH2d(color, colorPow);
+				spr.colorMatrix = Color.getColorizeMatrixH2d(color, colorPow);
 		}
 
 		spr.alpha = isOnScreen() ? 1 : 0.2; // HACK

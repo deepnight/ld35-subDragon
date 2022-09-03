@@ -294,7 +294,7 @@ class Level extends dn.Process {
 		e.x = x;
 		e.y = y;
 		if( e.y>=waterY*Const.GRID ) {
-			var c = dn.Color.intToRgb( dn.Color.interpolateInt(0xFFFFFF, 0x3E3993, 0.6) );
+			var c = Color.intToRgb( Color.interpolateInt(0xFFFFFF, 0x3E3993, 0.6) );
 			e.r = c.r/255;
 			e.g = c.g/255;
 			e.b = c.b/255;
