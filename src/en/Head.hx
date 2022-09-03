@@ -1,7 +1,7 @@
 package en;
 
 class Head extends Ring {
-	public var ca : dn.heaps.Controller.ControllerAccess;
+	public var ca : ControllerAccess;
 	var speed : Float;
 
 	public var mouseControl = false;

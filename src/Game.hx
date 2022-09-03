@@ -3,7 +3,7 @@ import hxd.Key;
 class Game extends dn.Process {
 	public static var ME : Game;
 
-	var ctrl : dn.heaps.Controller.ControllerAccess;
+	var ctrl : ControllerAccess;
 	public var hero : en.Head;
 	public var level : Level;
 	public var scroller : h2d.Layers;

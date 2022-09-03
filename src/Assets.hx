@@ -2,7 +2,7 @@ import dn.heaps.assets.*;
 import dn.heaps.Sfx;
 
 class Assets {
-	public static var SBANK = SfxDirectory.load("sfx");
+	public static var SBANK = SfxDirectory.load("sfx",true);
 
 	public static var music : Sfx;
 	public static var font : h2d.Font;

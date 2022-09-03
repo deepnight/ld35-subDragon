@@ -1,5 +1,3 @@
-import dn.heaps.Controller;
-
 class Main extends dn.Process {
 	public static var ME : Main;
 	public var controller : Controller;
@@ -22,7 +20,7 @@ class Main extends dn.Process {
 		Boot.ME.s2d.filter = f;
 		#end
 
-		controller = new dn.heaps.Controller(Boot.ME.s2d);
+		controller = new Controller(Boot.ME.s2d);
 		ca = controller.createAccess("main");
 		controller.bind(A, hxd.Key.SPACE, hxd.Key.F);
 		controller.bind(AXIS_LEFT_X_NEG, hxd.Key.A, hxd.Key.LEFT, hxd.Key.Q);
