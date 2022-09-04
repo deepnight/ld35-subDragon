@@ -332,19 +332,19 @@ class Game extends dn.Process {
 		// }
 
 		#if debug
-		if( !hero.isDead() && ctrl.isKeyboardPressed(hxd.Key.K) ) {
-			curCheckPoint = null;
-			hero.hit(1000);
-		}
+		// if( !hero.isDead() && ctrl.isKeyboardPressed(hxd.Key.K) ) {
+		// 	curCheckPoint = null;
+		// 	hero.hit(1000);
+		// }
 		#end
 
-		if( ctrl.isKeyboardPressed(Key.G) ) {
+		if( ctrl.isKeyboardPressed(Key.K) ) {
 			if( hero.maxLife>10 ) {
-				notify("Disabled god mode");
+				notify("Disabled kid mode");
 				hero.initLife(1);
 			}
 			else {
-				notify("Enabled god mode");
+				notify("Enabled kid mode");
 				hero.initLife(5000);
 			}
 		}
